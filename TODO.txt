@@ -1,0 +1,24 @@
+1.) Better pathing - Implemented A*, now have units follow path
+2.) Targeting cursor
+3.) Units
+4.) Notion of teams, me against you, multinational forces
+5.) User controlled vs computer controlled enemies/allies
+6.) Need a model for unit state changes and decision making
+7.) team formations (spread, fan, cover, etc)
+8.) Add units to elements/tiles
+9.) Speed up rendering. Remove all the widget allocations and things like that,
+    dirty rectangle rendering, etc
+10.) Moving the marks/defense/ambush circles
+11.) Implement defend, ambush, smoke, etc
+12.) Houses and roofs
+13.) Non-shimmering texture transformations
+14.) Fix entity character references in character parsing in XML parsers
+15.) Optimize A*. It is really slow righ now on long paths/unreachable paths
+16.) Use a pathing queue to spread pathfinding out over several cycles
+17.) Implement a LOS cache to speed up LOS calculations
+18.) Better memory management in general. I want a way to check
+	 total allocated memory, freed memory, etc. Also remove all the per-cycle
+	 allocations, for such things a widgets and graphics, etc.
+19.) Fixed memory allocators in A* for Path and Node structures
+20.) Use a path stack for individual soldier pathfinding
+21.) Vehicles need to follow paths
