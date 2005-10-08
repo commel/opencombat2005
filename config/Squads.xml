@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Squads>
+	<Squad>
+		<Name>BAR Rifle</Name>
+		<Icon>Rifle Squad</Icon>
+		<Soldier>
+			<Title>Leader</Title>
+			<Rank>Sergeant Major</Rank>
+			<Type>Thompson</Type>
+			<Camo>German Snow Infantry</Camo>
+		</Soldier>
+		<Soldier>
+			<Title>Assistant Leader</Title>
+			<Rank>Corporal</Rank>
+			<Type>BAR</Type>
+			<Camo>German Snow Infantry</Camo>
+		</Soldier>
+		<Soldier>
+			<Title>Soldier</Title>
+			<Rank>Private First Class</Rank>
+			<Type>BAR</Type>
+			<Camo>German Infantry</Camo>
+		</Soldier>
+		<Soldier>
+			<Title>Soldier</Title>
+			<Rank>Private First Class</Rank>
+			<Type>Carbine</Type>
+			<Camo>German Infantry</Camo>
+		</Soldier>
+		<Soldier>
+			<Title>Soldier</Title>
+			<Rank>Private</Rank>
+			<Type>Garand</Type>
+			<Camo>American Infantry</Camo>
+		</Soldier>
+		<Soldier>
+			<Title>Soldier</Title>
+			<Rank>Private</Rank>
+			<Type>Garand</Type>
+			<Camo>American Infantry</Camo>
+		</Soldier>
+		<Soldier>
+			<Title>Soldier</Title>
+			<Rank>Private</Rank>
+			<Type>Garand</Type>
+			<Camo>American Infantry</Camo>
+		</Soldier>
+	</Squad>
+	<Squad>
+		<Name>Bazooka</Name>
+		<Icon>Bazooka Squad</Icon>
+		<Soldier>
+			<Title>Leader</Title>
+			<Rank>Sergeant Major</Rank>
+			<Type>Thompson</Type>
+			<Camo>German Snow Infantry</Camo>
+		</Soldier>
+		<Soldier>
+			<Title>Assistant Leader</Title>
+			<Rank>Corporal</Rank>
+			<Type>BAR</Type>
+			<Camo>German Snow Infantry</Camo>
+		</Soldier>
+		<Soldier>
+			<Title>Soldier</Title>
+			<Rank>Private First Class</Rank>
+			<Type>Bazooka</Type>
+			<Camo>German AT Infantry</Camo>
+		</Soldier>
+	</Squad>
+	<Squad>
+		<Name>.30 Cal MG</Name>
+		<Icon>.30 Cal MG Squad</Icon>
+		<Soldier>
+			<Title>Leader</Title>
+			<Rank>Sergeant Major</Rank>
+			<Type>Garand</Type>
+			<Camo>German Snow Infantry</Camo>
+		</Soldier>
+		<Soldier>
+			<Title>Assistant Leader</Title>
+			<Rank>Corporal</Rank>
+			<Type>Garand</Type>
+			<Camo>German Snow Infantry</Camo>
+		</Soldier>
+		<Soldier>
+			<Title>Soldier</Title>
+			<Rank>Private First Class</Rank>
+			<Type>.30 Cal MG</Type>
+			<Camo>German AT Infantry</Camo>
+		</Soldier>
+	</Squad>
+	<Squad>
+		<Name>Panzer IVG</Name>
+		<Icon>Panzer IVG Squad</Icon>
+		<Vehicle>
+			<Type>Panzer IVG</Type>
+			<Soldier slot="0">
+				<Title>Gunner</Title>
+				<Rank>Sergeant Major</Rank>
+				<Type>Garand</Type>
+				<Camo>German Snow Infantry</Camo>
+			</Soldier>
+			<Soldier slot="1">
+				<Title>Loader</Title>
+				<Rank>Corporal</Rank>
+				<Type>Garand</Type>
+				<Camo>German Snow Infantry</Camo>
+			</Soldier>
+			<Soldier slot="-1">
+				<Title>Driver</Title>
+				<Rank>Private First Class</Rank>
+				<Type>Garand</Type>
+				<Camo>German AT Infantry</Camo>
+			</Soldier>
+		</Vehicle>
+	</Squad>
+</Squads>

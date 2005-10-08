@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Soldiers>
+	<Soldier>
+		<Name>Garand</Name>
+		<PrimaryWeapon>M1 Garand</PrimaryWeapon>
+		<PrimaryWeaponNumClips>4</PrimaryWeaponNumClips>
+		<States>
+			<State>
+				<Name>Standing</Name>
+				<Animation>Standing Rest</Animation>
+			</State>
+			<State>
+				<Name>Prone</Name>
+				<Animation>Prone Rest</Animation>
+			</State>
+			<State>
+				<Name>Standing Firing</Name>
+				<Animation>Standing Firing</Animation>
+			</State>
+			<State>
+				<Name>Prone Firing</Name>
+				<Animation>Prone Firing</Animation>
+			</State>
+			<State>
+				<Name>Standing Reloading</Name>
+				<Animation>Standing Reloading</Animation>
+			</State>
+			<State>
+				<Name>Prone Reloading</Name>
+				<Animation>Prone Reloading</Animation>
+			</State>
+			<State>
+				<Name>Sneaking</Name>
+				<Animation>Crawling</Animation>
+			</State>
+			<State>
+				<Name>Walking</Name>
+				<Animation>Walking</Animation>
+			</State>
+			<State>
+				<Name>Running</Name>
+				<Animation>Running</Animation>
+			</State>
+			<State>
+				<Name>Dying Blown Up</Name>
+				<Animation>Dying Blown Up</Animation>
+			</State>
+			<State>
+				<Name>Dying Backward</Name>
+				<Animation>Dying Backward</Animation>
+			</State>
+			<State>
+				<Name>Dying Forward</Name>
+				<Animation>Dying Forward</Animation>
+			</State>
+			<State>
+				<Name>Dead</Name>
+				<Animation>Dead</Animation>
+			</State>
+		</States>
+		<Attributes>
+			<WalkingSpeed>1.34</WalkingSpeed>
+			<WalkingAcceleration>1.0</WalkingAcceleration>
+			<SneakingSpeed>0.67</SneakingSpeed>
+			<SneakingAcceleration>0.5</SneakingAcceleration>
+			<RunningSpeed>2.68</RunningSpeed>
+			<RunningAcceleration>2.0</RunningAcceleration>
+			<CanMove />
+			<CanMoveFast />
+			<CanDefend />
+			<CanSmoke />
+			<CanFire />
+			<CanSneak />
+			<CanAmbush />
+		</Attributes>
+	</Soldier>
+	<Soldier>
+		<Name>Carbine</Name>
+		<PrimaryWeapon>M1A1 Carbine</PrimaryWeapon>
+		<PrimaryWeaponNumClips>4</PrimaryWeaponNumClips>
+		<States>
+			<State>
+				<Name>Standing</Name>
+				<Animation>Standing Rest</Animation>
+			</State>
+			<State>
+				<Name>Standing Firing</Name>
+				<Animation>Standing Firing</Animation>
+			</State>
+			<State>
+				<Name>Prone Firing</Name>
+				<Animation>Prone Firing</Animation>
+			</State>
+			<State>
+				<Name>Prone</Name>
+				<Animation>Prone Rest</Animation>
+			</State>
+			<State>
+				<Name>Standing Reloading</Name>
+				<Animation>Standing Reloading</Animation>
+			</State>
+			<State>
+				<Name>Prone Reloading</Name>
+				<Animation>Prone Reloading</Animation>
+			</State>
+			<State>
+				<Name>Sneaking</Name>
+				<Animation>Crawling</Animation>
+			</State>
+			<State>
+				<Name>Walking</Name>
+				<Animation>Walking</Animation>
+			</State>
+			<State>
+				<Name>Running</Name>
+				<Animation>Running</Animation>
+			</State>
+			<State>
+				<Name>Dying Blown Up</Name>
+				<Animation>Dying Blown Up</Animation>
+			</State>
+			<State>
+				<Name>Dying Backward</Name>
+				<Animation>Dying Backward</Animation>
+			</State>
+			<State>
+				<Name>Dying Forward</Name>
+				<Animation>Dying Forward</Animation>
+			</State>
+			<State>
+				<Name>Dead</Name>
+				<Animation>Dead</Animation>
+			</State>
+		</States>
+		<Attributes>
+			<WalkingSpeed>1.34</WalkingSpeed>
+			<WalkingAcceleration>1.0</WalkingAcceleration>
+			<SneakingSpeed>0.67</SneakingSpeed>
+			<SneakingAcceleration>0.5</SneakingAcceleration>
+			<RunningSpeed>2.68</RunningSpeed>
+			<RunningAcceleration>2.0</RunningAcceleration>
+			<CanMove />
+			<CanMoveFast />
+			<CanDefend />
+			<CanSmoke />
+			<CanFire />
+			<CanSneak />
+			<CanAmbush />
+		</Attributes>
+	</Soldier>
+	<Soldier>
+		<Name>Thompson</Name>
+		<PrimaryWeapon>Thompson M1A1</PrimaryWeapon>
+		<PrimaryWeaponNumClips>4</PrimaryWeaponNumClips>
+		<States>
+			<State>
+				<Name>Standing</Name>
+				<Animation>Standing Rest</Animation>
+			</State>
+			<State>
+				<Name>Standing Firing</Name>
+				<Animation>Standing Firing</Animation>
+			</State>
+			<State>
+				<Name>Prone Firing</Name>
+				<Animation>Prone Firing</Animation>
+			</State>
+			<State>
+				<Name>Prone</Name>
+				<Animation>Prone Rest</Animation>
+			</State>
+			<State>
+				<Name>Standing Reloading</Name>
+				<Animation>Standing Reloading</Animation>
+			</State>
+			<State>
+				<Name>Prone Reloading</Name>
+				<Animation>Prone Reloading</Animation>
+			</State>
+			<State>
+				<Name>Sneaking</Name>
+				<Animation>Crawling</Animation>
+			</State>
+			<State>
+				<Name>Walking</Name>
+				<Animation>Walking</Animation>
+			</State>
+			<State>
+				<Name>Running</Name>
+				<Animation>Running</Animation>
+			</State>
+			<State>
+				<Name>Dying Blown Up</Name>
+				<Animation>Dying Blown Up</Animation>
+			</State>
+			<State>
+				<Name>Dying Backward</Name>
+				<Animation>Dying Backward</Animation>
+			</State>
+			<State>
+				<Name>Dying Forward</Name>
+				<Animation>Dying Forward</Animation>
+			</State>
+			<State>
+				<Name>Dead</Name>
+				<Animation>Dead</Animation>
+			</State>
+		</States>
+		<Attributes>
+			<WalkingSpeed>1.34</WalkingSpeed>
+			<WalkingAcceleration>1.0</WalkingAcceleration>
+			<SneakingSpeed>0.67</SneakingSpeed>
+			<SneakingAcceleration>0.5</SneakingAcceleration>
+			<RunningSpeed>2.68</RunningSpeed>
+			<RunningAcceleration>2.0</RunningAcceleration>
+			<CanMove />
+			<CanMoveFast />
+			<CanDefend />
+			<CanSmoke />
+			<CanFire />
+			<CanSneak />
+			<CanAmbush />
+		</Attributes>
+	</Soldier>
+		<Soldier>
+		<Name>BAR</Name>
+		<PrimaryWeapon>BAR</PrimaryWeapon>
+		<PrimaryWeaponNumClips>6</PrimaryWeaponNumClips>
+		<States>
+			<State>
+				<Name>Standing</Name>
+				<Animation>Standing Rest</Animation>
+			</State>
+			<State>
+				<Name>Standing Firing</Name>
+				<Animation>Standing Firing</Animation>
+			</State>
+			<State>
+				<Name>Prone Firing</Name>
+				<Animation>Prone Firing</Animation>
+			</State>
+			<State>
+				<Name>Prone</Name>
+				<Animation>Prone Rest</Animation>
+			</State>
+			<State>
+				<Name>Standing Reloading</Name>
+				<Animation>Standing Reloading</Animation>
+			</State>
+			<State>
+				<Name>Prone Reloading</Name>
+				<Animation>Prone Reloading</Animation>
+			</State>
+			<State>
+				<Name>Sneaking</Name>
+				<Animation>Crawling</Animation>
+			</State>
+			<State>
+				<Name>Walking</Name>
+				<Animation>Walking</Animation>
+			</State>
+			<State>
+				<Name>Running</Name>
+				<Animation>Running</Animation>
+			</State>
+			<State>
+				<Name>Dying Blown Up</Name>
+				<Animation>Dying Blown Up</Animation>
+			</State>
+			<State>
+				<Name>Dying Backward</Name>
+				<Animation>Dying Backward</Animation>
+			</State>
+			<State>
+				<Name>Dying Forward</Name>
+				<Animation>Dying Forward</Animation>
+			</State>
+			<State>
+				<Name>Dead</Name>
+				<Animation>Dead</Animation>
+			</State>
+		</States>
+		<Attributes>
+			<WalkingSpeed>1.34</WalkingSpeed>
+			<WalkingAcceleration>1.0</WalkingAcceleration>
+			<SneakingSpeed>0.67</SneakingSpeed>
+			<SneakingAcceleration>0.5</SneakingAcceleration>
+			<RunningSpeed>2.68</RunningSpeed>
+			<RunningAcceleration>2.0</RunningAcceleration>
+			<CanMove />
+			<CanMoveFast />
+			<CanDefend />
+			<CanSmoke />
+			<CanFire />
+			<CanSneak />
+			<CanAmbush />
+		</Attributes>
+	</Soldier>
+	<Soldier>
+		<Name>Bazooka</Name>
+		<PrimaryWeapon>Bazooka</PrimaryWeapon>
+		<PrimaryWeaponNumClips>8</PrimaryWeaponNumClips>
+		<States>
+			<State>
+				<Name>Standing</Name>
+				<Animation>Bazooka Standing Rest</Animation>
+			</State>
+			<State>
+				<Name>Prone</Name>
+				<Animation>Bazooka Prone Rest</Animation>
+			</State>
+			<State>
+				<Name>Standing Firing</Name>
+				<Animation>Bazooka Standing Firing</Animation>
+			</State>
+			<State>
+				<Name>Prone Firing</Name>
+				<Animation>Bazooka Prone Firing</Animation>
+			</State>
+			<State>
+				<Name>Standing Reloading</Name>
+				<Animation>Bazooka Standing Firing</Animation>
+			</State>
+			<State>
+				<Name>Prone Reloading</Name>
+				<Animation>Bazooka Prone Firing</Animation>
+			</State>
+			<State>
+				<Name>Sneaking</Name>
+				<Animation>Bazooka Crawling</Animation>
+			</State>
+			<State>
+				<Name>Walking</Name>
+				<Animation>Bazooka Walking</Animation>
+			</State>
+			<State>
+				<Name>Running</Name>
+				<Animation>Bazooka Running</Animation>
+			</State>
+			<State>
+				<Name>Dying Blown Up</Name>
+				<Animation>Dying Blown Up</Animation>
+			</State>
+			<State>
+				<Name>Dying Backward</Name>
+				<Animation>Dying Backward</Animation>
+			</State>
+			<State>
+				<Name>Dying Forward</Name>
+				<Animation>Dying Forward</Animation>
+			</State>
+			<State>
+				<Name>Dead</Name>
+				<Animation>Dead</Animation>
+			</State>
+		</States>
+		<Attributes>
+			<WalkingSpeed>1.34</WalkingSpeed>
+			<WalkingAcceleration>1.0</WalkingAcceleration>
+			<SneakingSpeed>0.67</SneakingSpeed>
+			<SneakingAcceleration>0.5</SneakingAcceleration>
+			<RunningSpeed>2.68</RunningSpeed>
+			<RunningAcceleration>2.0</RunningAcceleration>
+			<CanMove />
+			<CanMoveFast />
+			<CanDefend />
+			<CanSmoke />
+			<CanFire />
+			<CanSneak />
+			<CanAmbush />
+		</Attributes>
+	</Soldier>
+	<Soldier>
+		<Name>.30 Cal MG</Name>
+		<PrimaryWeapon>.30 Cal MG</PrimaryWeapon>
+		<PrimaryWeaponNumClips>8</PrimaryWeaponNumClips>
+		<States>
+			<State>
+				<Name>Standing</Name>
+				<Animation>Machine Gun Standing Rest</Animation>
+			</State>
+			<State>
+				<Name>Prone</Name>
+				<Animation>Machine Gun Prone Rest</Animation>
+			</State>
+			<State>
+				<Name>Standing Firing</Name>
+				<Animation>Machine Gun Standing Firing</Animation>
+			</State>
+			<State>
+				<Name>Prone Firing</Name>
+				<Animation>Machine Gun Prone Firing</Animation>
+			</State>
+			<State>
+				<Name>Standing Reloading</Name>
+				<Animation>Machine Gun Standing Firing</Animation>
+			</State>
+			<State>
+				<Name>Prone Reloading</Name>
+				<Animation>Machine Gun Prone Firing</Animation>
+			</State>
+			<State>
+				<Name>Sneaking</Name>
+				<Animation>Machine Gun Crawling</Animation>
+			</State>
+			<State>
+				<Name>Walking</Name>
+				<Animation>Machine Gun Walking</Animation>
+			</State>
+			<State>
+				<Name>Running</Name>
+				<Animation>Machine Gun Running</Animation>
+			</State>
+			<State>
+				<Name>Dying Blown Up</Name>
+				<Animation>Dying Blown Up</Animation>
+			</State>
+			<State>
+				<Name>Dying Backward</Name>
+				<Animation>Dying Backward</Animation>
+			</State>
+			<State>
+				<Name>Dying Forward</Name>
+				<Animation>Dying Forward</Animation>
+			</State>
+			<State>
+				<Name>Dead</Name>
+				<Animation>Dead</Animation>
+			</State>
+		</States>
+		<Attributes>
+			<WalkingSpeed>1.34</WalkingSpeed>
+			<WalkingAcceleration>1.0</WalkingAcceleration>
+			<SneakingSpeed>0.67</SneakingSpeed>
+			<SneakingAcceleration>0.5</SneakingAcceleration>
+			<RunningSpeed>2.68</RunningSpeed>
+			<RunningAcceleration>2.0</RunningAcceleration>
+			<CanMove />
+			<CanMoveFast />
+			<CanDefend />
+			<CanSmoke />
+			<CanFire />
+			<CanSneak />
+			<CanAmbush />
+		</Attributes>
+	</Soldier>
+</Soldiers>

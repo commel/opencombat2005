@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Animations dir="Soldiers\Dead 1" image="spr*" mask="msk*">
+	<Animation>
+		<Name>Dead</Name>
+		<Directions>8</Directions>
+		<NumFrames>1</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+</Animations>

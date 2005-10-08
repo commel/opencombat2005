@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sounds>
+	<Sound>
+		<Name>awaiting orders</Name>
+		<File>English Voices\0041 - awaiting orders.wav</File>
+	</Sound>
+	<Sound>
+		<Name>move completed</Name>
+		<File>English Voices\0038 - move completed.wav</File>
+	</Sound>
+	<Sound>
+		<Name>no clear path</Name>
+		<File>English Voices\0053 - no clear path.wav</File>
+	</Sound>
+</Sounds>

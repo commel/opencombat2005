@@ -1,0 +1,142 @@
+<Weapons>
+	<!-- All times are in milliseconds! -->
+	<!-- Ranges are in meters, Weights in pounds -->
+	<!-- BaseAccuracy is a RansomRest test measure -->
+	<Weapon>
+		<Name>M1 Garand</Name>
+		<Icon>M1 Garand</Icon>
+		<Sound>Rifle</Sound>
+		<Animation>Rifle</Animation>
+		<RoundsPerClip>8</RoundsPerClip>
+		<RoundsPerBurst>1</RoundsPerBurst>
+		<ReloadTimeChamber>400</ReloadTimeChamber>
+		<ReloadTimeClip>8000</ReloadTimeClip>
+		<TimeToFire>400</TimeToFire>
+		<MaxEffectiveRange>460</MaxEffectiveRange>
+		<WeaponWeight>10</WeaponWeight>
+		<ClipWeight>1</ClipWeight>
+		<CoolRate>500</CoolRate>
+		<HeatRate>300</HeatRate>
+		<BaseAccuracy>1.00</BaseAccuracy>
+	</Weapon>
+	<Weapon>
+		<Name>Blank</Name>
+		<Icon>Blank</Icon>
+		<Sound>Rifle</Sound>
+		<Animation>Rifle</Animation>
+		<RoundsPerClip>0</RoundsPerClip>
+		<RoundsPerBurst>0</RoundsPerBurst>
+		<ReloadTimeChamber>0</ReloadTimeChamber>
+		<ReloadTimeClip>0</ReloadTimeClip>
+		<TimeToFire>0</TimeToFire>
+		<MaxEffectiveRange>0</MaxEffectiveRange>
+		<WeaponWeight>0</WeaponWeight>
+		<ClipWeight>0</ClipWeight>
+		<CoolRate>0</CoolRate>
+		<HeatRate>0</HeatRate>
+		<BaseAccuracy>0.00</BaseAccuracy>
+	</Weapon>
+		
+	<Weapon>
+		<Name>Thompson M1A1</Name>
+		<Icon>Thompson M1A1</Icon>
+		<Sound>Thompson</Sound>
+		<Animation>Machine Gun</Animation>
+		<RoundsPerClip>30</RoundsPerClip>
+		<RoundsPerBurst>5</RoundsPerBurst>
+		<ReloadTimeChamber>500</ReloadTimeChamber>
+		<ReloadTimeClip>10000</ReloadTimeClip>
+		<TimeToFire>800</TimeToFire>
+		<MaxEffectiveRange>50</MaxEffectiveRange>
+		<WeaponWeight>11</WeaponWeight>
+		<ClipWeight>4</ClipWeight>
+		<CoolRate>500</CoolRate>
+		<HeatRate>300</HeatRate>
+		<BaseAccuracy>3.00</BaseAccuracy>
+	</Weapon>
+	<Weapon>
+		<Name>M1A1 Carbine</Name>
+		<Icon>M1A1 Carbine</Icon>
+		<Sound>Rifle</Sound>
+		<Animation>Rifle</Animation>
+		<RoundsPerClip>15</RoundsPerClip>
+		<RoundsPerBurst>1</RoundsPerBurst>
+		<ReloadTimeChamber>200</ReloadTimeChamber>
+		<ReloadTimeClip>10000</ReloadTimeClip>
+		<TimeToFire>500</TimeToFire>
+		<MaxEffectiveRange>200</MaxEffectiveRange>
+		<WeaponWeight>5.2</WeaponWeight>
+		<ClipWeight>3</ClipWeight>
+		<CoolRate>500</CoolRate>
+		<HeatRate>300</HeatRate>
+		<BaseAccuracy>1.00</BaseAccuracy>
+	</Weapon>
+	<Weapon>
+		<Name>BAR</Name>
+		<Icon>BAR</Icon>
+		<Sound>BAR</Sound>
+		<Animation>Machine Gun</Animation>
+		<RoundsPerClip>20</RoundsPerClip>
+		<RoundsPerBurst>3</RoundsPerBurst>
+		<ReloadTimeChamber>200</ReloadTimeChamber>
+		<ReloadTimeClip>10000</ReloadTimeClip>
+		<TimeToFire>300</TimeToFire>
+		<MaxEffectiveRange>80</MaxEffectiveRange>
+		<WeaponWeight>19.4</WeaponWeight>
+		<ClipWeight>4</ClipWeight>
+		<CoolRate>500</CoolRate>
+		<HeatRate>300</HeatRate>
+		<BaseAccuracy>2.00</BaseAccuracy>
+	</Weapon>
+	<Weapon>
+		<Name>Bazooka</Name>
+		<Icon>Bazooka</Icon>
+		<Sound>Bazooka</Sound>
+		<Animation>Bazooka</Animation>
+		<RoundsPerClip>1</RoundsPerClip>
+		<RoundsPerBurst>1</RoundsPerBurst>
+		<ReloadTimeChamber>20000</ReloadTimeChamber>
+		<ReloadTimeClip>10000</ReloadTimeClip>
+		<TimeToFire>1000</TimeToFire>
+		<MaxEffectiveRange>80</MaxEffectiveRange>
+		<WeaponWeight>9</WeaponWeight>
+		<ClipWeight>2</ClipWeight>
+		<CoolRate>1000</CoolRate>
+		<HeatRate>1500</HeatRate>
+		<BaseAccuracy>2.00</BaseAccuracy>
+	</Weapon>
+	<Weapon>
+		<Name>.30 Cal MG</Name>
+		<Icon>.30 Cal MG</Icon>
+		<Sound>.30 Cal MG</Sound>
+		<Animation>Machine Gun</Animation>
+		<RoundsPerClip>250</RoundsPerClip>
+		<RoundsPerBurst>4</RoundsPerBurst>
+		<ReloadTimeChamber>300</ReloadTimeChamber>
+		<ReloadTimeClip>15000</ReloadTimeClip>
+		<TimeToFire>300</TimeToFire>
+		<MaxEffectiveRange>80</MaxEffectiveRange>
+		<WeaponWeight>45</WeaponWeight>
+		<ClipWeight>4</ClipWeight>
+		<CoolRate>700</CoolRate>
+		<HeatRate>300</HeatRate>
+		<BaseAccuracy>2.00</BaseAccuracy>
+	</Weapon>
+	<Weapon earthShaker="true">
+		<Name>7.5cm L48</Name>
+		<Icon>Main Tank Gun</Icon>
+		<Sound>Large Tank Gun</Sound>
+		<Animation>Muzzle</Animation>
+		<RoundsPerClip>1</RoundsPerClip>
+		<RoundsPerBurst>1</RoundsPerBurst>
+		<ReloadTimeChamber>8000</ReloadTimeChamber>
+		<ReloadTimeClip>8000</ReloadTimeClip>
+		<TimeToFire>500</TimeToFire>
+		<MaxEffectiveRange>80</MaxEffectiveRange>
+		<WeaponWeight>0</WeaponWeight>
+		<ClipWeight>5</ClipWeight>
+		<CoolRate>500</CoolRate>
+		<HeatRate>1000</HeatRate>
+		<BaseAccuracy>2.00</BaseAccuracy>
+	</Weapon>
+</Weapons>

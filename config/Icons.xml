@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Widgets>
+	<Widget>
+		<Name>Rifle Squad</Name>
+		<Graphic>UI\ui_game_team_000.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Bazooka Squad</Name>
+		<Graphic>UI\Teams\team_bazooka.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>.30 Cal MG Squad</Name>
+		<Graphic>UI\Teams\team_30_cal_MG.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Panzer IVG Squad</Name>
+		<Graphic>UI\Teams\team_panzer_IVG.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Head Green</Name>
+		<Graphic>UI\ui_game_team_head_green.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Head Yellow</Name>
+		<Graphic>UI\ui_game_team_head_yellow.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Head Orange</Name>
+		<Graphic>UI\ui_game_team_head_orange.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Head Red</Name>
+		<Graphic>UI\ui_game_team_head_red.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Green Background</Name>
+		<Graphic>UI\ui_game_back_green.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Yellow Background</Name>
+		<Graphic>UI\ui_game_back_yellow.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Orange Background</Name>
+		<Graphic>UI\ui_game_back_orange.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Red Background</Name>
+		<Graphic>UI\ui_game_back_red.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Black Background</Name>
+		<Graphic>UI\ui_game_back_black.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Action Defending White</Name>
+		<Graphic>UI\Actions\team_action_defending_white.tga</Graphic>
+	</Widget>
+		<Widget>
+		<Name>Team Action Moving Green</Name>
+		<Graphic>UI\Actions\team_action_moving_green.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Action Moving Fast Green</Name>
+		<Graphic>UI\Actions\team_action_moving_fast_green.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Action Moving Fast Red</Name>
+		<Graphic>UI\Actions\team_action_moving_fast_red.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Action Sneaking Green</Name>
+		<Graphic>UI\Actions\team_action_sneaking_green.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Action Sneaking Red</Name>
+		<Graphic>UI\Actions\team_action_sneaking_red.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Action Firing Green</Name>
+		<Graphic>UI\Actions\team_action_firing_green.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Action Firing Red</Name>
+		<Graphic>UI\Actions\team_action_firing_red.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Unit Status Healthy</Name>
+		<Graphic>UI\Status\unit_status_healthy.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Unit Status Dead</Name>
+		<Graphic>UI\Status\unit_status_dead.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Unit Status Wounded</Name>
+		<Graphic>UI\Status\unit_status_wounded.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Unit Action Defending Green</Name>
+		<Graphic>UI\Actions\unit_action_defending_green.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Unit Action Defending White</Name>
+		<Graphic>UI\Actions\unit_action_defending_white.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Unit Action Reloading Green</Name>
+		<Graphic>UI\Actions\unit_action_reloading_green.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Unit Action Firing Green</Name>
+		<Graphic>UI\Actions\unit_action_firing_green.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Unit Action No Target Green</Name>
+		<Graphic>UI\Actions\unit_action_no_target_green.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Unit Action Running Green</Name>
+		<Graphic>UI\Actions\unit_action_running_green.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Unit Action Crawling Green</Name>
+		<Graphic>UI\Actions\unit_action_crawling_green.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Unit Action Moving Green</Name>
+		<Graphic>UI\Actions\unit_action_moving_green.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Leader</Name>
+		<Graphic>UI\Ranks\unit_title_leader.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Assistant Leader</Name>
+		<Graphic>UI\Ranks\unit_title_assistant_leader.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Soldier</Name>
+		<Graphic>UI\Ranks\unit_title_soldier.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Driver</Name>
+		<Graphic>UI\Ranks\unit_title_driver.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Gunner</Name>
+		<Graphic>UI\Ranks\unit_title_gunner.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Loader</Name>
+		<Graphic>UI\Ranks\unit_title_loader.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Enlisted</Name>
+		<Graphic>UI\Ranks\unit_rank_enlisted.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Private</Name>
+		<Graphic>UI\Ranks\unit_rank_private.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Private First Class</Name>
+		<Graphic>UI\Ranks\unit_rank_private_first_class.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Corporal</Name>
+		<Graphic>UI\Ranks\unit_rank_corporal.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Sergeant</Name>
+		<Graphic>UI\Ranks\unit_rank_sergeant.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Sergeant Major</Name>
+		<Graphic>UI\Ranks\unit_rank_sergeant_major.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Second Lieutenant</Name>
+		<Graphic>UI\Ranks\unit_rank_second_lieutenant.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>First Lieutenant</Name>
+		<Graphic>UI\Ranks\unit_rank_first_lieutenant.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Captain</Name>
+		<Graphic>UI\Ranks\unit_rank_captain.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Major</Name>
+		<Graphic>UI\Ranks\unit_rank_major.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Quality Useless</Name>
+		<Graphic>UI\ui_game_team_quality_useless.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Quality Fragile</Name>
+		<Graphic>UI\ui_game_team_quality_fragile.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Quality Weak</Name>
+		<Graphic>UI\ui_game_team_quality_weak.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Quality Average</Name>
+		<Graphic>UI\ui_game_team_quality_average.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Quality Good</Name>
+		<Graphic>UI\ui_game_team_quality_good.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Quality Strong</Name>
+		<Graphic>UI\ui_game_team_quality_strong.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Mark Blue</name>
+		<Graphic>UI\ui_game_mark_blue.6.6.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Mark Purple</name>
+		<Graphic>UI\ui_game_mark_purple.6.6.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Mark Red</name>
+		<Graphic>UI\ui_game_mark_red.6.6.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Mark Yellow</name>
+		<Graphic>UI\ui_game_mark_yellow.6.6.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Mark Orange</name>
+		<Graphic>UI\ui_game_mark_orange.6.6.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Mark Green</name>
+		<Graphic>UI\ui_game_mark_green.6.6.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Mark Brown</name>
+		<Graphic>UI\ui_game_mark_brown.6.6.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Donut Fat Red</name>
+		<Graphic>UI\ui_game_donut_fat_red.6.7.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Donut Fat Green</name>
+		<Graphic>UI\ui_game_donut_fat_green.6.7.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Donut Fat Yellow</name>
+		<Graphic>UI\ui_game_donut_fat_yellow.6.7.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Donut Fat Orange</name>
+		<Graphic>UI\ui_game_donut_fat_orange.6.7.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Donut Med Red</name>
+		<Graphic>UI\ui_game_donut_med_red.6.7.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Donut Med Green</name>
+		<Graphic>UI\ui_game_donut_med_green.6.7.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Donut Med Yellow</name>
+		<Graphic>UI\ui_game_donut_med_yellow.6.7.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Donut Med Orange</name>
+		<Graphic>UI\ui_game_donut_med_orange.6.7.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Donut Thin Red</name>
+		<Graphic>UI\ui_game_donut_thin_red.6.7.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Donut Thin Green</name>
+		<Graphic>UI\ui_game_donut_thin_green.6.7.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Donut Thin Yellow</name>
+		<Graphic>UI\ui_game_donut_thin_yellow.6.7.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Donut Thin Orange</name>
+		<Graphic>UI\ui_game_donut_thin_orange.6.7.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Unit Selected Bracket</name>
+		<Graphic>UI\ui_game_unit_selected_bracket.12.12.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Unit Highlighted Bracket</name>
+		<Graphic>UI\ui_game_unit_highlighted_bracket.12.12.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Ambush Circle South</name>
+		<Graphic>UI\ui_game_ambush_circle_s.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Ambush Circle SouthWest</name>
+		<Graphic>UI\ui_game_ambush_circle_sw.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Ambush Circle West</name>
+		<Graphic>UI\ui_game_ambush_circle_w.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Ambush Circle NorthWest</name>
+		<Graphic>UI\ui_game_ambush_circle_nw.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Ambush Circle North</name>
+		<Graphic>UI\ui_game_ambush_circle_n.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Ambush Circle NorthEast</name>
+		<Graphic>UI\ui_game_ambush_circle_ne.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Ambush Circle East</name>
+		<Graphic>UI\ui_game_ambush_circle_e.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Ambush Circle SouthEast</name>
+		<Graphic>UI\ui_game_ambush_circle_se.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Defend Circle South</name>
+		<Graphic>UI\ui_game_defend_circle_s.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Defend Circle SouthWest</name>
+		<Graphic>UI\ui_game_defend_circle_sw.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Defend Circle West</name>
+		<Graphic>UI\ui_game_defend_circle_w.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Defend Circle NorthWest</name>
+		<Graphic>UI\ui_game_defend_circle_nw.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Defend Circle North</name>
+		<Graphic>UI\ui_game_defend_circle_n.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Defend Circle NorthEast</name>
+		<Graphic>UI\ui_game_defend_circle_ne.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Defend Circle East</name>
+		<Graphic>UI\ui_game_defend_circle_e.-1.0.tga</Graphic>
+	</Widget>
+	<Widget>
+		<name>Defend Circle SouthEast</name>
+		<Graphic>UI\ui_game_defend_circle_se.-1.0.tga</Graphic>
+	</Widget>
+</Widgets>

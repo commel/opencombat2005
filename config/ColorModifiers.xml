@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ColorModifiers>
+	<ColorModifier>
+		<Name>American Infantry</Name>
+		<Body><Red>-10</Red><Green>-6</Green><Blue>-15</Blue></Body>
+		<Legs><Red>-6</Red><Green>-4</Green><Blue>-5</Blue></Legs>
+		<Head><Red>-1</Red><Green>-3</Green><Blue>-3</Blue></Head>
+		<Belt><Red>0</Red><Green>0</Green><Blue>0</Blue></Belt>
+		<Boots><Red>0</Red><Green>0</Green><Blue>0</Blue></Boots>
+		<Weapon><Red>-8</Red><Green>-8</Green><Blue>-8</Blue></Weapon>
+	</ColorModifier>
+	<ColorModifier>
+		<Name>German Infantry</Name>
+		<Body><Red>-4</Red><Green>-3</Green><Blue>-4</Blue></Body>
+		<Legs><Red>-6</Red><Green>-4</Green><Blue>-5</Blue></Legs>
+		<Head><Red>1</Red><Green>3</Green><Blue>3</Blue></Head>
+		<Belt><Red>0</Red><Green>0</Green><Blue>0</Blue></Belt>
+		<Boots><Red>0</Red><Green>0</Green><Blue>0</Blue></Boots>
+		<Weapon><Red>1</Red><Green>-5</Green><Blue>-7</Blue></Weapon>
+	</ColorModifier>
+	<ColorModifier>
+		<Name>German Snow Infantry</Name>
+		<Body><Red>6</Red><Green>6</Green><Blue>6</Blue></Body>
+		<Legs><Red>-6</Red><Green>-4</Green><Blue>-5</Blue></Legs>
+		<Head><Red>6</Red><Green>6</Green><Blue>6</Blue></Head>
+		<Belt><Red>0</Red><Green>0</Green><Blue>0</Blue></Belt>
+		<Boots><Red>0</Red><Green>0</Green><Blue>0</Blue></Boots>
+		<Weapon><Red>1</Red><Green>-5</Green><Blue>-7</Blue></Weapon>
+	</ColorModifier>
+	<ColorModifier>
+		<Name>German AT Infantry</Name>
+		<Body><Red>-10</Red><Green>-9</Green><Blue>-12</Blue></Body>
+		<Legs><Red>-10</Red><Green>-9</Green><Blue>-12</Blue></Legs>
+		<Head><Red>-2</Red><Green>-1</Green><Blue>-2</Blue></Head>
+		<Belt><Red>0</Red><Green>0</Green><Blue>0</Blue></Belt>
+		<Boots><Red>0</Red><Green>0</Green><Blue>0</Blue></Boots>
+		<Weapon><Red>0</Red><Green>-2</Green><Blue>-10</Blue></Weapon>
+	</ColorModifier>
+</ColorModifiers>

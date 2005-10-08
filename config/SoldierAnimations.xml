@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Animations dir="Soldiers\Rifle" image="spr*" mask="msk*">
+	<Animation>
+		<Name>Standing Rest</Name>
+		<Directions>8</Directions>
+		<NumFrames>1</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Standing Firing</Name>
+		<Directions>8</Directions>
+		<NumFrames>1</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor>
+	</Animation>
+	<Animation>
+		<Name>Kneeling Rest</Name>
+		<Directions>8</Directions>
+		<NumFrames>1</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor>
+	</Animation>
+	<Animation>
+		<Name>Kneeling Firing</Name>
+		<Directions>8</Directions>
+		<NumFrames>1</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Prone Rest</Name>
+		<Directions>8</Directions>
+		<NumFrames>1</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Prone Firing</Name>
+		<Directions>8</Directions>
+		<NumFrames>1</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Standing Reloading</Name>
+		<Directions>8</Directions>
+		<NumFrames>5</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Kneeling Reloading</Name>
+		<Directions>8</Directions>
+		<NumFrames>5</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Prone Reloading</Name>
+		<Directions>8</Directions>
+		<NumFrames>5</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Standing Up</Name>
+		<Directions>8</Directions>
+		<NumFrames>8</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Grenade</Name>
+		<Directions>8</Directions>
+		<NumFrames>8</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Walking</Name>
+		<Directions>8</Directions>
+		<NumFrames>12</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Running</Name>
+		<Directions>8</Directions>
+		<NumFrames>8</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Walking Cover</Name>
+		<Directions>8</Directions>
+		<NumFrames>14</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Running Cover</Name>
+		<Directions>8</Directions>
+		<NumFrames>8</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Crawling</Name>
+		<Directions>8</Directions>
+		<NumFrames>16</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+</Animations>

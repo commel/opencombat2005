@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Animations dir="Soldiers\Bazooka" image="spr*" mask="msk*">
+	<Animation>
+		<Name>Bazooka Standing Rest</Name>
+		<Directions>8</Directions>
+		<NumFrames>1</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Bazooka Standing Firing</Name>
+		<Directions>8</Directions>
+		<NumFrames>1</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor>
+	</Animation>
+	<Animation>
+		<Name>Bazooka Kneeling Rest</Name>
+		<Directions>8</Directions>
+		<NumFrames>1</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor>
+	</Animation>
+	<Animation>
+		<Name>Bazooka Kneeling Firing</Name>
+		<Directions>8</Directions>
+		<NumFrames>1</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Bazooka Prone Rest</Name>
+		<Directions>8</Directions>
+		<NumFrames>1</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Bazooka Prone Firing</Name>
+		<Directions>8</Directions>
+		<NumFrames>1</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Bazooka Standing Up</Name>
+		<Directions>8</Directions>
+		<NumFrames>6</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Bazooka Walking</Name>
+		<Directions>8</Directions>
+		<NumFrames>6</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Bazooka Running</Name>
+		<Directions>8</Directions>
+		<NumFrames>4</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Bazooka Walking Cover</Name>
+		<Directions>8</Directions>
+		<NumFrames>7</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Bazooka Running Cover</Name>
+		<Directions>8</Directions>
+		<NumFrames>4</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Bazooka Crawling</Name>
+		<Directions>8</Directions>
+		<NumFrames>8</NumFrames>
+		<Time>200</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+</Animations>

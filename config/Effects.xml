@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Effects>
+	<Effect type="static">
+		<Name>Explosion 60m</Name>
+		<FrameHold>33</FrameHold>
+		<Sound>explosion</Sound>
+		<Graphic>Explosion\image001.28.30.tga</Graphic>
+		<Graphic>Explosion\image002.43.40.tga</Graphic>
+		<Graphic>Explosion\image003.39.34.tga</Graphic>
+		<Graphic>Explosion\image004.41.34.tga</Graphic>
+		<Graphic>Explosion\image005.43.36.tga</Graphic>
+		<Graphic>Explosion\image006.45.37.tga</Graphic>
+		<Graphic>Explosion\image007.45.38.tga</Graphic>
+		<Graphic>Explosion\image008.47.41.tga</Graphic>
+		<Graphic>Explosion\image009.49.44.tga</Graphic>
+		<Graphic>Explosion\image010.51.51.tga</Graphic>
+		<Graphic>Explosion\image011.52.52.tga</Graphic>
+		<Graphic>Explosion\image012.52.52.tga</Graphic>
+		<Graphic>Explosion\image013.52.52.tga</Graphic>
+		<Graphic>Explosion\image014.52.52.tga</Graphic>
+		<Graphic>Explosion\image015.52.43.tga</Graphic>
+		<Graphic>Explosion\image016.52.43.tga</Graphic>
+		<Graphic>Explosion\image017.52.43.tga</Graphic>
+		<Graphic>Explosion\image018.52.43.tga</Graphic>
+		<Graphic>Explosion\image019.52.44.tga</Graphic>
+		<Graphic>Explosion\image020.52.44.tga</Graphic>
+		<Graphic>Explosion\image021.52.46.tga</Graphic>
+		<Graphic>Explosion\image022.52.47.tga</Graphic>
+		<Graphic>Explosion\image023.51.48.tga</Graphic>
+		<Graphic>Explosion\image024.52.49.tga</Graphic>
+		<Graphic>Explosion\image025.52.50.tga</Graphic>
+		<Graphic>Explosion\image026.51.51.tga</Graphic>
+		<Graphic>Explosion\image027.52.52.tga</Graphic>
+		<Graphic>Explosion\image028.52.52.tga</Graphic>
+		<Graphic>Explosion\image029.52.52.tga</Graphic>
+		<Graphic>Explosion\image030.52.51.tga</Graphic>
+		<Graphic>Explosion\image031.50.51.tga</Graphic>
+		<Graphic>Explosion\image032.51.51.tga</Graphic>
+		<Graphic>Explosion\image033.50.51.tga</Graphic>
+	</Effect>
+	<Effect type="static">
+		<Name>Dust Cloud</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>Dustcloud\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Rifle North</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_n\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Rifle NorthEast</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_ne\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Rifle East</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_e\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Rifle SouthEast</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_se\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Rifle South</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_s\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Rifle SouthWest</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_sw\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Rifle West</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_w\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Rifle NorthWest</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_nw\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Bazooka North</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>bazooka_n\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Bazooka NorthEast</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>bazooka_ne\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Bazooka East</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>bazooka_e\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Bazooka SouthEast</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>bazooka_se\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Bazooka South</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>bazooka_s\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Bazooka SouthWest</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>bazooka_sw\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Bazooka West</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>bazooka_w\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Bazooka NorthWest</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>bazooka_nw\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Machine Gun North</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_n\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Machine Gun NorthEast</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_ne\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Machine Gun East</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_e\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Machine Gun SouthEast</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_se\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Machine Gun South</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_s\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Machine Gun SouthWest</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_sw\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Machine Gun West</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_w\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic">
+		<Name>Machine Gun NorthWest</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>rifle_nw\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic" place="turret">
+		<Name>Muzzle North</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>muzzle_n\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic" place="turret">
+		<Name>Muzzle NorthEast</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>muzzle_ne\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic" place="turret">
+		<Name>Muzzle East</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>muzzle_e\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic" place="turret">
+		<Name>Muzzle SouthEast</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>muzzle_se\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic" place="turret">
+		<Name>Muzzle South</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>muzzle_s\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic" place="turret">
+		<Name>Muzzle SouthWest</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>muzzle_sw\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic" place="turret">
+		<Name>Muzzle West</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>muzzle_w\*.tga</Graphics>
+	</Effect>
+	<Effect type="dynamic" place="turret">
+		<Name>Muzzle NorthWest</Name>
+		<FrameHold>33</FrameHold>
+		<Graphics>muzzle_nw\*.tga</Graphics>
+	</Effect>
+</Effects>

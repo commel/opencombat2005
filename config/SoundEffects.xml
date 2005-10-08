@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sounds>
+	<Sound>
+		<Name>explosion</Name>
+		<File>Effects\explosion-0050.wav</File>
+	</Sound>
+	<Sound>
+		<Name>Rifle</Name>
+		<File>Effects\rifle-0028.wav</File>
+	</Sound>
+	<Sound>
+		<Name>Thompson</Name>
+		<File>Effects\thompson-0005.wav</File>
+	</Sound>
+	<Sound>
+		<Name>BAR</Name>
+		<File>Effects\bar-0008.wav</File>
+	</Sound>
+	<Sound>
+		<Name>Dying</Name>
+		<File>Effects\dying-0061.wav</File>
+	</Sound>
+	<Sound>
+		<Name>Bazooka</Name>
+		<File>Effects\bazooka-0011.wav</File>
+	</Sound>
+	<Sound>
+		<Name>.30 Cal MG</Name>
+		<File>Effects\30 cal MG-0010.wav</File>
+	</Sound>
+	<Sound>
+		<Name>Large Tank Gun</Name>
+		<File>Effects\large tank gun-0014.wav</File>
+	</Sound>				
+</Sounds>

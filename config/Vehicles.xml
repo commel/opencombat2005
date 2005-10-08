@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rotation rates are the time in milliseconds it takes the turret/hull to	-->
+<!-- rotate 22.5 degrees (1/16th of 360 degrees)								-->
+<!-- Speeds are in m/s															-->
+<Vehicles>
+	<Vehicle>
+		<Name>Panzer IVG</Name>
+		<MaxRoadSpeed>10.55</MaxRoadSpeed>
+		<Acceleration>1.32</Acceleration>
+		<Turret>
+			<!-- The graphic of the turret -->
+			<Graphic>Vehicles\panzer_IVG_turret.8.30.tga</Graphic>
+			<!-- This is the location on the hull of the turret -->
+			<PositionX>12</PositionX>
+			<PositionY>21</PositionY>
+			<!-- This is the location of the muzzle flash of the primary weapon -->
+			<PrimaryMuzzleX>0</PrimaryMuzzleX>
+			<PrimaryMuzzleY>33</PrimaryMuzzleY>
+			<RotationRate>1000</RotationRate>
+			<!-- The weapons on the turret -->
+			<Weapon slot="0" clips="32">7.5cm L48</Weapon>
+		</Turret>
+		<Hull>
+			<Graphic>Vehicles\panzer_IVG_hull.12.21.tga</Graphic>
+			<RotationRate>2000</RotationRate>
+			<Weapon slot="1" clips="8">.30 Cal MG</Weapon>
+		</Hull>
+		<Wreck>
+			<Graphic>Vehicles\panser_IVG_wreck.11.21.tga</Graphic>
+		</Wreck>
+	</Vehicle>
+</Vehicles>

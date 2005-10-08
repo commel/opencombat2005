@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Widgets>
+	<Widget>
+		<Name>Small Tree 1</Name>
+		<Graphic>Terrain\big_tree_3 (471).17.18.tga</Graphic>
+		<Index>106</Index>
+	</Widget>
+	<Widget>
+		<Name>Small Tree 2</Name>
+		<Graphic>Terrain\big_tree_1 (472).14.14.tga</Graphic>
+		<Index>107</Index>
+	</Widget>
+	<Widget>
+		<Name>Big Tree 1</Name>
+		<Graphic>Terrain\big_tree_1 (472).14.14.tga</Graphic>
+		<Index>94</Index>
+	</Widget>
+	<Widget>
+		<Name>Big Tree 2</Name>
+		<Graphic>Terrain\big_tree_2 (473).14.14.tga</Graphic>
+		<Index>95</Index>
+	</Widget>
+	<Widget>
+		<Name>Big Tree 3</Name>
+		<Graphic>Terrain\big_tree_3 (471).17.18.tga</Graphic>
+		<Index>96</Index>
+	</Widget>
+	<Widget>
+		<Name>Big Tree 4</Name>
+		<Graphic>Terrain\big_tree_4 (469).20.20.tga</Graphic>
+		<Index>97</Index>
+	</Widget>
+	<Widget>
+		<Name>Big Tree 5</Name>
+		<Graphic>Terrain\big_tree_5 (470).21.21.tga</Graphic>
+		<Index>98</Index>
+	</Widget>
+</Widgets>

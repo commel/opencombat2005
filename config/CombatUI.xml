@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Widgets>
+	<Widget>
+		<Name>Unit Panel</Name>
+		<Graphic>UI\ui_game_unit_panel.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Active Team Panel</Name>
+		<Graphic>UI\ui_game_active_team_panel.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Blank Team Panel</Name>
+		<Graphic>UI\ui_game_blank_team_panel.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Bottom Background</Name>
+		<Graphic>UI\ui_game_long_background.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Blank Team Bar</Name>
+		<Graphic>UI\ui_game_team_bar_blank.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Team Panel Background</Name>
+		<Graphic>UI\ui_game_team_background_tile.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Artillery Neg</Name>
+		<Graphic>UI\ui_game_artillery_neg.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Artillery Light</Name>
+		<Graphic>UI\ui_game_artillery_light.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Artillery Dark</Name>
+		<Graphic>UI\ui_game_artillery_dark.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Naval Neg</Name>
+		<Graphic>UI\ui_game_naval_neg.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Naval Light</Name>
+		<Graphic>UI\ui_game_naval_light.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Naval Dark</Name>
+		<Graphic>UI\ui_game_naval_dark.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Airstrike Neg</Name>
+		<Graphic>UI\ui_game_airstrike_neg.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Airstrike Light</Name>
+		<Graphic>UI\ui_game_airstrike_light.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Airstrike Dark</Name>
+		<Graphic>UI\ui_game_airstrike_dark.tga</Graphic>
+	</Widget>
+</Widgets>

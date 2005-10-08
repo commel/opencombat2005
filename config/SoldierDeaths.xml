@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Animations dir="Soldiers\Dying" image="spr*" mask="msk*">
+	<Animation>
+		<Name>Dying Blown Up</Name>
+		<Directions>8</Directions>
+		<NumFrames>10</NumFrames>
+		<Time>100</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Dying Forward</Name>
+		<Directions>8</Directions>
+		<NumFrames>10</NumFrames>
+		<Time>100</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+	<Animation>
+		<Name>Dying Backward</Name>
+		<Directions>8</Directions>
+		<NumFrames>10</NumFrames>
+		<Time>100</Time>
+		<FirstDirection>North</FirstDirection>
+		<TransparentColor>16777215</TransparentColor> 
+	</Animation>
+</Animations>

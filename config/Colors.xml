@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Name of the color is limited to 32 entries. -->
+<Colors>
+	<Color><Name>RangerMove</Name>    <Alpha>255</Alpha><Red>66</Red><Green>82</Green><Blue>239</Blue></Color>
+	<Color><Name>RangerMoveFast</Name><Alpha>255</Alpha><Red>148</Red><Green>82</Green><Blue>222</Blue></Color>
+	<Color><Name>RangerSneak</Name>   <Alpha>255</Alpha><Red>239</Red><Green>189</Green><Blue>66</Blue></Color>
+	<Color><Name>RangerAmbush</Name>  <Alpha>255</Alpha><Red>99</Red><Green>214</Green><Blue>74</Blue></Color>
+	<Color><Name>RangerSmoke</Name>   <Alpha>255</Alpha><Red>140</Red><Green>140</Green><Blue>140</Blue></Color>
+	<Color><Name>RangerDefend</Name>  <Alpha>255</Alpha><Red>49</Red><Green>49</Green><Blue>222</Blue></Color>
+	<Color><Name>RangerFire</Name>    <Alpha>255</Alpha><Red>247</Red><Green>57</Green><Blue>41</Blue></Color>
+</Colors>

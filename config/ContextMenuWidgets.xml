@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Widgets>
+	<Widget>
+		<Name>Order Background</Name>
+		<Graphic>CombatContextMenu\order_background.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Move Dark</Name>
+		<Graphic>CombatContextMenu\order_move_dark.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Move Light</Name>
+		<Graphic>CombatContextMenu\order_move_light.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Move Neg</Name>
+		<Graphic>CombatContextMenu\order_move_neg.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Move Fast Dark</Name>
+		<Graphic>CombatContextMenu\order_movefast_dark.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Move Fast Light</Name>
+		<Graphic>CombatContextMenu\order_movefast_light.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Move Fast Neg</Name>
+		<Graphic>CombatContextMenu\order_movefast_neg.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Fire Dark</Name>
+		<Graphic>CombatContextMenu\order_fire_dark.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Fire Light</Name>
+		<Graphic>CombatContextMenu\order_fire_light.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Fire Neg</Name>
+		<Graphic>CombatContextMenu\order_fire_neg.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Smoke Dark</Name>
+		<Graphic>CombatContextMenu\order_smoke_dark.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Smoke Light</Name>
+		<Graphic>CombatContextMenu\order_smoke_light.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Smoke Neg</Name>
+		<Graphic>CombatContextMenu\order_smoke_neg.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Defend Dark</Name>
+		<Graphic>CombatContextMenu\order_defend_dark.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Defend Light</Name>
+		<Graphic>CombatContextMenu\order_defend_light.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Defend Neg</Name>
+		<Graphic>CombatContextMenu\order_defend_neg.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Ambush Dark</Name>
+		<Graphic>CombatContextMenu\order_ambush_dark.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Ambush Light</Name>
+		<Graphic>CombatContextMenu\order_ambush_light.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Ambush Neg</Name>
+		<Graphic>CombatContextMenu\order_ambush_neg.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Sneak Dark</Name>
+		<Graphic>CombatContextMenu\order_sneak_dark.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Sneak Light</Name>
+		<Graphic>CombatContextMenu\order_sneak_light.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Order Sneak Neg</Name>
+		<Graphic>CombatContextMenu\order_sneak_neg.tga</Graphic>
+	</Widget>
+</Widgets>

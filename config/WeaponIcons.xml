@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Widgets>
+	<Widget>
+		<Name>M1 Garand</Name>
+		<Graphic>UI\Weapons\weapon_m1_garand.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Thompson M1A1</Name>
+		<Graphic>UI\Weapons\weapon_thompson_m1a1.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>M1A1 Carbine</Name>
+		<Graphic>UI\Weapons\weapon_m1a1_carbine.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>BAR</Name>
+		<Graphic>UI\Weapons\weapon_bar.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Bazooka</Name>
+		<Graphic>UI\Weapons\weapon_bazooka.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>.30 Cal MG</Name>
+		<Graphic>UI\Weapons\weapon_30_cal_MG.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Main Tank Gun</Name>
+		<Graphic>UI\Weapons\weapon_main_tank_gun.tga</Graphic>
+	</Widget>
+	<Widget>
+		<Name>Blank</Name>
+		<Graphic>UI\Weapons\weapon_blank.tga</Graphic>
+	</Widget>
+</Widget>
