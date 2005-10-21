@@ -1,18 +1,22 @@
 #include ".\astar.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <math.h>
 #include <application\Globals.h>
 
 AStar::AStar(void)
 {
-	_openNodes = NULL;
-	_closedNodes = NULL;
+	_openNodes = new AStar::MinHeap(300*300);
+	_closedNodes = new Hash(60013);
 	_destX = -1;
 	_destY = -1;
 }
 
 AStar::~AStar(void)
 {
+	// XXX/GWS: Need to do a deep delete
+	delete _openNodes;
+	delete _closedNodes;
 }
 
 AStar::Node *
@@ -27,12 +31,13 @@ AStar::FreeNode(Node *node)
 	free(node);
 }
 
-long
+float
 AStar::Heuristic(int x, int y)
 {
-	// Straight line distance to our destination. We can add better
-	// Heuristics later
-	return (x-_destX)*(x-_destX)+(y-_destY)*(y-_destY);
+	// Weight diagonals slightly more
+	float diag = __min(abs(x-_destX), abs(y-_destY));
+	float straight = (abs(x-_destX) + abs(y-_destY));
+	return sqrt(2.0f)*diag + (straight - 2.0f*diag);
 }
 
 Path *
@@ -43,8 +48,9 @@ AStar::FindPath(int x0, int y0, int x1, int y1)
 	// Let's remember our destination
 	_destX = x1;
 	_destY = y1;
-	_openNodes = NULL;
-	_closedNodes = NULL;
+
+	_closedNodes->Clear();
+	_openNodes->Clear();
 
 	// We need to create our initial node and add it to the open
 	// list
@@ -54,11 +60,11 @@ AStar::FindPath(int x0, int y0, int x1, int y1)
 	node->F = node->G + node->H;
 	node->X = x0;
 	node->Y = y0;
-	_openNodes = node;
-	
+	node->HeapIndex = _openNodes->Insert(node, node->F);
+
 	for(;;)
 	{
-		if(NULL == _openNodes) {
+		if(_openNodes->GetNumNodes() <= 0) {
 			// There are no more nodes to check, so the destination
 			// is unreachable.
 			return NULL;
@@ -78,16 +84,15 @@ AStar::FindPath(int x0, int y0, int x1, int y1)
 	}
 
 	// Track backwards and create our path!
-	Path *path = AllocatePath();
-	path->X = bestNode->X;
-	path->Y = bestNode->Y;
-	while(bestNode->Parent != NULL) {
-		bestNode = bestNode->Parent;
+	Path *path = NULL;
+	while(bestNode != NULL) {
 		Path *p = AllocatePath();
 		p->X = bestNode->X;
 		p->Y = bestNode->Y;
 		p->Next = path;
 		path = p;
+		bestNode = bestNode->Parent;
+		
 	}
 	return path;
 }
@@ -96,11 +101,9 @@ AStar::Node *
 AStar::GetBestNode()
 {
 	Node *tmp;
-	assert(_openNodes != NULL);
-	tmp = _openNodes;
-	_openNodes = _openNodes->Next;
-	tmp->Next = _closedNodes;
-	_closedNodes = tmp;
+	assert(_openNodes->GetNumNodes() > 0);
+	tmp = _openNodes->ExtractMin();
+	_closedNodes->Insert(tmp);
 	return tmp;
 }
 
@@ -169,35 +172,36 @@ void
 AStar::DoMove(Node *node, int x, int y)
 {
 	Node *oldNode;
-	long g;
+	float g;
 
 	// First we need to calculate the terrain cost of the new tile
 	g = node->G + GetTerrainCost(x,y);
 
 	// If our current node is on the open list and the open list one is better,
 	// then we can discard and continue
-	if((oldNode = Find(_openNodes, x, y)) != NULL) {
+	if((oldNode = _openNodes->Find(x, y)) != NULL) {
 		// If our new g value is less than the old nodes g value, then
 		// the old node has a new parent
 		if(oldNode->G <= g) {
 			// We can discard and continue
 			return;
 		} else {
-			// We need to remove this node
-			Node *n = Remove(&_openNodes, x, y);
-			FreeNode(n);
+			// Let's modify this node in place
+			_openNodes->RemoveIndex(oldNode->HeapIndex);
+			FreeNode(oldNode);
 		}
 	}
 	
 	// Do the same for the closed list
-	if((oldNode = Find(_closedNodes, x, y)) != NULL) {		
+	if((oldNode = _closedNodes->Find(x, y)) != NULL) {		
 		// If our new g value is less than the old nodes g value, then
 		// the old node has a new parent
 		if(oldNode->G <= g) {
 			return;
 		} else {
-			// We need to remove this node
-			Node *n = Remove(&_closedNodes, x, y);
+			// We need to remove this node because we are going to add it
+			// back onto the open list
+			Node *n = _closedNodes->Remove(x,y);
 			FreeNode(n);
 		}
 	}
@@ -213,16 +217,16 @@ AStar::DoMove(Node *node, int x, int y)
 	newNode->Y = y;
 		
 	// Add the new node to the open list
-	Add(&_openNodes, newNode);
+	_openNodes->Insert(newNode, newNode->F);
 }
 
-long
+float
 AStar::GetTerrainCost(int x, int y)
 {
 	// XXX/GWS: Fix this later. Right now all paths are equal terrain cost
 	UNREFERENCED_PARAMETER(x);
 	UNREFERENCED_PARAMETER(y);
-	return 1;
+	return 1.0f;
 }
 
 AStar::Node *

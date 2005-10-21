@@ -18,7 +18,8 @@ enum ParserState
 	PS_BACKGROUND,
 	PS_MINI,
 	PS_OVERLAND,
-	PS_ELEMENTS
+	PS_ELEMENTS,
+	PS_BUILDINGS
 };
 
 struct AttrState
@@ -27,11 +28,11 @@ struct AttrState
 	ParserState State;
 };
 
-class State
+class StackState
 {
 public:
-	State(ParserState s) { parserState = s; }
-	virtual ~State() {}
+	StackState(ParserState s) { parserState = s; }
+	virtual ~StackState() {}
 	ParserState parserState;
 };
 
@@ -41,6 +42,7 @@ static AttrState _states[] = {
 	{ L"Name",			PS_NAME },
 	{ L"Map",			PS_MAP},
 	{ L"Overland",		PS_OVERLAND},
+	{ L"Buildings",		PS_BUILDINGS},
 	{ L"Background",	PS_BACKGROUND},
 	{ L"Elements",		PS_ELEMENTS},
 	{ L"Mini",			PS_MINI},
@@ -74,7 +76,7 @@ public:
 		int idx = 0;
 		while(_states[idx].Name != NULL) {
 			if(wcsicmp((wchar_t*)_states[idx].Name, (wchar_t*)pwchLocalName) == 0) {
-				_stack.Push(new State(_states[idx].State));
+				_stack.Push(new StackState(_states[idx].State));
 
 				switch(_states[idx].State) 
 				{
@@ -88,7 +90,7 @@ public:
 			}
 			++idx;
 		}
-		_stack.Push(new State(PS_UNKNOWN));
+		_stack.Push(new StackState(PS_UNKNOWN));
 		return S_OK;
 	}
 
@@ -124,7 +126,7 @@ public:
 	virtual HRESULT STDMETHODCALLTYPE characters(unsigned short *pwchChars, int cchChars)
 	{
 		// Get the current parser state
-		State *s = (State *) _stack.Peek();
+		StackState *s = (StackState *) _stack.Peek();
 		switch(s->parserState)
 		{
 
@@ -143,6 +145,15 @@ public:
 				wcstombs(fileName, (wchar_t*)pwchChars, cchChars);
 				fileName[cchChars] = '\0';
 				sprintf(_currentAttr->Background, "%s\\%s", g_Globals->Application.MapsDirectory, fileName);
+			}
+			break;
+
+		case PS_BUILDINGS:
+			{
+				char fileName[256];
+				wcstombs(fileName, (wchar_t*)pwchChars, cchChars);
+				fileName[cchChars] = '\0';
+				sprintf(_currentAttr->Buildings, "%s\\%s", g_Globals->Application.MapsDirectory, fileName);
 			}
 			break;
 
@@ -185,7 +196,7 @@ public:
 private:
       int idnt;
   	  MapAttributes *_currentAttr;
-	  Stack<State> _stack;
+	  Stack<StackState> _stack;
 	  unsigned int _parserFlags;
 };
 

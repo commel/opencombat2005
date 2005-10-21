@@ -45,6 +45,9 @@ public:
 	// Resets the animation
 	virtual void Reset();
 
+	// Sets the reverse flag
+	void SetReverse(bool b) { _reverse = b; }
+
 protected:
 	// The list of frames in this animation. This includes the different directions
 	// of each frame as well
@@ -61,4 +64,7 @@ protected:
 
 	// The incremental time for this animation
 	long _incrementalTimes[NumDirections];
+
+	// Play this animation in reverse
+	bool _reverse;
 };

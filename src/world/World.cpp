@@ -364,24 +364,45 @@ World::Load(char *fileName, SoldierManager *soldierManager, AnimationManager *an
 	// Create two squads and add them
 	// XXX/GWS: The following is temporary, just to populate this world
 	//			with some stuff
+	Array<Soldier> *soldiers;
 	State.NumSquads = 0;
-	for(int i = 0; i < 5; ++i) {
+	for(int i = 0; i < 0; ++i) {
 		Squad *s = _squadManager->CreateSquad("BAR Rifle", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
+		soldiers = s->GetSoldiers();
+		for(int j = 0; j < soldiers->Count; ++j)
+		{
+			// Let's place this object on the map
+			_currentMap->PlaceObject(soldiers->Items[j], &soldiers->Items[j]->Position);
+		}
+
 		s->SetPosition((i+1)*200, 100);
 		AddObject(s);
 	}
 
 	Squad *squad = _squadManager->CreateSquad("Bazooka", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
-	squad->SetPosition(100, 200);
-	AddObject(squad);
-
-	squad = _squadManager->CreateSquad(".30 Cal MG", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
-	squad->SetPosition(200, 200);
+	soldiers = squad->GetSoldiers();
+	for(int i = 0; i < soldiers->Count; ++i)
+	{
+		// Let's place this object on the map
+		_currentMap->PlaceObject(soldiers->Items[i], &soldiers->Items[i]->Position);
+	}
+	squad->SetPosition(748, 604);
 	AddObject(squad);
 	
+	squad = _squadManager->CreateSquad(".30 Cal MG", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
+	soldiers = squad->GetSoldiers();
+	for(int i = 0; i < soldiers->Count; ++i)
+	{
+		// Let's place this object on the map
+		_currentMap->PlaceObject(soldiers->Items[i], &soldiers->Items[i]->Position);
+	}
+	squad->SetPosition(200, 200);
+	AddObject(squad);
+#if 0
 	squad = _squadManager->CreateSquad("Panzer IVG", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
 	squad->SetPosition(300, 200);
 	AddObject(squad);
+#endif
 }
 
 void
@@ -651,11 +672,14 @@ World::Select(int x, int y)
 	ClearSelect(x+_originX,y+_originY);
 
 	// Try selecting mobile objects first
+	_currentMap->SelectObjects(x+_originX, y+_originY, &_selectedObjects);
+#if 0
 	for(int i = 0; i < _mobileObjects.Count; ++i) {
 		if(_mobileObjects.Items[i]->Select(x+_originX,y+_originY)) {
 			_selectedObjects.Add(_mobileObjects.Items[i]);
 		}
 	}
+#endif
 }
 
 void
@@ -729,3 +753,9 @@ World::ClearMarks()
 	_numMarks = 0;
 }
 
+void
+World::MoveObject(Object *object, Point *from, Point *to)
+{
+	// Let's move this object on the map
+	_currentMap->MoveObject(object, from, to);
+}

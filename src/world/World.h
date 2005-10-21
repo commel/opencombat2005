@@ -20,7 +20,6 @@ class WeaponManager;
 #include <graphics\CombatContextMenu.h>
 #include <graphics\Mark.h>
 #include <world\Map.h>
-#include <objects\Action.h>
 #include <objects\Status.h>
 
 // This class is how the world communicates its state
@@ -40,7 +39,7 @@ public:
 	char Rank[32];
 	int NumRounds;
 	long ID;
-	Action::Type CurrentAction;
+	Unit::Action CurrentAction;
 	Unit::Status CurrentStatus;
 };
 
@@ -55,7 +54,7 @@ public:
 	long ID;
 	int SquadLeaderIdx;
 	int SelectedSoldierIdx;
-	Action::Type CurrentAction;
+	Team::Action CurrentAction;
 	Team::Status CurrentStatus;
 };
 
@@ -90,6 +89,9 @@ public:
 
 	// Adds an object to this world
 	virtual void AddObject(Object *o);
+
+	// Moves an object in the world from one position to another
+	virtual void MoveObject(Object *object, Point *from, Point *to);
 
 	// Simulate this world for an interval of time
 	virtual void Simulate(long dt);

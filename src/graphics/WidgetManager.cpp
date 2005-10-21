@@ -35,11 +35,11 @@ struct AttrState
 	ParserState State;
 };
 
-class State
+class StackState
 {
 public:
-	State(ParserState s) { parserState = s; }
-	virtual ~State() {}
+	StackState(ParserState s) { parserState = s; }
+	virtual ~StackState() {}
 	ParserState parserState;
 };
 
@@ -80,7 +80,7 @@ public:
 		int idx = 0;
 		while(_states[idx].Name != NULL) {
 			if(wcsicmp((wchar_t*)_states[idx].Name, (wchar_t*)pwchLocalName) == 0) {
-				_stack.Push(new State(_states[idx].State));
+				_stack.Push(new StackState(_states[idx].State));
 
 				switch(_states[idx].State) 
 				{
@@ -97,7 +97,7 @@ public:
 			}
 			++idx;
 		}
-		_stack.Push(new State(PS_UNKNOWN));
+		_stack.Push(new StackState(PS_UNKNOWN));
 		return S_OK;
 	}
 
@@ -137,7 +137,7 @@ public:
 	virtual HRESULT STDMETHODCALLTYPE characters(unsigned short *pwchChars, int cchChars)
 	{
 		// Get the current parser state
-		State *s = (State *) _stack.Peek();
+		StackState *s = (StackState *) _stack.Peek();
 		switch(s->parserState)
 		{
 
@@ -181,7 +181,7 @@ private:
       int idnt;
   	  WidgetAttributes *_currentWidgetAttr;
 	  Array<WidgetAttributes> *_attrs;
-	  Stack<State> _stack;
+	  Stack<StackState> _stack;
 	  unsigned int _parserFlags;
 };
 

@@ -13,6 +13,8 @@
 #include <World\World.h>
 #include <application\Globals.h>
 #include <application\SoundInterface.h>
+#include <states\SoldierStateLoader.h>
+#include <states\SoldierActionLoader.h>
 
 CombatModule::CombatModule()
 {
@@ -74,6 +76,16 @@ CombatModule::Initialize(void *app)
 	_bombardNeg = _uiManager->GetWidget("Naval Neg")->GetImage();
 	_activeTeamPanel= _uiManager->GetWidget("Active Team Panel")->GetImage();
 
+	// Load all of our soldier states and stuff
+	g_Globals->Application.Status->Status("Loading soldier states...");
+	sprintf(fileName, "%s\\SoldierStates.txt", g_Globals->Application.CurrentDirectory);
+	SoldierStateLoader::Load(fileName, &(g_Globals->World.States.Soldiers));
+	
+	// Soldier actions
+	g_Globals->Application.Status->Status("Loading soldier actions...");
+	sprintf(fileName, "%s\\SoldierActions.txt", g_Globals->Application.CurrentDirectory);
+	SoldierActionLoader::Load(fileName, &(g_Globals->World.Actions.Soldiers));
+
 	// Load the color modifier
 	g_Globals->Application.Status->Status("Loading color modifiers...");
 	_colorModifierManager = new ColorModifierManager();
@@ -106,10 +118,10 @@ CombatModule::Initialize(void *app)
 	// XXX/GWS: This is hard coded for now, pretty bad
 	g_Globals->Application.Status->Status("Loading world...");
 	_currentWorld = new World();
+	g_Globals->World.CurrentWorld = _currentWorld;
 	sprintf(fileName, "%s\\Acqueville\\Acqueville.xml", g_Globals->Application.MapsDirectory);
 	_currentWorld->Load(fileName, _soldierManager, _animationManager);
-	g_Globals->World.CurrentWorld = _currentWorld;
-
+	
 	// Create the mini map
 	g_Globals->Application.Status->Status("Creating mini map...");
 	_currentMiniMap = MiniMap::Create(_currentWorld->GetMiniMapName(), _currentWorld);
@@ -208,25 +220,25 @@ CombatModule::Render(Screen *screen)
 			w = NULL;
 			switch(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].CurrentAction)
 			{
-			case Action::Defending:
+			case Unit::Defending:
 				w = _iconManager->GetWidget("Unit Action Defending Green");
 				break;
-			case Action::Firing:
+			case Unit::Firing:
 				w = _iconManager->GetWidget("Unit Action Firing Green");
 				break;
-			case Action::Reloading:
+			case Unit::Reloading:
 				w = _iconManager->GetWidget("Unit Action Reloading Green");
 				break;
-			case Action::NoTarget:
+			case Unit::NoTarget:
 				w = _iconManager->GetWidget("Unit Action No Target Green");
 				break;
-			case Action::Moving:
+			case Unit::Moving:
 				w = _iconManager->GetWidget("Unit Action Moving Green");
 				break;
-			case Action::Crawling:
+			case Unit::Crawling:
 				w = _iconManager->GetWidget("Unit Action Crawling Green");
 				break;
-			case Action::MovingFast:
+			case Unit::MovingFast:
 				w = _iconManager->GetWidget("Unit Action Running Green");
 				break;
 			default:
@@ -299,19 +311,19 @@ CombatModule::Render(Screen *screen)
 			// Now render the current action
 			w = NULL;
 			switch(_currentWorld->State.SquadStates[i].CurrentAction) {
-				case Action::Moving:
+				case Team::Moving:
 					w = _iconManager->GetWidget("Team Action Moving Green");
 					break;
-				case Action::MovingFast:
+				case Team::MovingFast:
 					w = _iconManager->GetWidget("Team Action Moving Fast Green");
 					break;
-				case Action::Sneaking:
+				case Team::Sneaking:
 					w = _iconManager->GetWidget("Team Action Sneaking Green");
 					break;
-				case Action::Defending:
+				case Team::Defending:
 					w = _iconManager->GetWidget("Team Action Defending White");
 					break;
-				case Action::Firing:
+				case Team::Firing:
 					w = _iconManager->GetWidget("Team Action Firing Green");
 					break;
 				default:
@@ -470,11 +482,21 @@ CombatModule::KeyUp(int key)
 			g_Globals->World.bRenderPaths = !g_Globals->World.bRenderPaths;
 			break;
 		case 114: /* F3 */
-			g_Globals->World.bRenderStats = !g_Globals->World.bRenderStats;
+			// The order is Help->Stats->NULL and back
+			if(g_Globals->World.bRenderHelpText) {
+				g_Globals->World.bRenderHelpText = false;
+				g_Globals->World.bRenderStats = true;
+			} else if(g_Globals->World.bRenderStats) {
+				g_Globals->World.bRenderStats = false;
+			} else {
+				g_Globals->World.bRenderHelpText = true;
+			}
 			break;
+#if 0
 		case 115: /* F4 */
 			g_Globals->World.bWeaponFan = !g_Globals->World.bWeaponFan;
 			break;
+#endif
 		case 116: /* F5 */
 			_showMiniMap = !_showMiniMap;
 			break;
@@ -485,7 +507,15 @@ CombatModule::KeyUp(int key)
 			_showUnitPanel = !_showUnitPanel;
 			break;
 		case 119: /* F8 */
-			g_Globals->World.bRenderElevation = !g_Globals->World.bRenderElevation;
+			// The order is Outlines->Elevation->NULL and back
+			if(g_Globals->World.bRenderBuildingOutlines) {
+				g_Globals->World.bRenderBuildingOutlines = false;
+				g_Globals->World.bRenderElevation = true;
+			} else if(g_Globals->World.bRenderElevation) {
+				g_Globals->World.bRenderElevation = false;
+			} else {
+				g_Globals->World.bRenderBuildingOutlines = true;
+			}
 			break;
 		case 120: /* F9 */
 			g_Globals->World.bRenderElements = !g_Globals->World.bRenderElements;

@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 template <class T> class Array
 {
@@ -47,8 +48,8 @@ public:
 			}
 		}
 		// Move everything down
-		for(int j = i; j < Count; ++j) {
-			Items[j+1] = Items[j];
+		for(int j = Count; j > i; --j) {
+			Items[j] = Items[j-1];
 		}
 		Items[i] = c;
 		++Count;
@@ -79,6 +80,15 @@ public:
 			}
 		}
 		return NULL;
+	}
+
+	void Clear()
+	{
+		while(Count > 0) 
+		{
+			RemoveAt(0);
+		}
+		assert(Count == 0);
 	}
 
 private:

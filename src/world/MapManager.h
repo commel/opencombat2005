@@ -9,6 +9,7 @@ struct MapAttributes
 	char Overland[MAX_NAME];
 	char Mini[MAX_NAME];
 	char Elements[MAX_NAME];
+	char Buildings[MAX_NAME];
 };
 
 class MapManager

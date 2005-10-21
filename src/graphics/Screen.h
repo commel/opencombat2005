@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Misc\Structs.h>
+#include <misc\Array.h>
 
 struct IDirect3DDevice9;
 class Color;
@@ -61,6 +62,11 @@ public:
 
 	// A utility function to test if a point lies in a polygonal region
 	static bool PointInRegion(int x, int y, Region *r);
+	static bool PointInRegion(int x, int y, int rx, int ry, int rw, int rh);
+	static bool PointInRegion(int x, int y, Array<Point> *points);
+
+	// A self test function
+	static bool SelfTest();
 
 protected:
 	IDirect3DDevice9 *_device;

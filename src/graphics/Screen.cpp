@@ -432,3 +432,45 @@ Screen::FillRect(int x, int y, int w, int h, Color *c)
 		}
 	}
 }
+
+bool
+Screen::PointInRegion(int x, int y, int rx, int ry, int rw, int rh)
+{
+	Region r;
+	r.points[0].x = rx;		r.points[0].y = ry;
+	r.points[1].x = rx+rw;	r.points[1].y = ry;
+	r.points[2].x = rx+rw;	r.points[2].y = ry+rh;
+	r.points[3].x = rx;		r.points[3].y = ry+rh;
+	return PointInRegion(x,y,&r);
+}
+
+bool
+Screen::PointInRegion(int x, int y, Array<Point> *points)
+{
+	bool c = false;
+	int i, j;
+    for (i = 0, j = points->Count-1; i < points->Count; j = i++) {
+		if ((((points->Items[i]->y <= y) && (y < points->Items[j]->y)) ||
+             ((points->Items[j]->y <= y) && (y < points->Items[i]->y))) &&
+            (x < (points->Items[j]->x - points->Items[i]->x) * (y - points->Items[i]->y) / (points->Items[j]->y - points->Items[i]->y) + points->Items[i]->x))
+		{
+			c = !c;
+		}
+	}
+    return c;
+}
+
+bool
+Screen::SelfTest()
+{
+	// Let's test the PointInRegion functionality.
+	// First, let's make a rhomboid type thing
+	Array<Point> points;
+	points.Add(new Point(0,0));
+	points.Add(new Point(100,0));
+	points.Add(new Point(200, 100));
+	points.Add(new Point(100, 100));
+	assert(!PointInRegion(0,50,&points));
+	assert(PointInRegion(100,50,&points));
+	return true;
+}

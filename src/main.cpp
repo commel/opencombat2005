@@ -56,6 +56,9 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR, INT )
 	Globals globals;
 	g_Globals = &globals;
 
+	// Run our SelfTests
+	Screen::SelfTest();
+
 	// Get the current directory and store it
 	_getcwd(globals.Application.CurrentDirectory, 256);
 	sprintf(globals.Application.ConfigDirectory, "%s\\Config", globals.Application.CurrentDirectory);
@@ -380,9 +383,7 @@ HRESULT CMyD3DApplication::Render()
 		_game->Render(_screen);
         
         // Render stats and help text  
-		if(g_Globals->World.bRenderStats) {
-			RenderText();
-		}
+		RenderText();
 
         // End the scene.
         m_pd3dDevice->EndScene();
@@ -404,18 +405,39 @@ HRESULT CMyD3DApplication::Render()
 HRESULT CMyD3DApplication::RenderText()
 {
     D3DCOLOR fontColor        = D3DCOLOR_ARGB(255,255,255,0);
-    TCHAR szMsg[MAX_PATH] = TEXT("");
+    char szMsg[MAX_PATH] = TEXT("");
 
     // Output display stats
     FLOAT fNextLine = 40.0f; 
 
-    lstrcpy( szMsg, m_strDeviceStats );
-    fNextLine -= 20.0f;
-    m_pFont->DrawText( 2, fNextLine, fontColor, szMsg );
+	if(g_Globals->World.bRenderHelpText)
+	{
+		fNextLine = 0.0f;
+		sprintf(szMsg, "F2 - Toggle Paths      F3 - Toggle Text");
+	    m_pFont->DrawText( 2, fNextLine, fontColor, szMsg );
 
-    lstrcpy( szMsg, m_strFrameStats );
-    fNextLine -= 20.0f;
-    m_pFont->DrawText( 2, fNextLine, fontColor, szMsg );
+		sprintf(szMsg, "F5 - Toggle Mini Map   F6 - Toggle Team Panel");
+		fNextLine += 20.0f;
+	    m_pFont->DrawText( 2, fNextLine, fontColor, szMsg );
+
+		sprintf(szMsg, "F7 - Toggle Unit Panel F8 - Toggle Building Outline/Elevations");
+		fNextLine += 20.0f;
+	    m_pFont->DrawText( 2, fNextLine, fontColor, szMsg );
+
+		sprintf(szMsg, "F9 - Toggle Elements");
+		fNextLine += 20.0f;
+	    m_pFont->DrawText( 2, fNextLine, fontColor, szMsg );
+	}
+	else if(g_Globals->World.bRenderStats)
+	{
+	    strcpy( szMsg, m_strDeviceStats );
+		fNextLine -= 20.0f;
+	    m_pFont->DrawText( 2, fNextLine, fontColor, szMsg );
+
+		strcpy( szMsg, m_strFrameStats );
+		fNextLine -= 20.0f;
+		m_pFont->DrawText( 2, fNextLine, fontColor, szMsg );
+	}
 
     return S_OK;
 }

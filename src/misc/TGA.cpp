@@ -99,9 +99,20 @@ TGA::Create(char *fileName)
 			}
 			//memcpy(ptr, p, bytes2read);
 			//ptr += bytes2read;
-			memcpy(&(ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth]), p, bytes2read);
-			if(tga->_depth != 4) {
+			if(header.bitsperpixel == 32) {
+				memcpy(&(ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth]), p, bytes2read);
+			}
+			else if(header.bitsperpixel == 24) {
+				memcpy(&(ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth]), p, bytes2read);
 				ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth+3] = 0xFF;				
+			}
+			else if(header.bitsperpixel == 16)
+			{
+				unsigned short pixel = ((unsigned short *)p)[0];
+				ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth+0] = (pixel << 3 & 0xff) + 7;
+				ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth+1] = ((pixel >> 5) << 3 & 0xff) + 7;
+				ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth+2] = ((pixel >> 10) << 3 & 0xff) + 7;
+				ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth+3] = 0xFF;
 			}
 			n++;
 			++w;

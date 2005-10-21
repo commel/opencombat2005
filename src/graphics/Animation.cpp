@@ -4,6 +4,7 @@
 
 Animation::Animation(char *name)
 {
+	_reverse = false;
 	strcpy(_name, name);
 	for(int i = 0; i < NumDirections; ++i) {
 		_currentFrameNums[i] = 0;
@@ -26,6 +27,7 @@ Animation *
 Animation::Clone()
 {
 	Animation *a = new Animation(_name);
+	a->_reverse = _reverse;
 	for(int dir = 0; dir < NumDirections; ++dir) {
 		for(int i = 0; i < _frames[dir].Count; ++i) {
 			a->_frames[dir].Add(_frames[dir].Items[i]->Clone());
@@ -59,7 +61,18 @@ Animation::Update(long dt)
 			_totalTimes[heading] = 0;
 			_incrementalTimes[heading] = 0;
 			// Increment the current frame number
-			_currentFrameNums[heading] = (_currentFrameNums[heading]+1) % _frames[heading].Count;
+			if(_reverse)
+			{
+				_currentFrameNums[heading] = (_currentFrameNums[heading]-1);
+				if(_currentFrameNums[heading] < 0)
+				{
+					_currentFrameNums[heading] += _frames[heading].Count;
+				}
+			}
+			else
+			{
+				_currentFrameNums[heading] = (_currentFrameNums[heading]+1) % _frames[heading].Count;
+			}
 		}
 	}
 }
@@ -82,6 +95,13 @@ Animation::Reset()
 	for(int i = 0; i < NumDirections; ++i) {
 		_totalTimes[i] = 0;
 		_incrementalTimes[i] = 0;
-		_currentFrameNums[i] = 0;
+		if(_reverse) 
+		{
+			_currentFrameNums[i] = _frames[i].Count-1;
+		}
+		else
+		{
+			_currentFrameNums[i] = 0;
+		}
 	}
 }

@@ -55,7 +55,7 @@ protected:
     VOID    Pause( bool bPause );
 
     HRESULT RenderText();
-
+	
     HRESULT InitAudio( HWND hWnd );
 
 	// XXX/GWS: The following is code that has been added to interface with

@@ -23,6 +23,9 @@
 #include <misc\Structs.h>
 #include <application\CursorInterface.h>
 #include <ai\AStar.h>
+#include <states\ObjectStates.h>
+#include <states\ObjectActions.h>
+#include <states\SoldierStateTransitions.h>
 
 /**
  * This file describes a wrapper for all of our global variables.
@@ -32,6 +35,30 @@
 struct WorldConstants
 {
 	const static int PixelsPerMeter = 6;
+};
+
+struct ObjectStatesContainer
+{
+	// State for our soldiers
+	ObjectStates Soldiers;
+
+	// State for out vehicles
+};
+
+struct ObjectActionsContainer
+{
+	// Actions for our soldiers
+	ObjectActions Soldiers;
+
+	// Actions for our vehicles
+};
+
+struct ObjectStateTransitionsContainer
+{
+	// State transitions for our soldiers
+	SoldierStateTransitions Soldiers;
+
+	// State transitions for our vehicles
 };
 
 struct WorldGlobals
@@ -86,13 +113,23 @@ struct WorldGlobals
 	bool bRenderStats;
 	bool bWeaponFan;
 	bool bRenderPaths;
+	bool bRenderHelpText;
+	bool bRenderBuildingOutlines;
 
 	/**
 	 * A structure which contains all of our constants.
 	 */
 	WorldConstants Constants;
 
-	WorldGlobals() { bRenderElevation=false; bRenderElements=true;bWeaponFan=false;bRenderStats=false;bRenderPaths=false; }
+	/**
+	 * A structure to hold all of our action and state and state transition
+	 * information.
+	 */
+	ObjectStatesContainer States;
+	ObjectActionsContainer Actions;
+	ObjectStateTransitionsContainer StateTransitions;
+
+	WorldGlobals() { bRenderElevation=false; bRenderElements=true;bWeaponFan=false;bRenderStats=false;bRenderPaths=false;bRenderHelpText=true;bRenderBuildingOutlines=false; }
 };
 
 /**
