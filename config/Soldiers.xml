@@ -30,6 +30,14 @@
 				<Animation>Prone Reloading</Animation>
 			</State>
 			<State>
+				<Name>Standing Up</Name>
+				<Animation>Standing Up</Animation>
+			</State>
+			<State>
+				<Name>Lying Down</Name>
+				<Animation reverse="true">Standing Up</Animation>
+			</State>
+			<State>
 				<Name>Sneaking</Name>
 				<Animation>Crawling</Animation>
 			</State>
@@ -102,6 +110,14 @@
 			<State>
 				<Name>Prone Reloading</Name>
 				<Animation>Prone Reloading</Animation>
+			</State>
+			<State>
+				<Name>Standing Up</Name>
+				<Animation>Standing Up</Animation>
+			</State>
+			<State>
+				<Name>Lying Down</Name>
+				<Animation reverse="true">Standing Up</Animation>
 			</State>
 			<State>
 				<Name>Sneaking</Name>
@@ -178,6 +194,14 @@
 				<Animation>Prone Reloading</Animation>
 			</State>
 			<State>
+				<Name>Standing Up</Name>
+				<Animation>Standing Up</Animation>
+			</State>
+			<State>
+				<Name>Lying Down</Name>
+				<Animation reverse="true">Standing Up</Animation>
+			</State>
+			<State>
 				<Name>Sneaking</Name>
 				<Animation>Crawling</Animation>
 			</State>
@@ -250,6 +274,14 @@
 			<State>
 				<Name>Prone Reloading</Name>
 				<Animation>Prone Reloading</Animation>
+			</State>
+			<State>
+				<Name>Standing Up</Name>
+				<Animation>Standing Up</Animation>
+			</State>
+			<State>
+				<Name>Lying Down</Name>
+				<Animation reverse="true">Standing Up</Animation>
 			</State>
 			<State>
 				<Name>Sneaking</Name>
@@ -326,6 +358,14 @@
 				<Animation>Bazooka Prone Firing</Animation>
 			</State>
 			<State>
+				<Name>Standing Up</Name>
+				<Animation>Bazooka Standing Up</Animation>
+			</State>
+			<State>
+				<Name>Lying Down</Name>
+				<Animation reverse="true">Bazooka Standing Up</Animation>
+			</State>
+			<State>
 				<Name>Sneaking</Name>
 				<Animation>Bazooka Crawling</Animation>
 			</State>
@@ -398,6 +438,14 @@
 			<State>
 				<Name>Prone Reloading</Name>
 				<Animation>Machine Gun Prone Firing</Animation>
+			</State>
+			<State>
+				<Name>Standing Up</Name>
+				<Animation>Machine Gun Standing Up</Animation>
+			</State>
+			<State>
+				<Name>Lying Down</Name>
+				<Animation reverse="true">Machine Gun Standing Up</Animation>
 			</State>
 			<State>
 				<Name>Sneaking</Name>

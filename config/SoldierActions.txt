@@ -1,0 +1,12 @@
+Name							Group					Time				Requirements											Changes
+StandingFire					Fire					0					Stopped,Standing,Reloaded								+Firing,-NoTarget
+ProneFire						Fire					0					Stopped,Prone,Reloaded									+Firing,-NoTarget
+Run								Move					0					Standing												+Running,-Walking,-WalkingSlow,-Crawling,-Stopped,+Moving,-Firing
+Walk							Move					0					Standing												+Walking,-Running,-WalkingSlow,-Crawling,-Stopped,+Moving,-Firing
+WalkSlow						Move					0					Standing												+WalkingSlow,-Walking,-Running,-Crawling,-Stopped,+Moving,-Firing
+Crawl							Move					0					Prone													+Crawling,-Running,-Walking,-WalkingSlow,-Stopped,+Moving,-Firing
+Stand							Move					-1					Stopped,Prone											-Prone,+Standing,-Firing
+LieDown							Move					-1					Stopped,Standing										-Standing,+Prone,-Firing
+Stop							Move					0					nil														-Moving,+Stopped,-Firing,-Running,-Walking,-WalkingSlow,-Crawling
+DestinationReached				Move					0					Stopped													nil
+Reload							Fire					0					nil														+Reloaded

@@ -78,12 +78,12 @@ CombatModule::Initialize(void *app)
 
 	// Load all of our soldier states and stuff
 	g_Globals->Application.Status->Status("Loading soldier states...");
-	sprintf(fileName, "%s\\SoldierStates.txt", g_Globals->Application.CurrentDirectory);
+	sprintf(fileName, "%s\\SoldierStates.txt", g_Globals->Application.ConfigDirectory);
 	SoldierStateLoader::Load(fileName, &(g_Globals->World.States.Soldiers));
 	
 	// Soldier actions
 	g_Globals->Application.Status->Status("Loading soldier actions...");
-	sprintf(fileName, "%s\\SoldierActions.txt", g_Globals->Application.CurrentDirectory);
+	sprintf(fileName, "%s\\SoldierActions.txt", g_Globals->Application.ConfigDirectory);
 	SoldierActionLoader::Load(fileName, &(g_Globals->World.Actions.Soldiers));
 
 	// Load the color modifier

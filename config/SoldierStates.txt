@@ -1,0 +1,17 @@
+Standing
+Prone
+Stopped
+Moving
+Firing
+Walking
+WalkingSlow
+Crawling
+Running
+Reloading
+DyingBlownUp
+DyingBackward
+DyingForward
+Dead
+Reloaded
+OutOfAmmo
+NoTarget

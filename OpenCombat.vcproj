@@ -310,6 +310,9 @@
 					RelativePath=".\src\misc\Color.h">
 				</File>
 				<File
+					RelativePath=".\src\misc\Heap.h">
+				</File>
+				<File
 					RelativePath=".\src\misc\Queue.h">
 				</File>
 				<File
@@ -340,6 +343,12 @@
 					RelativePath=".\src\misc\TGA.h">
 				</File>
 				<File
+					RelativePath=".\src\misc\trim.cpp">
+				</File>
+				<File
+					RelativePath=".\src\misc\trim.h">
+				</File>
+				<File
 					RelativePath=".\src\misc\Utilities.cpp">
 				</File>
 				<File
@@ -349,6 +358,18 @@
 			<Filter
 				Name="World"
 				Filter="">
+				<File
+					RelativePath=".\src\world\Building.cpp">
+				</File>
+				<File
+					RelativePath=".\src\world\Building.h">
+				</File>
+				<File
+					RelativePath=".\src\world\BuildingManager.cpp">
+				</File>
+				<File
+					RelativePath=".\src\world\BuildingManager.h">
+				</File>
 				<File
 					RelativePath=".\src\world\Element.cpp">
 				</File>
@@ -402,9 +423,6 @@
 				Name="Objects"
 				Filter="">
 				<File
-					RelativePath=".\src\objects\Action.h">
-				</File>
-				<File
 					RelativePath=".\src\objects\Object.cpp">
 				</File>
 				<File
@@ -415,6 +433,12 @@
 				</File>
 				<File
 					RelativePath=".\src\objects\Soldier.h">
+				</File>
+				<File
+					RelativePath=".\src\objects\SoldierActionHandlers.cpp">
+				</File>
+				<File
+					RelativePath=".\src\objects\SoldierActionHandlers.h">
 				</File>
 				<File
 					RelativePath=".\src\objects\SoldierManager.cpp">
@@ -552,6 +576,9 @@
 					RelativePath=".\Config\MachineGunAnimations.xml">
 				</File>
 				<File
+					RelativePath=".\config\SoldierActions.txt">
+				</File>
+				<File
 					RelativePath=".\Config\SoldierAnimations.xml">
 				</File>
 				<File
@@ -562,6 +589,9 @@
 				</File>
 				<File
 					RelativePath=".\Config\Soldiers.xml">
+				</File>
+				<File
+					RelativePath=".\config\SoldierStates.txt">
 				</File>
 				<File
 					RelativePath=".\Config\SoundEffects.xml">
@@ -603,6 +633,49 @@
 				</File>
 				<File
 					RelativePath=".\src\ai\Path.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="States"
+				Filter="">
+				<File
+					RelativePath=".\src\states\Action.h">
+				</File>
+				<File
+					RelativePath=".\src\states\ActionQueue.h">
+				</File>
+				<File
+					RelativePath=".\src\states\ObjectActions.cpp">
+				</File>
+				<File
+					RelativePath=".\src\states\ObjectActions.h">
+				</File>
+				<File
+					RelativePath=".\src\states\ObjectStates.h">
+				</File>
+				<File
+					RelativePath=".\src\states\SoldierActionLoader.cpp">
+				</File>
+				<File
+					RelativePath=".\src\states\SoldierActionLoader.h">
+				</File>
+				<File
+					RelativePath=".\src\states\SoldierStateLoader.cpp">
+				</File>
+				<File
+					RelativePath=".\src\states\SoldierStateLoader.h">
+				</File>
+				<File
+					RelativePath=".\src\states\SoldierStateTransitionLoader.h">
+				</File>
+				<File
+					RelativePath=".\src\states\SoldierStateTransitions.h">
+				</File>
+				<File
+					RelativePath=".\src\states\State.cpp">
+				</File>
+				<File
+					RelativePath=".\src\states\State.h">
 				</File>
 			</Filter>
 		</Filter>

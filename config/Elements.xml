@@ -3646,7 +3646,7 @@
 		<Vehical_Move_Tracked>40</Vehical_Move_Tracked>
 		<Bog_Chance_Out_of_128>0</Bog_Chance_Out_of_128>
 		<Immobilize_Chance_Out_of_128>0</Immobilize_Chance_Out_of_128>
-		<Block_Height>True</Block_Height>
+		<Block_Height>False</Block_Height>
 		<Block_All>False</Block_All>
 		<Wall>True</Wall>
 		<Building>True</Building>
