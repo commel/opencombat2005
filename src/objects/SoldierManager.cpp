@@ -14,7 +14,7 @@ using namespace MSXML2;
 #include <objects\WeaponManager.h>
 #include <misc\readline.h>
 
-struct SoldierState {
+struct _SoldierState {
 	char Name[MAX_NAME];
 	char Animation[MAX_NAME];
 };
@@ -54,7 +54,7 @@ public:
 	char PrimaryWeapon[MAX_NAME];
 	int PrimaryWeaponNumClips;
 
-	Array<SoldierState> States;
+	Array<_SoldierState> States;
 };
 
 #define PSF_SOLDIERS	0x01
@@ -102,11 +102,11 @@ struct AttrState
 	ParserState State;
 };
 
-class State
+class StackState
 {
 public:
-	State(ParserState s) { parserState = s; }
-	virtual ~State() {}
+	StackState(ParserState s) { parserState = s; }
+	virtual ~StackState() {}
 	ParserState parserState;
 };
 
@@ -173,7 +173,7 @@ public:
 		int idx = 0;
 		while(_states[idx].Name != NULL) {
 			if(wcsicmp((wchar_t*)_states[idx].Name, (wchar_t*)pwchLocalName) == 0) {
-				_stack.Push(new State(_states[idx].State));
+				_stack.Push(new StackState(_states[idx].State));
 
 				switch(_states[idx].State) 
 				{
@@ -189,7 +189,7 @@ public:
 					break;
 				case PS_STATE:
 					_parserFlags ^= PSF_STATE;
-					_currentSoldierState = new SoldierState();
+					_currentSoldierState = new _SoldierState();
 					break;
 				case PS_CAN_MOVE:
 					_currentSoldier->CanMove = true;
@@ -218,7 +218,7 @@ public:
 			}
 			++idx;
 		}
-		_stack.Push(new State(PS_UNKNOWN));
+		_stack.Push(new StackState(PS_UNKNOWN));
 		return S_OK;
 	}
 
@@ -291,7 +291,7 @@ public:
 	virtual HRESULT STDMETHODCALLTYPE characters(unsigned short *pwchChars, int cchChars)
 	{
 		// Get the current parser state
-		State *s = (State *) _stack.Peek();
+		StackState *s = (StackState *) _stack.Peek();
 		switch(s->parserState)
 		{
 		case PS_NAME:
@@ -403,9 +403,9 @@ public:
 private:
       int idnt;
 	  SoldierTemplate *_currentSoldier;
-	  SoldierState *_currentSoldierState;
+	  _SoldierState *_currentSoldierState;
 	  Array<SoldierTemplate> *_attrs;
-	  Stack<State> _stack;
+	  Stack<StackState> _stack;
 	  unsigned int _parserFlags;
 };
 
@@ -491,62 +491,35 @@ SoldierManager::CreateSoldier(char *soldierType, AnimationManager *animationMana
 			s->_canMoveFast = t->CanMoveFast;
 			s->_canSmoke = t->CanSmoke;
 			s->_canSneak = t->CanSneak;
-			
-			// Now read in the speeds, accelerations, and animations for each state
-			s->_speeds[Soldier::State::Standing] = 0.0f;
-			s->_accels[Soldier::State::Standing] = 0.0f;
-			s->_animations[Soldier::State::Standing] = GetAnimation(animationManager, "Standing", t);
-
-			s->_speeds[Soldier::State::StandingFiring] = 0.0f;
-			s->_accels[Soldier::State::StandingFiring] = 0.0f;
-			s->_animations[Soldier::State::StandingFiring] = GetAnimation(animationManager, "Standing Firing", t);
-
-			s->_speeds[Soldier::State::StandingFiring] = 0.0f;
-			s->_accels[Soldier::State::StandingFiring] = 0.0f;
-			s->_animations[Soldier::State::StandingReloading] = GetAnimation(animationManager, "Standing Reloading", t);
-
-			s->_speeds[Soldier::State::Prone] = 0.0f;
-			s->_accels[Soldier::State::Prone] = 0.0f;
-			s->_animations[Soldier::State::Prone] = GetAnimation(animationManager, "Prone", t);
-
-			s->_speeds[Soldier::State::ProneFiring] = 0.0f;
-			s->_accels[Soldier::State::ProneFiring] = 0.0f;
-			s->_animations[Soldier::State::ProneFiring] = GetAnimation(animationManager, "Prone Firing", t);
-
-			s->_speeds[Soldier::State::StandingFiring] = 0.0f;
-			s->_accels[Soldier::State::StandingFiring] = 0.0f;
-			s->_animations[Soldier::State::ProneReloading] = GetAnimation(animationManager, "Prone Reloading", t);
-
-			s->_speeds[Soldier::State::Walking] = t->WalkingSpeed;
-			s->_accels[Soldier::State::Walking] = t->WalkingAcceleration;
-			s->_animations[Soldier::State::Walking] = GetAnimation(animationManager, "Walking", t);
-
-			s->_speeds[Soldier::State::Sneaking] = t->SneakingSpeed;
-			s->_accels[Soldier::State::Sneaking] = t->SneakingAcceleration;
-			s->_animations[Soldier::State::Sneaking] = GetAnimation(animationManager, "Sneaking", t);
-			
-			s->_speeds[Soldier::State::Running] = t->RunningSpeed;
-			s->_accels[Soldier::State::Running] = t->RunningAcceleration;
-			s->_animations[Soldier::State::Running] = GetAnimation(animationManager, "Running", t);
-
-			s->_currentState = Soldier::State::Standing;
 			s->_currentHeading = South;
 
-			s->_speeds[Soldier::State::DyingBlownUp] = 0.0f;
-			s->_accels[Soldier::State::DyingBlownUp] = 0.0f;
-			s->_animations[Soldier::State::DyingBlownUp] = GetAnimation(animationManager, "Dying Blown Up", t);
+			// Now read in the speeds, accelerations, and animations for each state
+			s->_animations[Soldier::AnimationState::Standing] = GetAnimation(animationManager, "Standing", t);
+			s->_animations[Soldier::AnimationState::StandingFiring] = GetAnimation(animationManager, "Standing Firing", t);
+			s->_animations[Soldier::AnimationState::StandingReloading] = GetAnimation(animationManager, "Standing Reloading", t);
+			s->_animations[Soldier::AnimationState::Prone] = GetAnimation(animationManager, "Prone", t);
+			s->_animations[Soldier::AnimationState::ProneFiring] = GetAnimation(animationManager, "Prone Firing", t);
+			s->_animations[Soldier::AnimationState::ProneReloading] = GetAnimation(animationManager, "Prone Reloading", t);
+			s->_animations[Soldier::AnimationState::DyingBlownUp] = GetAnimation(animationManager, "Dying Blown Up", t);
+			s->_animations[Soldier::AnimationState::DyingBackward] = GetAnimation(animationManager, "Dying Backward", t);
+			s->_animations[Soldier::AnimationState::DyingForward] = GetAnimation(animationManager, "Dying Forward", t);
+			s->_animations[Soldier::AnimationState::Dead] = GetAnimation(animationManager, "Dead", t);
+			s->_animations[Soldier::AnimationState::StandingUp] = GetAnimation(animationManager, "Standing Up", t);
+			
+			s->_animations[Soldier::AnimationState::LyingDown] = GetAnimation(animationManager, "Standing Up", t);
+			s->_animations[Soldier::AnimationState::LyingDown]->SetReverse(true);
 
-			s->_speeds[Soldier::State::DyingBackward] = 0.0f;
-			s->_accels[Soldier::State::DyingBackward] = 0.0f;
-			s->_animations[Soldier::State::DyingBackward] = GetAnimation(animationManager, "Dying Backward", t);
+			s->_maxWalkingSpeed = t->WalkingSpeed;
+			s->_walkingAccel = t->WalkingAcceleration;
+			s->_animations[Soldier::AnimationState::Walking] = GetAnimation(animationManager, "Walking", t);
 
-			s->_speeds[Soldier::State::DyingForward] = 0.0f;
-			s->_accels[Soldier::State::DyingForward] = 0.0f;
-			s->_animations[Soldier::State::DyingForward] = GetAnimation(animationManager, "Dying Forward", t);
-
-			s->_speeds[Soldier::State::Dead] = 0.0f;
-			s->_accels[Soldier::State::Dead] = 0.0f;
-			s->_animations[Soldier::State::Dead] = GetAnimation(animationManager, "Dead", t);
+			s->_maxCrawlingSpeed = t->SneakingSpeed;
+			s->_crawlingAccel = t->SneakingAcceleration;
+			s->_animations[Soldier::AnimationState::Sneaking] = GetAnimation(animationManager, "Sneaking", t);
+			
+			s->_maxRunningSpeed = t->RunningSpeed;
+			s->_runningAccel = t->RunningAcceleration;
+			s->_animations[Soldier::AnimationState::Running] = GetAnimation(animationManager, "Running", t);
 
 			return s;
 		}

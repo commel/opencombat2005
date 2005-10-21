@@ -95,7 +95,7 @@ Vehicle::Simulate(long dt, World *world)
 		switch(order->GetType()) {
 			case Orders::Move:
 				// This is a move order, let's head in that direction
-				_currentAction = Action::Moving;
+				_currentAction = Unit::Moving;
 				handled = HandleMoveOrder(dt, (MoveOrder *) order, Moving);
 				break;
 			case Orders::Fire:
@@ -229,7 +229,7 @@ Vehicle::HandleFireOrder(FireOrder *order)
 
 	// Set my state
 	_currentState = State::Firing;
-	_currentAction = Action::Firing;
+	_currentAction = Unit::Firing;
 
 	// Set the current target and stuff
 	_currentTarget = order->Target;
@@ -262,7 +262,7 @@ Vehicle::HandleStopOrder()
 {
 	_moving = false;
 	_currentState = Stopped;
-	_currentAction = Action::Defending;
+	_currentAction = Unit::Defending;
 	_velocity.x = 0; // Stop moving!
 	_velocity.y = 0;
 	return true;
@@ -385,7 +385,7 @@ Vehicle::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 			_currentTarget = FindTarget((Squad *) target);
 			_currentTargetType = Target::Soldier;
 			if(_currentTarget == NULL) {
-				_currentAction = Action::NoTarget;
+				_currentAction = Unit::NoTarget;
 				_currentState = State::Stopped;
 			}
 			return;
@@ -397,7 +397,7 @@ Vehicle::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 	weapon->Fire();
 			
 	_currentState = State::Firing;
-	_currentAction = Action::Firing;
+	_currentAction = Unit::Firing;
 	_effects.Add(g_Globals->World.Effects->GetEffect(weapon->GetEffect(effectHeading)));
 
 	if(weapon->IsGroundShaker()) {

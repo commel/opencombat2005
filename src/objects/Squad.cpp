@@ -14,8 +14,8 @@ static char *_squadQualityIcons[] = { "Team Quality Useless", "Team Quality Frag
 
 Squad::Squad() : Object()
 {
-	_currentStatus = Unit::Healthy;
-	_currentAction = Action::Defending;
+	_currentStatus = Team::Healthy;
+	_currentAction = Team::Defending;
 	_quality = Average;
 	_type = Target::Squad;
 	_currentTarget = NULL;
@@ -55,10 +55,17 @@ Squad::Render(Screen *screen, Rect *clip)
 		Path *p = _currentPath;
 		while(p != NULL) {
 			Color red(128,0,0);
-			screen->FillRect(p->X*g_Globals->World.CurrentWorld->TileSize.w-screen->Origin.x,
-				p->Y*g_Globals->World.CurrentWorld->TileSize.h-screen->Origin.y,
-				g_Globals->World.CurrentWorld->TileSize.w,
-				g_Globals->World.CurrentWorld->TileSize.h, &red);
+
+			// We need to clip the path rectangles
+			if(screen->PointInRegion(p->X*g_Globals->World.CurrentWorld->TileSize.w-screen->Origin.x, 
+				p->Y*g_Globals->World.CurrentWorld->TileSize.h-screen->Origin.y, 
+				clip->x, clip->y, clip->w, clip->h))
+			{
+				screen->FillRect(p->X*g_Globals->World.CurrentWorld->TileSize.w-screen->Origin.x,
+					p->Y*g_Globals->World.CurrentWorld->TileSize.h-screen->Origin.y,
+					g_Globals->World.CurrentWorld->TileSize.w,
+					g_Globals->World.CurrentWorld->TileSize.h, &red);
+			}
 			p = p->Next;
 		}
 	}
@@ -100,8 +107,6 @@ Squad::Simulate(long dt, World *world)
 		_soldiers.Items[i]->Simulate(dt, world);
 	}
 
-	_currentAction = GetSquadLeader()->GetCurrentAction();
-
 	// Now update the position of the squad. Use the position of the
 	// 'squad leader'
 	// XXX/GWS: Need to handle squads of more than one vehicle here!
@@ -113,7 +118,7 @@ bool
 Squad::Select(int x, int y)
 {
 	for(int i = 0; i < _vehicles.Count; ++i) {
-		if(_vehicles.Items[i]->Select(x,y)) {
+		if(_vehicles.Items[i]->Contains(x,y)) {
 			_selectedVehicleIdx = i;
 			Select(true);
 			return true;
@@ -121,7 +126,7 @@ Squad::Select(int x, int y)
 	}
 
 	for(int i = 0; i < _soldiers.Count; ++i) {
-		if(_soldiers.Items[i]->Select(x,y)) {
+		if(_soldiers.Items[i]->Contains(x,y)) {
 			// Play a sound
 			g_Globals->World.Voices->GetSound("awaiting orders")->Play();
 			Select(true);
@@ -185,12 +190,12 @@ Squad::AddOrder(Order *o)
 	_bShowMark = false;
 	switch(o->GetType()) {
 		case Orders::Ambush:
-			_currentAction = Action::Ambushing;
+			_currentAction = Team::Ambushing;
 			break;
 		case Orders::Fire:
 			{
 				FireOrder *f = (FireOrder *)o;
-				_currentAction = Action::Firing;
+				_currentAction = Team::Firing;
 				_currentTarget = f->Target;
 				_currentTargetType = f->TargetType;
 				_currentTargetX = f->X;
@@ -205,10 +210,10 @@ Squad::AddOrder(Order *o)
 			}
 			break;
 		case Orders::Hide:
-			_currentAction = Action::Hiding;
+			_currentAction = Team::Hiding;
 			break;
 		case Orders::Move:
-			_currentAction = Action::Moving;
+			_currentAction = Team::Moving;
 			_currentTargetX = ((MoveOrder*)o)->X;
 			_currentTargetY = ((MoveOrder*)o)->Y;
 			// Find a path
@@ -225,7 +230,7 @@ Squad::AddOrder(Order *o)
 			_bMarkTargetPosition = false;
 			break;
 		case Orders::MoveFast:
-			_currentAction = Action::MovingFast;
+			_currentAction = Team::MovingFast;
 			_currentTargetX = ((MoveOrder*)o)->X;
 			_currentTargetY = ((MoveOrder*)o)->Y;
 			// Find a path
@@ -242,7 +247,7 @@ Squad::AddOrder(Order *o)
 			_bMarkTargetPosition = false;
 			break;
 		case Orders::Sneak:
-			_currentAction = Action::Sneaking;
+			_currentAction = Team::Sneaking;
 			_currentTargetX = ((MoveOrder*)o)->X;
 			_currentTargetY = ((MoveOrder*)o)->Y;
 			// Find a path

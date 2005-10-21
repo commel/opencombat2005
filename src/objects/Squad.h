@@ -60,6 +60,9 @@ public:
 	// Gets my current path
 	inline Path *GetCurrentPath() { return _currentPath; }
 
+	// Clears and set marks
+	void ClearMarks() { _bShowMark = false; }
+
 protected:
 	// This is the array of soldiers in this squad
 	Array<Soldier> _soldiers;
@@ -81,6 +84,12 @@ protected:
 	bool _bShowMark;
 	Mark::Color _markColor;
 	bool _bMarkTargetPosition;
+
+	// The current action of this guy
+	Team::Action _currentAction;
+
+	// The current statuc of this guy
+	Team::Status _currentStatus;
 
 	friend class SquadManager;
 };

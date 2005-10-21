@@ -11,6 +11,21 @@ namespace Unit
 		Dead,
 		NumStatus // Must be last
 	};
+
+	enum Action {
+		Defending,
+		Cowering,
+		Ambushing,
+		Hiding,
+		Firing,
+		Reloading,
+		Moving,
+		MovingFast,
+		Crawling,
+		Sneaking,
+		NoTarget,
+		NumActions // Must be last
+	};
 };
 
 namespace Team
@@ -21,5 +36,20 @@ namespace Team
 		Incapacitated,
 		Dead,
 		NumStatus // Must be last
+	};
+
+	enum Action {
+		Defending,
+		Cowering,
+		Ambushing,
+		Hiding,
+		Firing,
+		Reloading,
+		Moving,
+		MovingFast,
+		Crawling,
+		Sneaking,
+		NoTarget,
+		NumActions // Must be last
 	};
 };

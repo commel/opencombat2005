@@ -4,6 +4,10 @@
 #include <orders\Orders.h>
 #include <objects\Target.h>
 #include <ai\Path.h>
+#include <states\State.h>
+#include <states\Action.h>
+#include <states\ObjectActions.h>
+#include <objects\SoldierActionHandlers.h>
 
 class Screen;
 class Squad;
@@ -19,10 +23,6 @@ class Soldier :
 public:
 	Soldier(void);
 	virtual ~Soldier(void);
-
-	enum State {
-		Standing=0, Prone, Walking, Sneaking, Running, StandingFiring, ProneFiring, StandingReloading, ProneReloading, DyingBlownUp, DyingBackward, DyingForward, Dead, NumStates
-	};
 
 	// From class Object
 	virtual bool IsMobile() { return true; }
@@ -58,9 +58,6 @@ public:
 	// Kills this soldier
 	virtual void Kill();
 
-	// Gets the squad that this guy belongs to
-	Squad *GetSquad() { return _currentSquad; }
-
 	// Returns whether or not this soldier is dead
 	virtual bool IsDead();
 
@@ -72,11 +69,16 @@ public:
 
 protected:
 
+	enum AnimationState {
+		Standing=0, Prone, Walking, Sneaking, Running, StandingFiring, ProneFiring, StandingReloading, ProneReloading, DyingBlownUp, DyingBackward, DyingForward, Dead, StandingUp, LyingDown, NumStates
+	};
+
 	// These functions handle various orders
-	bool HandleMoveOrder(long dt, MoveOrder *order, State newState);
+	bool HandleMoveOrder(long dt, MoveOrder *order);
+	bool HandleMoveFastOrder(long dt, MoveOrder *order);
+	bool HandleSneakOrder(long dt, MoveOrder *order);
 	bool HandleDestinationOrder(MoveOrder *order);
 	bool HandleStopOrder(StopOrder *order);
-	bool HandlePauseOrder(PauseOrder *order, long dt);
 	bool HandleFireOrder(FireOrder *order);
 
 	// This function handles the movement logic
@@ -88,7 +90,7 @@ protected:
 	// This function outputs the position and velocity of the
 	// input vectors. It is used to find out where we would end up
 	// if we moved.
-	void Move(Vector2 *posOut, Vector2 *velOut, Direction heading, long dt, State state);
+	void Move(Vector2 *posOut, Vector2 *velOut, Direction heading, long dt);
 
 	// Let's shoot at a target using the given weapon
 	void Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targetX, int targetY);
@@ -101,10 +103,16 @@ protected:
 	Soldier *FindTarget(Squad *squad);
 
 	// Keeps track of the maximum speeds for each state
-	float _speeds[NumStates];
+	float _maxRunningSpeed;
+	float _maxWalkingSpeed;
+	float _maxWalkingSlowSpeed;
+	float _maxCrawlingSpeed;
 
 	// Keeps track of the maximum accelerations for each state
-	float _accels[NumStates];
+	float _runningAccel;
+	float _walkingAccel;
+	float _walkingSlowAccel;
+	float _crawlingAccel;
 
 	// The velocity of this soldier
 	Vector2 _velocity;
@@ -115,6 +123,9 @@ protected:
 	// The current state of this soldier
 	State _currentState;
 
+	// And the animation state that corresponds to our physical state
+	AnimationState _currentAnimationState;
+
 	// If we have a destination, then this is the path we are
 	// following
 	Path *_currentPath;
@@ -124,9 +135,6 @@ protected:
 
 	// The animation states of this object
 	Animation *_animations[NumStates];
-
-	// The current squad that this soldier belongs to
-	Squad *_currentSquad;
 
 	// The personal name of this soldier
 	char _personalName[32];
@@ -158,5 +166,16 @@ protected:
 	// A flag which says whether or not I am in a vehicle
 	bool _inVehicle;
 
+	// The current action of this guy. Used only for reporting.
+	Unit::Action _currentAction;
+
+	// The current statuc of this guy. Used only for reporting.
+	Unit::Status _currentStatus;
+
+	// This is our array of functions that implement the possible
+	// actions that a soldier can take
+	SoldierActionHandlers::SoldierActionHandler _actionHandlers[SoldierAction::NumActions];
+
 	friend class SoldierManager;
+	friend class SoldierActionHandlers;
 };

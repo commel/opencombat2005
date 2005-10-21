@@ -3,22 +3,30 @@
 #include <misc\Array.h>
 #include <misc\Queue.h>
 #include <misc\Structs.h>
-#include <objects\Action.h>
 #include <objects\Status.h>
 #include <objects\Target.h>
 #include <misc\Color.h>
+#include <states\Action.h>
 
 class Screen;
 class Order;
 class World;
 class InterfaceState;
 class Effect;
+class Squad;
 
 #define HEALTH_MAX 100
 
 class Object
 {
 public:
+	// The Next point is used by the map/world to keep track of where
+	// objects are. You are guaranteed that any elements in this list are
+	// physically located next to this object.
+	class Object *NextObject;
+	class Object *PrevObject;
+
+	// Public constructors and destructors
 	Object();
 	virtual ~Object(void);
 
@@ -35,7 +43,7 @@ public:
 	virtual bool IsMobile() { return false; }
 	
 	// Set the position of this object to (x,y)
-	virtual void SetPosition(int x, int y) { Position.x = x; Position.y = y; }
+	virtual void SetPosition(int x, int y);
 
 	// Routines to select and deselect this object
 	virtual bool Select(int x, int y);
@@ -74,17 +82,15 @@ public:
 	// Gets the unique identifier for this object
 	inline long GetID() { return _id; }
 
-	// Gets the current action of this object
-	inline Action::Type GetCurrentAction() { return _currentAction; }
-
-	// Gets the current status of this object
-	virtual Unit::Status GetCurrentStatus() { return _currentStatus; }
-
 	// Updates the interface state
 	virtual void UpdateInterfaceState(InterfaceState *state, int teamIdx, int unitIdx) {state;teamIdx;unitIdx;}
 
 	// Kills this objects
+	virtual bool IsDead() { return true; }
 	virtual void Kill() {}
+
+	// Gets the squad that this guy belongs to
+	Squad *GetSquad() { return _currentSquad; }
 
 	// Gets the target type of this object
 	virtual Target::Type GetType() { return _type; }
@@ -117,8 +123,13 @@ protected:
 	bool _canAmbush;
 	bool _canSmoke;
 
-	// The queue which contains the orders for this object
+	// The queue which contains the orders for this object. Orders are
+	// high level objects which are implemented by actions
 	Queue<Order> _orders;
+
+	// A queue of actions that are to be performed by this object.
+	// It is up to the object to determine what each action means
+	Queue<Action> _actionQueue;
 
 	// The name of the icon used for this object
 	char _iconName[32];
@@ -128,12 +139,6 @@ protected:
 
 	// A unique ID for this object
 	long _id;
-
-	// The current action of this guy
-	Action::Type _currentAction;
-
-	// The current statuc of this guy
-	Unit::Status _currentStatus;
 
 	// All effects on this object
 	Array<Effect> _effects;
@@ -160,4 +165,7 @@ protected:
 
 	// The highliting color
 	Color _highlightColor;
+
+	// The current squad that this soldier belongs to
+	Squad *_currentSquad;
 };

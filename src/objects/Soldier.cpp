@@ -10,11 +10,11 @@
 #include <objects\Weapon.h>
 #include <world\World.h>
 #include <graphics\Effect.h>
-#include <objects\Action.h>
 #include <misc\Utilities.h>
 #include <graphics\Widget.h>
 #include <sound\Sound.h>
 #include <application\Globals.h>
+#include <objects\SoldierActionHandlers.h>
 
 static float _currentHeadingAngles[8] = { 0.0f, 1.0f*2.0f*(float)M_PI/8.0f, 2.0f*2.0f*(float)M_PI/8.0f, 3.0f*2.0f*(float)M_PI/8.0f, 4.0f*2.0f*(float)M_PI/8.0f, 5.0f*2.0f*(float)M_PI/8.0f, 6.0f*2.0f*(float)M_PI/8.0f, 7.0f*2.0f*(float)M_PI/8.0f};
 
@@ -27,7 +27,7 @@ Soldier::Soldier(void) : Object()
 	_moving = false;
 	_currentSquad = NULL;
 	_currentStatus = Unit::Healthy;
-	_currentAction = Action::Defending;
+	_currentAction = Unit::Defending;
 	_camoIdx = 0;
 	_currentTargetType = Target::NoTarget;
 	_type = Target::Soldier;
@@ -35,6 +35,13 @@ Soldier::Soldier(void) : Object()
 	_currentWeaponIdx = 0;
 	_numWeapons = 0;
 	_inVehicle = false;
+	_currentState.Set(SoldierState::Standing);
+	_currentState.Set(SoldierState::Stopped);
+	_currentAnimationState = Soldier::Standing;
+	
+	// Initialize the speeds and accelerations
+	_maxRunningSpeed = _maxWalkingSpeed = _maxWalkingSlowSpeed = _maxCrawlingSpeed = 0.0f;
+	_runningAccel = _walkingAccel = _walkingSlowAccel = _crawlingAccel = 0.0f;
 }
 
 Soldier::~Soldier(void)
@@ -64,10 +71,10 @@ Soldier::Render(Screen *screen, Rect *clip)
 		}
 
 		if(_bHighlight) {
-			_animations[_currentState]->Render(screen, _currentHeading, Position.x-screen->Origin.x, Position.y-screen->Origin.y, true, &_highlightColor, _camoIdx);
+			_animations[_currentAnimationState]->Render(screen, _currentHeading, Position.x-screen->Origin.x, Position.y-screen->Origin.y, true, &_highlightColor, _camoIdx);
 		} else {
 			Color yellow(255,255,0);
-			_animations[_currentState]->Render(screen, _currentHeading, Position.x-screen->Origin.x, Position.y-screen->Origin.y, IsSelected(), &yellow, _camoIdx);
+			_animations[_currentAnimationState]->Render(screen, _currentHeading, Position.x-screen->Origin.x, Position.y-screen->Origin.y, IsSelected(), &yellow, _camoIdx);
 		}
 	}
 
@@ -86,35 +93,40 @@ void
 Soldier::Simulate(long dt, World *world)
 {
 	UNREFERENCED_PARAMETER(world);
-	if(_currentState == State::Dead)
+
+	if(_currentState.IsSet(SoldierState::Dead))
 	{
 		// No need to simulate anything, cuz we dead
 		// Just clear out our orders
 		return;
-	} else if(_currentState == State::DyingBlownUp
-			|| _currentState == State::DyingForward
-			|| _currentState == State::DyingBackward)
+	} else if(_currentState.IsSet(SoldierState::DyingBlownUp)
+		|| _currentState.IsSet(SoldierState::DyingForward)
+		|| _currentState.IsSet(SoldierState::DyingBackward))
 	{
 		// Just update our animation
-		_animations[_currentState]->Update(dt);
-		_currentFrameCurrentState = _animations[_currentState]->GetCurrentFrameNumber(_currentHeading);
+		_animations[_currentAnimationState]->Update(dt);
+		_currentFrameCurrentState = _animations[_currentAnimationState]->GetCurrentFrameNumber(_currentHeading);
 	
-				// Am I dead yet?
+		// Am I dead yet?
 		if(_currentFrameCurrentState == _animations[_currentHeading]->GetCurrentFrameNumber(_currentHeading)
 			&& !_currentAnimationMarker)
 		{
 			// I am dead now
-			switch(_currentState) {
-				case State::DyingBackward:
-					_currentHeading = (Direction) ((_currentHeading+4) % 8);
-					_currentState = State::Dead;
-					break;
-				case State::DyingBlownUp:
-				case State::DyingForward:
-				default:
-                    _currentState = State::Dead;
-					break;
+			if(_currentState.IsSet(SoldierState::DyingBackward))
+			{
+				_currentHeading = (Direction) ((_currentHeading+4) % 8);
+				_currentState.UnSet(SoldierState::DyingBackward);
 			}
+			else if(_currentState.IsSet(SoldierState::DyingForward))
+			{
+				_currentState.UnSet(SoldierState::DyingForward);
+			}
+			else if(_currentState.IsSet(SoldierState::DyingBlownUp))
+			{
+				_currentState.UnSet(SoldierState::DyingBlownUp);
+			}
+			_currentState.Set(SoldierState::Dead);
+			_currentAnimationState = AnimationState::Dead;
 			_currentStatus = Unit::Dead;
 		} else {
 			if(_currentFrameCurrentState != _animations[_currentHeading]->GetCurrentFrameNumber(_currentHeading))
@@ -139,16 +151,16 @@ Soldier::Simulate(long dt, World *world)
 		switch(order->GetType()) {
 			case Orders::Move:
 				// This is a move order, let's head in that direction
-				_currentAction = Action::Moving;
-				handled = HandleMoveOrder(dt, (MoveOrder *) order, Walking);
+				_currentAction = Unit::Moving;
+				handled = HandleMoveOrder(dt, (MoveOrder *) order);
 				break;
 			case Orders::Sneak:
-				_currentAction = Action::Crawling;
-				handled = HandleMoveOrder(dt, (MoveOrder *) order, Sneaking);
+				_currentAction = Unit::Crawling;
+				handled = HandleSneakOrder(dt, (MoveOrder *) order);
 				break;
 			case Orders::MoveFast:
-				_currentAction = Action::MovingFast;
-				handled = HandleMoveOrder(dt, (MoveOrder *) order, Running);
+				_currentAction = Unit::MovingFast;
+				handled = HandleMoveFastOrder(dt, (MoveOrder *) order);
 				break;
 			case Orders::Destination:
 				handled = HandleDestinationOrder((MoveOrder *)order);
@@ -156,18 +168,9 @@ Soldier::Simulate(long dt, World *world)
 			case Orders::Stop:
 				handled = HandleStopOrder((StopOrder *)order);
 				break;
-			case Orders::Pause:
-				handled = HandlePauseOrder((PauseOrder *)order, dt);
-				if(!handled) {
-					return;
-				} else {
-					_currentState = (Soldier::State) ((PauseOrder *)order)->GetOldState();
-				}
-				break;
 			case Orders::Fire:
 				handled = HandleFireOrder((FireOrder *) order);
 				break;
-
 			default:
 				handled = true;
 				break;
@@ -179,12 +182,28 @@ Soldier::Simulate(long dt, World *world)
 		}
 	}
 
+	// Now update the animations. This needs to be done before
+	// we handle our actions so that any animations that we are worried
+	// about looping are completed before rendered
+	_animations[_currentAnimationState]->Update(dt);
+	_currentFrameCurrentState = _animations[_currentAnimationState]->GetCurrentFrameNumber(_currentHeading);
+
+	// Simulate my weapon
+	_weapons[_currentWeaponIdx]->Simulate(dt);
+
+	// Perform any actions that need to be performed
+	Action *action = _actionQueue.Peek();
+	if(action != NULL)
+	{
+		if(SoldierActionHandlers::Handle(this, action, dt))
+		{
+			action = _actionQueue.Dequeue();
+			delete action;
+		}
+	}
+
 	PlanMovement(dt);
 	
-	// Now update the animations
-	_animations[_currentState]->Update(dt);
-	_currentFrameCurrentState = _animations[_currentState]->GetCurrentFrameNumber(_currentHeading);
-
 	// Update any effects
 	for(int i = 0; i < _effects.Count; ++i) {
 		_effects.Items[i]->Simulate(dt);
@@ -193,61 +212,14 @@ Soldier::Simulate(long dt, World *world)
 			--i;
 		}
 	}
-
-	// Update my weapon if I can
-	_weapons[_currentWeaponIdx]->Simulate(dt);
-	if(_currentState == State::StandingFiring || _currentState == State::ProneFiring
-		|| _currentState == State::StandingReloading || _currentState == State::ProneReloading)
-	{
-		if(_weapons[_currentWeaponIdx]->CanFire()) {
-			Shoot(_weapons[_currentWeaponIdx], _currentTarget, _currentTargetType, _currentTargetX, _currentTargetY);
-		} else if(_weapons[_currentWeaponIdx]->IsEmpty()) {
-			if(_weaponsNumClips[_currentWeaponIdx] > 0) {
-				_weapons[_currentWeaponIdx]->Reload();
-				--_weaponsNumClips[_currentWeaponIdx];
-				_currentAction = Action::Reloading;
-			} else {
-				_currentState = (_currentState==State::StandingFiring || _currentState==State::StandingReloading) ? _currentState = State::Standing : _currentState = State::Prone;
-				_currentAction = Action::Defending;
-			}
-		} else if(_weapons[_currentWeaponIdx]->IsReloading()) {
-			_currentState = (_currentState==State::StandingFiring || _currentState==State::StandingReloading) ? _currentState = State::StandingReloading : _currentState = State::ProneReloading;
-		}
-	}
-
-	// Now update some of my states, like the dying state
-	if(_currentState == State::DyingBlownUp || _currentState == State::DyingForward || _currentState == State::DyingBackward) 
-	{
-		// Am I dead yet?
-		if(_currentFrameCurrentState == _animations[_currentHeading]->GetCurrentFrameNumber(_currentHeading)
-			&& !_currentAnimationMarker)
-		{
-			// I am dead now
-			switch(_currentState) {
-				case State::DyingBackward:
-					_currentHeading = (Direction) ((_currentHeading+4) % 8);
-					_currentState = State::Dead;
-					break;
-				case State::DyingBlownUp:
-				case State::DyingForward:
-				default:
-                    _currentState = State::Dead;
-					break;
-			}
-			_currentStatus = Unit::Dead;
-		} else {
-			if(_currentFrameCurrentState != _animations[_currentHeading]->GetCurrentFrameNumber(_currentHeading))
-			{
-				_currentAnimationMarker = false;
-			}
-		}
-	}
 }
 
 void
 Soldier::SetPosition(int x, int y)
 {
-	Object::SetPosition(x,y);
+	Point oldPosition = Position;
+	Object::SetPosition(x,y);	
+	g_Globals->World.CurrentWorld->MoveObject(this, &oldPosition, &Position);
 	_position.x = (float) x;
 	_position.y = (float) y;
 }
@@ -255,9 +227,9 @@ Soldier::SetPosition(int x, int y)
 bool
 Soldier::Select(int x, int y)
 {
-	// I need to find the screen coordinates of this object
 	bool rv = Contains(x, y);
 	if(rv) {
+		// Select me
 		Object::Select(true);
 	}
 	return rv;
@@ -267,24 +239,22 @@ bool
 Soldier::Contains(int x, int y)
 {
 	Region r;
-	_animations[_currentState]->GetExtents(_currentHeading, Position.x, Position.y, &r);
+	_animations[_currentAnimationState]->GetExtents(_currentHeading, Position.x, Position.y, &r);
 	return Screen::PointInRegion(x, y, &r);
 }
 
 bool
 Soldier::HandleDestinationOrder(MoveOrder *order)
 {
-	if(Position.x == order->X && Position.y == order->Y) {
+	Vector2 range;
+	range.x = (float)(Position.x-order->X);
+	range.y = (float)(Position.y-order->Y);
+
+	if(range.Magnitude() < 5.01f) 
+	{
 		AddOrder(new StopOrder());
 
-		// If I am the squad leader, then announce we have stopped
-		if(_currentSquad != NULL) {
-			if(_currentSquad->GetSquadLeader() == this) {
-				g_Globals->World.Voices->GetSound("move completed")->Play();	
-			}
-		} else {
-			g_Globals->World.Voices->GetSound("move completed")->Play();			
-		}
+
 		return true;
 	}
 	return false;
@@ -293,33 +263,110 @@ Soldier::HandleDestinationOrder(MoveOrder *order)
 bool 
 Soldier::HandleStopOrder(StopOrder *order)
 {
-	UNREFERENCED_PARAMETER(order);
-	// order can be NULL!
-	_moving = false;
-	_currentState = Standing;
-	_currentAction = Action::Defending;
-	_velocity.x = 0; // Stop moving!
-	_velocity.y = 0;
+	// Let's choose an action to implement this order
+	Action *action = new Action();
+	action->Index = SoldierAction::Stop;
+	action->Data = NULL;
+	
+	// Clear our orders and our actions
+	// XXX/GWS: This needs to clean up memory!!!
+	_actionQueue.Clear();
+	
+	// Add our action
+	_actionQueue.Enqueue(action);
+	
 	return true;
 }
 
 bool
-Soldier::HandleMoveOrder(long dt, MoveOrder *order, Soldier::State newState)
+Soldier::HandleMoveOrder(long dt, MoveOrder *order)
 {
 	UNREFERENCED_PARAMETER(dt);
-	// Head to the destination
-	MoveOrder *o = new MoveOrder(order->X, order->Y, Orders::Destination);
-	AddOrder(o);
 
-	_moving = true;
-	_currentState = newState;
+	// Let's choose an action to implement this order
+	Action *action = new Action();
+	action->Index = SoldierAction::Walk;
+	Point *p = new Point();
+	p->x = order->X;
+	p->y = order->Y;
+	action->Data = p;
 	
-	// Get my current path from my squad
-	_currentPath = _currentSquad->GetCurrentPath();
+	// Let's first stop
+	HandleStopOrder(NULL);
 
-	// Start at zero velocity
-	_velocity.x = 0; // Stop moving!
-	_velocity.y = 0;
+	// Add our action
+	_actionQueue.Enqueue(action);
+	
+	return true;
+}
+
+bool
+Soldier::HandleMoveFastOrder(long dt, MoveOrder *order)
+{
+	UNREFERENCED_PARAMETER(dt);
+
+	// Let's choose an action to implement this order
+	Action *action = new Action();
+	action->Index = SoldierAction::Run;
+	Point *p = new Point();
+	p->x = order->X;
+	p->y = order->Y;
+	action->Data = p;
+	
+	// Let's first stop
+	HandleStopOrder(NULL);
+	
+	// Add our action
+	_actionQueue.Enqueue(action);
+	
+	return true;
+}
+
+bool
+Soldier::HandleSneakOrder(long dt, MoveOrder *order)
+{
+	UNREFERENCED_PARAMETER(dt);
+
+	// Let's choose an action to implement this order
+	Action *action = new Action();
+	action->Index = SoldierAction::Crawl;
+	Point *p = new Point();
+	p->x = order->X;
+	p->y = order->Y;
+	action->Data = p;
+	
+	// Let's first stop
+	HandleStopOrder(NULL);
+	
+	// Add our action
+	_actionQueue.Enqueue(action);
+	
+	return true;
+}
+
+bool
+Soldier::HandleFireOrder(FireOrder *order)
+{
+	// Let's choose an action to implement this order
+	// I can implement a fire order by either a standing
+	// fire order or a prone fire order.
+	// XXX/GWS: Need to implement action to order matching,
+	//			eg figuring out which actions to use to implement
+	//			and order
+	Action *action = new Action();
+	action->Index = SoldierAction::ProneFire;
+	SoldierActionHandlers::FireActionData *data = new SoldierActionHandlers::FireActionData();
+	data->Target = order->Target;
+	data->TargetType = order->TargetType;
+	data->X = order->X;
+	data->Y = order->Y;
+	action->Data = data;
+
+	// Let's first stop
+	HandleStopOrder(NULL);
+
+	// Add our action
+	_actionQueue.Enqueue(action);
 
 	return true;
 }
@@ -345,19 +392,25 @@ Soldier::PlanMovement(long dt)
 			if(FindPath(_currentPath)) {
 				// We are about to change direction, so let's pause for a little
 				// bit.
-				InsertOrder(new PauseOrder(DIRECTION_CHANGE_PAUSE, _currentState, State::Standing), 0);
+				// XXX/GWS: I don't need to do that
+				//InsertOrder(new PauseOrder(DIRECTION_CHANGE_PAUSE, _currentState, State::Standing), 0);
+				_velocity.x = 0.0f;
+				_velocity.y = 0.0f;
 			} else {
 				// Now test move it
 				Vector2 vel, pos;
-				Move(&pos, &vel, _currentHeading, dt, _currentState);
+				Move(&pos, &vel, _currentHeading, dt);
 
 				// Go ahead and move this fucker
 				_position.x = pos.x;
 				_position.y = pos.y;
 				_velocity.x = vel.x;
 				_velocity.y = vel.y;
+				
+				Point oldPosition = Position;
 				Position.x = (int) _position.x;
 				Position.y = (int) _position.y;
+				g_Globals->World.CurrentWorld->MoveObject(this, &oldPosition, &Position);
 			}
 			return;
 		}
@@ -371,19 +424,24 @@ Soldier::PlanMovement(long dt)
 				if(FindPath(_currentPath)) {
 					// We are about to change direction, so let's pause for a little
 					// bit.
-					InsertOrder(new PauseOrder(DIRECTION_CHANGE_PAUSE, _currentState, State::Standing), 0);
+					// XXX/GWS: Don't need to do this
+					//InsertOrder(new PauseOrder(DIRECTION_CHANGE_PAUSE, _currentState, State::Standing), 0);
+					_velocity.x = 0.0f;
+					_velocity.y = 0.0f;
 				} else {
 					// Now test move it
 					Vector2 vel, pos;
-					Move(&pos, &vel, _currentHeading, dt, _currentState);
+					Move(&pos, &vel, _currentHeading, dt);
 
 					// Go ahead and move this fucker
 					_position.x = pos.x;
 					_position.y = pos.y;
 					_velocity.x = vel.x;
 					_velocity.y = vel.y;
+					Point oldPosition = Position;
 					Position.x = (int) _position.x;
 					Position.y = (int) _position.y;
+					g_Globals->World.CurrentWorld->MoveObject(this, &oldPosition, &Position);
 				}
 				return;
 			}
@@ -406,14 +464,15 @@ Soldier::PlanMovement(long dt)
 					Order *o = _orders.Peek();
 					if(o == NULL || (o != NULL && (_orders.Peek()->GetType() != Orders::Pause))) {
 						_currentHeading = heading;
-						InsertOrder(new PauseOrder(DIRECTION_CHANGE_PAUSE, _currentState, Soldier::State::Standing), 0);
+						// XXX/GWS: Don't do that
+						//InsertOrder(new PauseOrder(DIRECTION_CHANGE_PAUSE, _currentState, SoldierState::Standing), 0);
 						return;
 					}
 				}
 				
 				// Try moving to this location.
 				Vector2 vel, pos;
-				Move(&pos, &vel, heading, dt, _currentState);
+				Move(&pos, &vel, heading, dt);
 
 				// Now, find out if this move is valid. This means that
 				// make sure we arent too close to anyone else.
@@ -430,7 +489,8 @@ Soldier::PlanMovement(long dt)
 							// We are about to change direction, so let's pause for a little
 							// bit.
 							_currentHeading = heading;
-							InsertOrder(new PauseOrder(DIRECTION_CHANGE_PAUSE, _currentState, Soldier::State::Standing), 0);
+							// XXX/GWS: Don't need to do this
+							//InsertOrder(new PauseOrder(DIRECTION_CHANGE_PAUSE, _currentState, SoldierState::Standing), 0);
 							return;
 						}
 					}
@@ -442,8 +502,10 @@ Soldier::PlanMovement(long dt)
 				_velocity.x = vel.x;
 				_velocity.y = vel.y;
 				_currentHeading = heading;
+				Point oldPosition = Position;
 				Position.x = (int) _position.x;
 				Position.y = (int) _position.y;
+				g_Globals->World.CurrentWorld->MoveObject(this, &oldPosition, &Position);
 				_moving = true;				
 				return;
 			} else {
@@ -495,7 +557,8 @@ Soldier::FindPath(Path *path)
 
 			// If there is nothing left then we are done
 			if(NULL == _currentPath) {
-				HandleStopOrder(NULL);
+				//HandleStopOrder(NULL);
+				return false;
 			}
 		} else {
 			_currentHeading = North;
@@ -513,27 +576,43 @@ Soldier::FindPath(Path *path)
 }
 
 void
-Soldier::Move(Vector2 *posOut, Vector2 *velOut, Direction heading, long dt, State state)
+Soldier::Move(Vector2 *posOut, Vector2 *velOut, Direction heading, long dt)
 {
-	velOut->x = _velocity.x - _accels[state]*dt*sin(_currentHeadingAngles[heading])/1000.0f;
-	velOut->y = _velocity.y + _accels[state]*dt*cos(_currentHeadingAngles[heading])/1000.0f;
+	float accel = 0.0f;
+	float maxSpeed = 0.0f;
 
-	if(velOut->Magnitude() > _speeds[state]) { 
+	if(_currentState.IsSet(SoldierState::Running))
+	{
+		accel = _runningAccel;
+		maxSpeed = _maxRunningSpeed;
+	}
+	else if(_currentState.IsSet(SoldierState::Walking))
+	{
+		accel = _walkingAccel;
+		maxSpeed = _maxWalkingSpeed;
+	}
+	else if(_currentState.IsSet(SoldierState::WalkingSlow))
+	{
+		accel = _walkingSlowAccel;
+		maxSpeed = _maxWalkingSlowSpeed;
+	}
+	else if(_currentState.IsSet(SoldierState::Crawling))
+	{
+		accel = _crawlingAccel;
+		maxSpeed = _maxCrawlingSpeed;
+	}
+
+	velOut->x = _velocity.x - accel*dt*sin(_currentHeadingAngles[heading])/1000.0f;
+	velOut->y = _velocity.y + accel*dt*cos(_currentHeadingAngles[heading])/1000.0f;
+
+	if(velOut->Magnitude() > maxSpeed) { 
 		velOut->Normalize();
-		velOut->Multiply(_speeds[state]);
+		velOut->Multiply(maxSpeed);
 	}
 
 	// Now we need to try moving this object to its new position
 	posOut->x = _position.x + velOut->x*fabs(sin(_currentHeadingAngles[heading]))*dt*(float)(g_Globals->World.Constants.PixelsPerMeter)/1000.0f;
 	posOut->y = _position.y + velOut->y*fabs(cos(_currentHeadingAngles[heading]))*dt*(float)(g_Globals->World.Constants.PixelsPerMeter)/1000.0f;
-}
-
-bool
-Soldier::HandlePauseOrder(PauseOrder *order, long dt)
-{
-	_currentState = (Soldier::State) order->GetPauseState();
-	order->IncrementTotalTime(dt);
-	return order->GetTotalTime() >= order->GetPauseTime();
 }
 
 void 
@@ -569,31 +648,12 @@ void
 Soldier::UpdateInterfaceState(InterfaceState *state, int teamIdx, int unitIdx)
 {
 	strcpy(state->SquadStates[teamIdx].UnitStates[unitIdx].Name, GetPersonalName());
-	state->SquadStates[teamIdx].UnitStates[unitIdx].CurrentAction = GetCurrentAction();
-	state->SquadStates[teamIdx].UnitStates[unitIdx].CurrentStatus = GetCurrentStatus();
+	state->SquadStates[teamIdx].UnitStates[unitIdx].CurrentAction = _currentAction;
+	state->SquadStates[teamIdx].UnitStates[unitIdx].CurrentStatus = _currentStatus;
 	strcpy(state->SquadStates[teamIdx].UnitStates[unitIdx].WeaponIcon, _weapons[_currentWeaponIdx]->GetIconName());
 	state->SquadStates[teamIdx].UnitStates[unitIdx].NumRounds = _weapons[_currentWeaponIdx]->GetCurrentRounds() + _weapons[_currentWeaponIdx]->GetRoundsPerClip()*_weaponsNumClips[_currentWeaponIdx];
 	strcpy(state->SquadStates[teamIdx].UnitStates[unitIdx].Title, _title);
 	strcpy(state->SquadStates[teamIdx].UnitStates[unitIdx].Rank, _rank);
-}
-
-bool
-Soldier::HandleFireOrder(FireOrder *order)
-{
-	// Stop moving
-	HandleStopOrder(NULL);
-
-	// Set my state
-	_currentState = State::StandingFiring;
-	_currentAction = Action::Firing;
-
-	// Set the current target and stuff
-	_currentTarget = order->Target;
-	_currentTargetType = order->TargetType;
-	_currentTargetX = order->X;
-	_currentTargetY = order->Y;
-
-	return true;
 }
 
 void
@@ -603,13 +663,29 @@ Soldier::Kill()
 	HandleStopOrder(NULL);
 
 	// Kills this soldier
-	_currentState = (State) ((rand()%3) + State::DyingBlownUp);
+	switch(rand()%3)
+	{
+	case 0:
+		_currentState.Set(SoldierState::DyingBackward);
+		_currentAnimationState = AnimationState::DyingBackward;
+		break;
+	case 1:
+		_currentState.Set(SoldierState::DyingForward);
+		_currentAnimationState = AnimationState::DyingForward;
+		break;
+	case 2:
+		_currentState.Set(SoldierState::DyingBlownUp);
+		_currentAnimationState = AnimationState::DyingBlownUp;
+		break;
+	default:
+		break;
+	}
 
 	// Reset the dying animation
-	_animations[_currentState]->Reset();
+	_animations[_currentAnimationState]->Reset();
 
 	// Remember the current animation frame
-	_currentFrameCurrentState = _animations[_currentState]->GetCurrentFrameNumber(_currentHeading);
+	_currentFrameCurrentState = _animations[_currentAnimationState]->GetCurrentFrameNumber(_currentHeading);
 	_currentAnimationMarker = true;
 
 	// XXX/GWS: Probably should play a sound here
@@ -624,10 +700,10 @@ Soldier::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 			if(target != NULL) {
 				// Make sure my target is not already dead or dying!
 				Soldier *s = (Soldier *) target;
-				if(s->_currentState == State::Dead
-					|| s->_currentState == State::DyingBlownUp
-					|| s->_currentState == State::DyingForward
-					|| s->_currentState == State::DyingBackward) 
+				if(s->_currentState.IsSet(SoldierState::Dead)
+					|| s->_currentState.IsSet(SoldierState::DyingBlownUp)
+					|| s->_currentState.IsSet(SoldierState::DyingForward)
+					|| s->_currentState.IsSet(SoldierState::DyingBackward))
 				{
 					_currentTarget = s->GetSquad();
 					_currentTargetType = Target::Squad;
@@ -647,8 +723,8 @@ Soldier::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 			_currentTarget = FindTarget((Squad *) target);
 			_currentTargetType = Target::Soldier;
 			if(_currentTarget == NULL) {
-				_currentAction = Action::NoTarget;
-				_currentState = State::Standing;
+				_currentAction = Unit::NoTarget;
+				_currentState.UnSet(SoldierState::Firing);
 			}
 			return;
 		case Target::Area:
@@ -657,9 +733,8 @@ Soldier::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 			break;
 	}
 	weapon->Fire();
-			
-	_currentState = (_currentState==State::StandingFiring || _currentState==State::StandingReloading) ? _currentState = State::StandingFiring : _currentState = State::ProneFiring;
-	_currentAction = Action::Firing;
+	_currentState.Set(SoldierState::Firing);
+	_currentAction = Unit::Firing;
 	_effects.Add(g_Globals->World.Effects->GetEffect(weapon->GetEffect(_currentHeading)));
 }
 
@@ -727,7 +802,7 @@ Soldier::GetCurrentStatus()
 bool
 Soldier::IsDead()
 {
-	return _currentState == State::Dead || _currentState == State::DyingBlownUp || _currentState == DyingBackward || _currentState == DyingForward;
+	return _currentState.IsSet(SoldierState::Dead) || _currentState.IsSet(SoldierState::DyingBlownUp) || _currentState.IsSet(SoldierState::DyingBackward) || _currentState.IsSet(SoldierState::DyingForward);
 }
 
 void 

@@ -152,4 +152,11 @@ protected:
 	};
 	CrewSlot _crew[MAX_CREW];
 	int _numCrew;
+
+	// The current action of this guy. Used only for reporting.
+	Unit::Action _currentAction;
+
+	// The current statuc of this guy. Used only for reporting.
+	Unit::Status _currentStatus;
+
 };

@@ -2,11 +2,14 @@
 #include <string.h> // for memset()
 #include <orders\Order.h>
 #include <graphics\Screen.h>
+#include <application\Globals.h>
 
 static long g_id = 0;
 
 Object::Object()
 {
+	NextObject = NULL;
+	PrevObject = NULL;
 	Position.x = Position.y = 0;
 	_isSelected = false;
 	_bHighlight = false;
@@ -62,4 +65,11 @@ Object::ClearOrders()
 		_orders.Dequeue();
 		o->Release();
 	}
+}
+
+void
+Object::SetPosition(int x, int y)
+{
+	Position.x = x;
+	Position.y = y;
 }
