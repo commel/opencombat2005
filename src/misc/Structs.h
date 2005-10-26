@@ -67,6 +67,7 @@ struct Vector2
 	float x;
 	float y;
 
+	Vector2() { x = 0.0f; y = 0.0f; }
 	inline float Magnitude() { return sqrt(x*x + y*y); }
 	inline void Normalize() { float mag = Magnitude(); x = x / mag; y = y / mag; }
 	inline void Multiply(float scalar) { x = x*scalar; y = y*scalar; }

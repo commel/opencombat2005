@@ -16,8 +16,6 @@
 #include <application\Globals.h>
 #include <objects\SoldierActionHandlers.h>
 
-static float _currentHeadingAngles[8] = { 0.0f, 1.0f*2.0f*(float)M_PI/8.0f, 2.0f*2.0f*(float)M_PI/8.0f, 3.0f*2.0f*(float)M_PI/8.0f, 4.0f*2.0f*(float)M_PI/8.0f, 5.0f*2.0f*(float)M_PI/8.0f, 6.0f*2.0f*(float)M_PI/8.0f, 7.0f*2.0f*(float)M_PI/8.0f};
-
 // The old close combat used 5 pixels per meter
 #define MIN_DISTANCE_BETWEEN_SOLDIERS 5.0f
 #define DIRECTION_CHANGE_PAUSE 500
@@ -38,7 +36,8 @@ Soldier::Soldier(void) : Object()
 	_currentState.Set(SoldierState::Standing);
 	_currentState.Set(SoldierState::Stopped);
 	_currentAnimationState = Soldier::Standing;
-	
+	_formationPosition = 0;
+
 	// Initialize the speeds and accelerations
 	_maxRunningSpeed = _maxWalkingSpeed = _maxWalkingSlowSpeed = _maxCrawlingSpeed = 0.0f;
 	_runningAccel = _walkingAccel = _walkingSlowAccel = _crawlingAccel = 0.0f;
@@ -150,17 +149,11 @@ Soldier::Simulate(long dt, World *world)
 		bool handled = false;
 		switch(order->GetType()) {
 			case Orders::Move:
-				// This is a move order, let's head in that direction
-				_currentAction = Unit::Moving;
-				handled = HandleMoveOrder(dt, (MoveOrder *) order);
-				break;
 			case Orders::Sneak:
-				_currentAction = Unit::Crawling;
-				handled = HandleSneakOrder(dt, (MoveOrder *) order);
-				break;
 			case Orders::MoveFast:
-				_currentAction = Unit::MovingFast;
-				handled = HandleMoveFastOrder(dt, (MoveOrder *) order);
+				// This should never happen, because we handle this stuff
+				// through actions now
+				assert(0);
 				break;
 			case Orders::Destination:
 				handled = HandleDestinationOrder((MoveOrder *)order);
@@ -202,8 +195,6 @@ Soldier::Simulate(long dt, World *world)
 		}
 	}
 
-	PlanMovement(dt);
-	
 	// Update any effects
 	for(int i = 0; i < _effects.Count; ++i) {
 		_effects.Items[i]->Simulate(dt);
@@ -263,6 +254,8 @@ Soldier::HandleDestinationOrder(MoveOrder *order)
 bool 
 Soldier::HandleStopOrder(StopOrder *order)
 {
+	UNREFERENCED_PARAMETER(order);
+
 	// Let's choose an action to implement this order
 	Action *action = new Action();
 	action->Index = SoldierAction::Stop;
@@ -278,70 +271,57 @@ Soldier::HandleStopOrder(StopOrder *order)
 	return true;
 }
 
-bool
-Soldier::HandleMoveOrder(long dt, MoveOrder *order)
+void
+Soldier::FollowPath(Path *path, SoldierAction::Action movementStyle)
 {
-	UNREFERENCED_PARAMETER(dt);
-
-	// Let's choose an action to implement this order
-	Action *action = new Action();
-	action->Index = SoldierAction::Walk;
-	Point *p = new Point();
-	p->x = order->X;
-	p->y = order->Y;
-	action->Data = p;
-	
 	// Let's first stop
 	HandleStopOrder(NULL);
 
-	// Add our action
-	_actionQueue.Enqueue(action);
-	
-	return true;
+	while(path != NULL)
+	{
+		Action *action = new Action();
+		action->Index = movementStyle;
+		SoldierActionHandlers::TileData *data = new SoldierActionHandlers::TileData();
+		data->TileI = path->X;
+		data->TileJ = path->Y;
+		action->Data = data;
+		path = path->Next;
+
+		// Add our action to the queue
+		_actionQueue.Insert(action, _actionQueue.Count());
+	}
+
+	// Add an action for our destination reached
+	Action *action = new Action(SoldierAction::DestinationReached, NULL);
+	_actionQueue.Insert(action, _actionQueue.Count());
+	action = new Action(SoldierAction::Stop, NULL);
+	_actionQueue.Insert(action, _actionQueue.Count());
 }
 
-bool
-Soldier::HandleMoveFastOrder(long dt, MoveOrder *order)
+// Tells this soldier to follow the given object
+void 
+Soldier::Follow(Object *object, Formation::Type formationType, float formationSpread, int formationIdx, SoldierAction::Action movementStyle)
 {
-	UNREFERENCED_PARAMETER(dt);
-
-	// Let's choose an action to implement this order
-	Action *action = new Action();
-	action->Index = SoldierAction::Run;
-	Point *p = new Point();
-	p->x = order->X;
-	p->y = order->Y;
-	action->Data = p;
-	
 	// Let's first stop
 	HandleStopOrder(NULL);
-	
-	// Add our action
-	_actionQueue.Enqueue(action);
-	
-	return true;
-}
 
-bool
-Soldier::HandleSneakOrder(long dt, MoveOrder *order)
-{
-	UNREFERENCED_PARAMETER(dt);
+	// Add our follow in formation action
+	Action *action = new Action(SoldierAction::FollowInFormation, NULL);
+	SoldierActionHandlers::FollowFormationData *data = new SoldierActionHandlers::FollowFormationData();
+	data->TargetObject = object;
+	data->TargetFormation = formationType;
+	data->FormationIndex = formationIdx;
+	data->FormationSpread = formationSpread;
+	data->MovementStyle = movementStyle;
+	action->Data = data;
+	_actionQueue.Insert(action, _actionQueue.Count());
 
-	// Let's choose an action to implement this order
-	Action *action = new Action();
-	action->Index = SoldierAction::Crawl;
-	Point *p = new Point();
-	p->x = order->X;
-	p->y = order->Y;
-	action->Data = p;
-	
-	// Let's first stop
-	HandleStopOrder(NULL);
-	
-	// Add our action
-	_actionQueue.Enqueue(action);
-	
-	return true;
+	// Add an action for our destination reached
+	action = new Action(SoldierAction::DestinationReached, NULL);
+	_actionQueue.Insert(action, _actionQueue.Count());
+	action = new Action(SoldierAction::Stop, NULL);
+	_actionQueue.Insert(action, _actionQueue.Count());
+
 }
 
 bool
@@ -356,7 +336,7 @@ Soldier::HandleFireOrder(FireOrder *order)
 	Action *action = new Action();
 	action->Index = SoldierAction::ProneFire;
 	SoldierActionHandlers::FireActionData *data = new SoldierActionHandlers::FireActionData();
-	data->Target = order->Target;
+	data->TargetObject = order->Target;
 	data->TargetType = order->TargetType;
 	data->X = order->X;
 	data->Y = order->Y;
@@ -369,250 +349,6 @@ Soldier::HandleFireOrder(FireOrder *order)
 	_actionQueue.Enqueue(action);
 
 	return true;
-}
-
-/**
- * Movement involves quite a few things. Listed in order:
- *
- * 1.) The squad leader is responsible for pathfinding algorithms. Individual
- *	   squad members simply fill in behind and follow the squad leader.
- * 2.) Soldiers should try to stay a couple pixels away from each other.
- * 3.) If the squad leader is moving, then the individual soldiers should move too.
- * 4.) When the squad leader stops, the individual soldiers should find cover and
- *	   stop too.
- */
-void
-Soldier::PlanMovement(long dt)
-{
-	// Am I the squad leader?
-	Object *squadLeader=NULL;
-	if(_currentSquad != NULL && ((squadLeader = _currentSquad->GetSquadLeader()) == this)) {
-		// I am the squad leader
-		if(_moving) {
-			if(FindPath(_currentPath)) {
-				// We are about to change direction, so let's pause for a little
-				// bit.
-				// XXX/GWS: I don't need to do that
-				//InsertOrder(new PauseOrder(DIRECTION_CHANGE_PAUSE, _currentState, State::Standing), 0);
-				_velocity.x = 0.0f;
-				_velocity.y = 0.0f;
-			} else {
-				// Now test move it
-				Vector2 vel, pos;
-				Move(&pos, &vel, _currentHeading, dt);
-
-				// Go ahead and move this fucker
-				_position.x = pos.x;
-				_position.y = pos.y;
-				_velocity.x = vel.x;
-				_velocity.y = vel.y;
-				
-				Point oldPosition = Position;
-				Position.x = (int) _position.x;
-				Position.y = (int) _position.y;
-				g_Globals->World.CurrentWorld->MoveObject(this, &oldPosition, &Position);
-			}
-			return;
-		}
-	} else {
-		// I am not the squad leader, or I am not in a squad. If I am not in a
-		// squad, then I am responsible for handling movement just the
-		// same as being a squad leader
-		if(_currentSquad == NULL) {
-			// There is no squad, so do my movement
-			if(_moving) {
-				if(FindPath(_currentPath)) {
-					// We are about to change direction, so let's pause for a little
-					// bit.
-					// XXX/GWS: Don't need to do this
-					//InsertOrder(new PauseOrder(DIRECTION_CHANGE_PAUSE, _currentState, State::Standing), 0);
-					_velocity.x = 0.0f;
-					_velocity.y = 0.0f;
-				} else {
-					// Now test move it
-					Vector2 vel, pos;
-					Move(&pos, &vel, _currentHeading, dt);
-
-					// Go ahead and move this fucker
-					_position.x = pos.x;
-					_position.y = pos.y;
-					_velocity.x = vel.x;
-					_velocity.y = vel.y;
-					Point oldPosition = Position;
-					Position.x = (int) _position.x;
-					Position.y = (int) _position.y;
-					g_Globals->World.CurrentWorld->MoveObject(this, &oldPosition, &Position);
-				}
-				return;
-			}
-		} else {
-			// I am not the squad leader, so try to follow the squad leader
-			// if we can.
-			// Now, is the squad leader moving?
-			if(squadLeader->IsMoving()) {
-				// The squad leader is moving, so try to follow him
-				Point squadLeaderPos;
-				squadLeaderPos.x = squadLeader->Position.x;
-				squadLeaderPos.y = squadLeader->Position.y;
-
-				// Now, which direction should I be going?
-				Direction heading = Utilities::FindHeading(Position.x, Position.y, squadLeaderPos.x, squadLeaderPos.y);
-
-				if(heading != _currentHeading) {
-					// We are about to change direction, so let's pause for a little
-					// bit, but only if we're not already paused
-					Order *o = _orders.Peek();
-					if(o == NULL || (o != NULL && (_orders.Peek()->GetType() != Orders::Pause))) {
-						_currentHeading = heading;
-						// XXX/GWS: Don't do that
-						//InsertOrder(new PauseOrder(DIRECTION_CHANGE_PAUSE, _currentState, SoldierState::Standing), 0);
-						return;
-					}
-				}
-				
-				// Try moving to this location.
-				Vector2 vel, pos;
-				Move(&pos, &vel, heading, dt);
-
-				// Now, find out if this move is valid. This means that
-				// make sure we arent too close to anyone else.
-				Vector2 dist;
-				Array<Soldier> *soldiers = _currentSquad->GetSoldiers();
-				for(int i = 0; i < soldiers->Count; ++i) {
-					Soldier *s = soldiers->Items[i];
-					if(s != this) {
-						dist.x = s->Position.x - pos.x;
-						dist.y = s->Position.y - pos.y;
-						if(dist.Magnitude() <= MIN_DISTANCE_BETWEEN_SOLDIERS) {
-							// We are too close, so let's not move this fucker
-							// yet
-							// We are about to change direction, so let's pause for a little
-							// bit.
-							_currentHeading = heading;
-							// XXX/GWS: Don't need to do this
-							//InsertOrder(new PauseOrder(DIRECTION_CHANGE_PAUSE, _currentState, SoldierState::Standing), 0);
-							return;
-						}
-					}
-				}
-
-				// Go ahead and move this fucker
-				_position.x = pos.x;
-				_position.y = pos.y;
-				_velocity.x = vel.x;
-				_velocity.y = vel.y;
-				_currentHeading = heading;
-				Point oldPosition = Position;
-				Position.x = (int) _position.x;
-				Position.y = (int) _position.y;
-				g_Globals->World.CurrentWorld->MoveObject(this, &oldPosition, &Position);
-				_moving = true;				
-				return;
-			} else {
-				// The squad leader is not moving, so if we are moving,
-				// then we need to stop
-				if(_moving) {
-					// Stop!
-					ClearOrders();
-					AddOrder(new StopOrder());
-					return;
-				} else {
-					// We are not moving, he's not moving, find
-					// cover if we have not already
-					// XXX/GWS: Todo
-				}
-			}
-		}
-	}
-}
-
-
-// Returns true if our heading changes
-bool
-Soldier::FindPath(Path *path)
-{
-	// XXX/GWS: This needs to be a better direction finding algorithm
-	Direction oldHeading = _currentHeading;
-	if(NULL == path) {
-		return false;
-	}
-
-	int x=0,y=0;
-	g_Globals->World.CurrentWorld->ConvertTileToPosition(path->X, path->Y, &x, &y);
-
-	if(Position.x < x) {
-		if(Position.y < y) {
-			_currentHeading = SouthEast;
-		} else if(Position.y == y) {
-			_currentHeading = East;
-		} else {
-			_currentHeading = NorthEast;
-		}
-	} else if(Position.x == x) {
-		if(Position.y < y) {
-			_currentHeading = South;
-		} else if(Position.y == y) {
-			// Let's move to the next path item!
-			_currentPath = _currentPath->Next;
-
-			// If there is nothing left then we are done
-			if(NULL == _currentPath) {
-				//HandleStopOrder(NULL);
-				return false;
-			}
-		} else {
-			_currentHeading = North;
-		}
-	} else {
-		if(Position.y < y) {
-			_currentHeading = SouthWest;
-		} else if(Position.y == y) {
-			_currentHeading = West;
-		} else {
-			_currentHeading = NorthWest;
-		}
-	}
-	return _currentHeading != oldHeading;
-}
-
-void
-Soldier::Move(Vector2 *posOut, Vector2 *velOut, Direction heading, long dt)
-{
-	float accel = 0.0f;
-	float maxSpeed = 0.0f;
-
-	if(_currentState.IsSet(SoldierState::Running))
-	{
-		accel = _runningAccel;
-		maxSpeed = _maxRunningSpeed;
-	}
-	else if(_currentState.IsSet(SoldierState::Walking))
-	{
-		accel = _walkingAccel;
-		maxSpeed = _maxWalkingSpeed;
-	}
-	else if(_currentState.IsSet(SoldierState::WalkingSlow))
-	{
-		accel = _walkingSlowAccel;
-		maxSpeed = _maxWalkingSlowSpeed;
-	}
-	else if(_currentState.IsSet(SoldierState::Crawling))
-	{
-		accel = _crawlingAccel;
-		maxSpeed = _maxCrawlingSpeed;
-	}
-
-	velOut->x = _velocity.x - accel*dt*sin(_currentHeadingAngles[heading])/1000.0f;
-	velOut->y = _velocity.y + accel*dt*cos(_currentHeadingAngles[heading])/1000.0f;
-
-	if(velOut->Magnitude() > maxSpeed) { 
-		velOut->Normalize();
-		velOut->Multiply(maxSpeed);
-	}
-
-	// Now we need to try moving this object to its new position
-	posOut->x = _position.x + velOut->x*fabs(sin(_currentHeadingAngles[heading]))*dt*(float)(g_Globals->World.Constants.PixelsPerMeter)/1000.0f;
-	posOut->y = _position.y + velOut->y*fabs(cos(_currentHeadingAngles[heading]))*dt*(float)(g_Globals->World.Constants.PixelsPerMeter)/1000.0f;
 }
 
 void 
@@ -817,4 +553,104 @@ Soldier::InsertWeapon(Weapon *weapon, int numClips)
 	}
 	_weapons[0] = weapon;
 	_weaponsNumClips[0] = numClips;
+}
+
+#define MAX_PATH_AVERAGE 3
+void
+Soldier::GetGeneralHeading(Vector2 *heading)
+{
+	// XXX/GWS: We are calling this because we are trying to predict
+	//			a future position for our formation alignment stuff.
+	//			Let's make that function do this. Remember, our path
+	//			is now a series of WalkTo/RunTo/CrawlTo actions, so
+	//			we need to find a way to predict this path.
+	heading->x = 0.0f;
+	heading->y = 0.0f;
+
+	// Let's peak at our current action
+	Action *action = _actionQueue.Peek();
+	if(action != NULL 
+		&& (action->Index == SoldierAction::WalkTo 
+			|| action->Index == SoldierAction::RunTo
+			|| action->Index == SoldierAction::CrawlTo
+			|| action->Index == SoldierAction::WalkSlowTo))
+	{
+		int x=0,y=0;
+		SoldierActionHandlers::TileData *data = (SoldierActionHandlers::TileData *)action->Data;
+		g_Globals->World.CurrentWorld->ConvertTileToPosition(data->TileI, data->TileJ, &x, &y);
+		heading->x = x-Position.x;
+		heading->y = y-Position.y;
+		heading->Normalize();
+	}
+
+#if 0
+	// We need to look at our current path and average the next couple
+	// of paths we are going to follow
+	Path *path = _currentSquad->GetCurrentPath(), *prevPath = NULL;
+
+	// Initialize our return value
+	heading->x = 0.0f;
+	heading->y = 0.0f;
+	
+	int nPaths = 0;
+	for(int i = 0; i < MAX_PATH_AVERAGE && path != NULL; ++i)
+	{
+		if(prevPath != NULL)
+		{
+			Vector2 dir;
+			dir.x = path->X-prevPath->X;
+			dir.y = path->Y-prevPath->Y;
+			dir.Normalize();
+			heading->x += dir.x;
+			heading->y += dir.y;
+			++nPaths;
+		}
+		prevPath = path;
+		path = path->Next;
+	}
+
+	// Divide by the number of paths we saw
+	if(nPaths > 0)
+	{
+		heading->x /= (float)nPaths;
+		heading->y /= (float)nPaths;
+
+		// Normalize
+		// XXX/GWS: Is this necessary? I think we should already be normalized
+		heading->Normalize();
+	}
+#endif
+}
+
+bool
+Soldier::IsStopped()
+{
+	return _currentState.IsSet(SoldierState::Stopped);
+}
+
+void
+Soldier::Ambush(Direction heading)
+{
+	// Let's first stop whatever we were doing
+	HandleStopOrder(NULL);
+
+	// Now setup the action to perform. First turn in the direction
+	// we need. Then start ambushing.
+	Action *action = new Action(SoldierAction::Turn, (void *)heading);
+	_actionQueue.Enqueue(action);
+	action = new Action(SoldierAction::Ambush, (void *)heading);
+	_actionQueue.Enqueue(action);
+}
+
+void
+Soldier::Defend(Direction heading)
+{
+	// Let's first stop whatever we were doing
+	HandleStopOrder(NULL);
+
+	// Now setup the action to perform
+	Action *action = new Action(SoldierAction::Turn, (void *)heading);
+	_actionQueue.Enqueue(action);
+	action = new Action(SoldierAction::Defend, (void *)heading);
+	_actionQueue.Enqueue(action);
 }

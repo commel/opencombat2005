@@ -15,3 +15,8 @@ Dead
 Reloaded
 OutOfAmmo
 NoTarget
+FindingCover
+Following
+FollowingInFormation
+Defending
+Ambushing

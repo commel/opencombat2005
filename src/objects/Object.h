@@ -7,6 +7,7 @@
 #include <objects\Target.h>
 #include <misc\Color.h>
 #include <states\Action.h>
+#include <objects\Formation.h>
 
 class Screen;
 class Order;
@@ -107,6 +108,19 @@ public:
 	virtual void UnHighlight() { _bHighlight = false; }
 	virtual bool IsHighlighted() { return _bHighlight; }
 
+	// Gets the general heading of this object
+	virtual void GetGeneralHeading(Vector2 *heading) { heading->x = 0.0f; heading->y = 0.0f; }
+
+	// Gets or sets the formation of this object
+	virtual Formation::Type GetFormation() { return Formation::Wedge; }
+	virtual void SetFormation(Formation::Type formation) { formation; }
+
+	// Gets the current heading of this object
+	virtual Direction GetHeading() { return _currentHeading; }
+
+	// Is this object stopped?
+	virtual bool IsStopped();
+
 protected:
 	 // A flag which determines whether or not this guy is selected
 	bool  _isSelected;
@@ -168,4 +182,7 @@ protected:
 
 	// The current squad that this soldier belongs to
 	Squad *_currentSquad;
+
+	// The current heading of this object
+	Direction _currentHeading;
 };

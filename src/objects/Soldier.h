@@ -67,6 +67,27 @@ public:
 	bool IsInVehicle() { return _inVehicle; }
 	void SetInVechicle(bool v) { _inVehicle = v; }
 
+	// Get's the general heading of this soldier
+	virtual void GetGeneralHeading(Vector2 *heading);
+
+	// Sets the formation index for this soldier
+	void SetFormationPosition(int index) { _formationPosition = index; }
+
+	// Tells this soldier to follow a given path
+	void FollowPath(Path *path, SoldierAction::Action movementStyle);
+
+	// Tells this soldier to follow the given object
+	void Follow(Object *object, Formation::Type formationType, float formationSpread, int formationIdx, SoldierAction::Action movementStyle);
+
+	// Tells this soldier to ambush facing a direction
+	void Ambush(Direction heading);
+
+	// Tells this soldier to defend a direction
+	void Defend(Direction heading);
+
+	// Is this soldier stopped?
+	virtual bool IsStopped();
+
 protected:
 
 	enum AnimationState {
@@ -74,24 +95,10 @@ protected:
 	};
 
 	// These functions handle various orders
-	bool HandleMoveOrder(long dt, MoveOrder *order);
-	bool HandleMoveFastOrder(long dt, MoveOrder *order);
-	bool HandleSneakOrder(long dt, MoveOrder *order);
 	bool HandleDestinationOrder(MoveOrder *order);
 	bool HandleStopOrder(StopOrder *order);
 	bool HandleFireOrder(FireOrder *order);
-
-	// This function handles the movement logic
-	void PlanMovement(long dt);
 	
-	// Finds my next move to this next point in my path.
-	bool FindPath(Path *path);
-
-	// This function outputs the position and velocity of the
-	// input vectors. It is used to find out where we would end up
-	// if we moved.
-	void Move(Vector2 *posOut, Vector2 *velOut, Direction heading, long dt);
-
 	// Let's shoot at a target using the given weapon
 	void Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targetX, int targetY);
 
@@ -125,13 +132,6 @@ protected:
 
 	// And the animation state that corresponds to our physical state
 	AnimationState _currentAnimationState;
-
-	// If we have a destination, then this is the path we are
-	// following
-	Path *_currentPath;
-
-	// The current heading of this soldier
-	Direction _currentHeading;
 
 	// The animation states of this object
 	Animation *_animations[NumStates];
@@ -175,6 +175,9 @@ protected:
 	// This is our array of functions that implement the possible
 	// actions that a soldier can take
 	SoldierActionHandlers::SoldierActionHandler _actionHandlers[SoldierAction::NumActions];
+
+	// The current formation position for this soldier
+	int _formationPosition;
 
 	friend class SoldierManager;
 	friend class SoldierActionHandlers;

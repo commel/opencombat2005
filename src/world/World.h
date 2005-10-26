@@ -213,4 +213,7 @@ protected:
 
 	// A line of sight calculator
 	LineOfSight *_lineOfSight;
+
+	// The direction of the heading arc (used for Ambushing and Defending)
+	Direction _currentHeadingArc;
 };

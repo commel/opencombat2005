@@ -82,8 +82,6 @@ Map::Render(Screen *screen, Rect *clip)
 		// Render any building interiors that we need.
 		int startX = _originX / _nPixelsPerBlockX;
 		int startY = _originY / _nPixelsPerBlockY;
-		int rx = _originX % _nPixelsPerBlockX;
-		int ry = _originY % _nPixelsPerBlockY;
 		int nx = clip->w / _nPixelsPerBlockX;
 		int ny = clip->h / _nPixelsPerBlockY;
 
@@ -328,7 +326,7 @@ Map::PopulateBuildingsIndices()
 										 n*_nPixelsPerBlockY+_nPixelsPerBlockY/2,
 										 &(building->BoundaryPoints)))
 				{
-					_buildingIndices[n*_nBlocksX+m] = i+1;
+					_buildingIndices[n*_nBlocksX+m] = (unsigned short)i+1;
 					// Now add this tile index into the building
 					if(building->NumTiles == 0)
 					{

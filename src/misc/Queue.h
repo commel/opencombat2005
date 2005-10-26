@@ -50,6 +50,11 @@ public:
 		}
 	}
 
+	int Count()
+	{
+		return _array.Count;
+	}
+
 private:
 	Array<T> _array;
 };

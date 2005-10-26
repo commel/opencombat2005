@@ -33,14 +33,14 @@ protected:
 		// tile based game so we have potentially 8 children
 		struct Node *Parent;
 
-		// Pointer to the next node in the list
-		struct Node *Next;
-
 		// The index of this node in the binary heap
 		int HeapIndex;
 	
 		// Pointers to next and previous hash nodes
 		struct Node *HashNext, *HashPrev;
+
+		// Pointer to the next node in the memory list
+		struct Node *MemNext;
 	};
 
 	// Returns the best node off our open list
@@ -62,24 +62,16 @@ protected:
 	// (_destx, _destY)
 	float Heuristic(int x, int y);
 
-	// Adds a node to a sorted list
-	void Add(Node **list, Node *node);
-
-	// Finds a node on a list
-	Node *Find(Node *list, int x, int y);
-
-	// Removes a node from a list
-	Node *Remove(Node **list, int x, int y);
-
 	// Allocates and frees nodes
 	Node *AllocateNode();
 	void FreeNode(Node *node);
 
-		class Hash
+	class Hash
 	{
 	public:
-		Hash(int size)
+		Hash(int size, AStar *astar)
 		{
+			_astar = astar;
 			_size = size;
 			_nodes = (Node **) calloc(_size, sizeof(Node *));
 		}
@@ -128,6 +120,7 @@ protected:
 				}
 				p = p->HashNext;
 			}
+			return NULL;
 		}
 
 		Node *Find(int x, int y)
@@ -150,6 +143,19 @@ protected:
 			memset(_nodes, 0, _size*sizeof(Node *));
 		}
 
+		void DeepClear()
+		{
+			for(int i = 0; i < _size; ++i)
+			{
+				while(_nodes[i] != NULL)
+				{
+					Node *n = _nodes[i];
+					_nodes[i] = _nodes[i]->HashNext;
+					_astar->FreeNode(n);
+				}
+			}
+		}
+
 		unsigned int HashFunction(Node *n)
 		{
 			return (n->X << 16 | n->Y) % _size;
@@ -163,6 +169,7 @@ protected:
 	private:
 		Node **_nodes;
 		int _size;
+		AStar *_astar;
 	};
 
 	// A MinHeap class that we can use
@@ -176,9 +183,10 @@ protected:
 		#define Parent(i)	((i) >> 1)
 
 		// Creates a new heap of the given size
-		MinHeap(int maxSize)
+		MinHeap(int maxSize, AStar *astar)
 		{
 			assert (0 < maxSize);
+			_astar = astar;
 			_heapNodes = (HeapNode **) calloc (maxSize+1, sizeof(HeapNode *));
 			if(NULL == _heapNodes) 
 			{
@@ -190,7 +198,8 @@ protected:
 				_size = maxSize;
 				_last = 0;
 			}
-			_hash = new Hash(60013);
+			_hash = new Hash(60013,astar);
+			_freeHeapNodes = NULL;
 		}
 
 		// Destroys this heap
@@ -212,7 +221,7 @@ protected:
 		int Insert(Node *data, float priority)
 		{
 			// Create a new node for this data
-			HeapNode *newNode = (HeapNode *) calloc(1, sizeof(HeapNode));
+			HeapNode *newNode = AllocateHeapNode();
 			newNode->Priority = priority;
 			newNode->Data = data;
 
@@ -287,7 +296,9 @@ protected:
 				}
 			}
 #endif
-			return max->Data;
+			Node *n = max->Data;
+			FreeHeapNode(max);
+			return n;
 		}
 
 		// Removes a given index from the heap
@@ -315,6 +326,13 @@ protected:
 
 		void Clear()
 		{
+			// Need to release all of our heap nodes
+			for(int i = 1; i <= _last; ++i)
+			{
+				_astar->FreeNode(_heapNodes[i]->Data);
+				_heapNodes[i]->Data = NULL;
+				FreeHeapNode(_heapNodes[i]);
+			}
 			_last = 0;
 			_hash->Clear();
 		}
@@ -324,7 +342,28 @@ protected:
 		{
 			float Priority;
 			Node *Data;
+			HeapNode *MemNext;
 		};
+
+		HeapNode *AllocateHeapNode()
+		{
+			if(_freeHeapNodes == NULL)
+			{
+				return (HeapNode *) calloc(1, sizeof(HeapNode));
+			}
+			else
+			{
+				HeapNode *n = _freeHeapNodes;
+				_freeHeapNodes = _freeHeapNodes->MemNext; 
+				return n;
+			}
+		}
+
+		void FreeHeapNode(HeapNode *node)
+		{
+			node->MemNext = _freeHeapNodes;
+			_freeHeapNodes = node;
+		}
 
 		// This function is the iterative version of Heapify()
 		void SiftDown(int i)
@@ -359,6 +398,8 @@ protected:
 		int _size;
 		int _last;
 		HeapNode **_heapNodes;
+		HeapNode *_freeHeapNodes;
+		AStar *_astar;
 	}; // end class MinHeap
 
 
@@ -371,4 +412,8 @@ protected:
 
 	// Our destination nodes
 	int _destX, _destY;
+
+	// Keep track of free Nodes
+	Node *_freeNodes;
+	long _nFreeNodes, _nAllocatedNodes;
 };

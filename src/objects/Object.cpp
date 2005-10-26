@@ -73,3 +73,9 @@ Object::SetPosition(int x, int y)
 	Position.x = x;
 	Position.y = y;
 }
+
+bool
+Object::IsStopped()
+{
+	return !_moving;
+}

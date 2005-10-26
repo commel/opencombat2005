@@ -98,11 +98,35 @@ Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sw, int sh,
 	UNREFERENCED_PARAMETER(sh);
 	unsigned char r,g,b;
 	assert(_bytes_per_pixel == sbytes_per_pixel);
+	int sx=0,sy=0;
+
+	if(dx < _clip.x) 
+	{ 
+		sx += (_clip.x-dx);
+		dw -= (_clip.x-dx);
+		dx = _clip.x;
+	}
+	else if(dx >= (_clip.x+_clip.w))
+	{
+		return;
+	}
+
+	if(dy < _clip.y)
+	{
+		sy += (_clip.y-dy);
+		dh -= (_clip.y-dy);
+		dy = _clip.y;
+	}
+	else if(dy >= (_clip.y+_clip.h))
+	{
+		return;
+	}
+
 	for(int j = 0; j < dh; ++j) {
 		for(int i = 0; i < dw; ++i) {
-			r = src[(j)*sw*sbytes_per_pixel + (i)*sbytes_per_pixel + 2];
-			g =	src[(j)*sw*sbytes_per_pixel + (i)*sbytes_per_pixel + 1];
-			b = src[(j)*sw*sbytes_per_pixel + (i)*sbytes_per_pixel + 0];
+			r = src[(sy+j)*sw*sbytes_per_pixel + (sx+i)*sbytes_per_pixel + 2];
+			g =	src[(sy+j)*sw*sbytes_per_pixel + (sx+i)*sbytes_per_pixel + 1];
+			b = src[(sy+j)*sw*sbytes_per_pixel + (sx+i)*sbytes_per_pixel + 0];
 			
 			// First look at transparency
 			if(r != transparentColor->red || g != transparentColor->green || b != transparentColor->blue) {

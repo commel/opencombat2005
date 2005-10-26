@@ -109,9 +109,9 @@ TGA::Create(char *fileName)
 			else if(header.bitsperpixel == 16)
 			{
 				unsigned short pixel = ((unsigned short *)p)[0];
-				ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth+0] = (pixel << 3 & 0xff) + 7;
-				ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth+1] = ((pixel >> 5) << 3 & 0xff) + 7;
-				ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth+2] = ((pixel >> 10) << 3 & 0xff) + 7;
+				ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth+0] = (unsigned char)((pixel << 3 & 0xff) + 7);
+				ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth+1] = (unsigned char)(((pixel >> 5) << 3 & 0xff) + 7);
+				ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth+2] = (unsigned char)(((pixel >> 10) << 3 & 0xff) + 7);
 				ptr[(header.height-h-1)*header.width*tga->_depth + w*tga->_depth+3] = 0xFF;
 			}
 			n++;

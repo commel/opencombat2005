@@ -7,6 +7,16 @@ WalkSlow						Move					0					Standing												+WalkingSlow,-Walking,-Running,
 Crawl							Move					0					Prone													+Crawling,-Running,-Walking,-WalkingSlow,-Stopped,+Moving,-Firing
 Stand							Move					-1					Stopped,Prone											-Prone,+Standing,-Firing
 LieDown							Move					-1					Stopped,Standing										-Standing,+Prone,-Firing
-Stop							Move					0					nil														-Moving,+Stopped,-Firing,-Running,-Walking,-WalkingSlow,-Crawling
+Stop							Move					0					nil														-Moving,+Stopped,-Firing,-Running,-Walking,-WalkingSlow,-Crawling,-FindingCover,-Following,-FollowingInFormation,-Defending,-Ambushing
 DestinationReached				Move					0					Stopped													nil
 Reload							Fire					0					nil														+Reloaded
+FindCover						Move					0					nil														+FindingCover
+Follow							Move					0					nil														+Following
+FollowInFormation				Move					0					nil														+FollowingInFormation
+WalkTo							Move					0					Standing												+Walking,-Running,-WalkingSlow,-Crawling,-Stopped,+Moving,-Firing
+RunTo							Move					0					Standing												+Running,-Walking,-WalkingSlow,-Crawling,-Stopped,+Moving,-Firing
+WalkSlowTo						Move					0					Standing												+WalkingSlow,-Walking,-Running,-Crawling,-Stopped,+Moving,-Firing
+CrawlTo							Move					0					Prone													+Crawling,-Running,-Walking,-WalkingSlow,-Stopped,+Moving,-Firing
+Turn							Move					0					nil														nil
+Defend							Fire					0					Prone													+Defending
+Ambush							Fire					0					Prone													+Ambushing

@@ -375,6 +375,7 @@ SquadManager::CreateSquad(char *squadType, SoldierManager *soldierManager, Vehic
 				s->SetTitle(_squads.Items[i]->Soldiers[j].Title);
 				s->SetRank(_squads.Items[i]->Soldiers[j].Rank);
 				s->SetCamouflage(_squads.Items[i]->Soldiers[j].Camo);
+				s->SetFormationPosition(j);
 				// XXX/GWS: Need better determination of the squad leader
 				if(_stricmp(_squads.Items[i]->Soldiers[j].Title, "Leader") == 0 
 					|| _stricmp(_squads.Items[i]->Soldiers[j].Title, "Gunner") == 0)

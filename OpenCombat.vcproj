@@ -423,6 +423,9 @@
 				Name="Objects"
 				Filter="">
 				<File
+					RelativePath=".\src\objects\Formation.h">
+				</File>
+				<File
 					RelativePath=".\src\objects\Object.cpp">
 				</File>
 				<File
@@ -492,6 +495,18 @@
 			<Filter
 				Name="Orders"
 				Filter="">
+				<File
+					RelativePath=".\src\orders\AmbushOrder.cpp">
+				</File>
+				<File
+					RelativePath=".\src\orders\AmbushOrder.h">
+				</File>
+				<File
+					RelativePath=".\src\orders\DefendOrder.cpp">
+				</File>
+				<File
+					RelativePath=".\src\orders\DefendOrder.h">
+				</File>
 				<File
 					RelativePath=".\src\orders\FireOrder.cpp">
 				</File>

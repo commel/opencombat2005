@@ -30,6 +30,11 @@ namespace SoldierState
 		Dead,
 		Reloaded,
 		OutOfAmmo,
-		NoTarget
+		NoTarget,
+		FindingCover,
+		Following,
+		FollowingInFormation,
+		Defending,
+		Ambushing,
 	};
 };

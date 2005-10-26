@@ -100,7 +100,7 @@
 		<Name>Running</Name>
 		<Directions>8</Directions>
 		<NumFrames>8</NumFrames>
-		<Time>200</Time>
+		<Time>150</Time>
 		<FirstDirection>North</FirstDirection>
 		<TransparentColor>16777215</TransparentColor> 
 	</Animation>

@@ -51,6 +51,16 @@ namespace SoldierAction
 		Stop,
 		DestinationReached,
 		Reload,
+		FindCover,
+		Follow,
+		FollowInFormation,
+		WalkTo,
+		RunTo,
+		WalkSlowTo,
+		CrawlTo,
+		Turn,
+		Defend,
+		Ambush,
 		NumActions // Must be last
 	};
 };

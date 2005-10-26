@@ -23,6 +23,7 @@
 
 World::World(void)
 {
+	_currentHeadingArc = North;
 	_contextMenu = new CombatContextMenu();
 	State.NumSquads = 0;
 	State.SelectedSquad = -1;
@@ -138,6 +139,7 @@ World::Render(Screen *screen, Rect *clip)
 		
 		// Find out which direction we need to show
 		Direction dir = Utilities::FindHeading(_selectedObjects.Items[0]->Position.x - _originX, _selectedObjects.Items[0]->Position.y-_originY, screen->GetCursorX(), screen->GetCursorY());
+		_currentHeadingArc = dir;
 		Widget *w = NULL;
 		switch(dir) {
 			case North:
@@ -179,6 +181,7 @@ World::Render(Screen *screen, Rect *clip)
 		
 		// Find out which direction we need to show
 		Direction dir = Utilities::FindHeading(_selectedObjects.Items[0]->Position.x - _originX, _selectedObjects.Items[0]->Position.y-_originY, screen->GetCursorX(), screen->GetCursorY());
+		_currentHeadingArc = dir;
 		Widget *w = NULL;
 		switch(dir) {
 			case North:
@@ -366,7 +369,7 @@ World::Load(char *fileName, SoldierManager *soldierManager, AnimationManager *an
 	//			with some stuff
 	Array<Soldier> *soldiers;
 	State.NumSquads = 0;
-	for(int i = 0; i < 0; ++i) {
+	for(int i = 0; i < 1; ++i) {
 		Squad *s = _squadManager->CreateSquad("BAR Rifle", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
 		soldiers = s->GetSoldiers();
 		for(int j = 0; j < soldiers->Count; ++j)
@@ -549,6 +552,7 @@ World::LeftMouseUp(int x, int y)
 			case CombatContextMenu::ContextMenuChoice::Smoke:
 				break;
 			case CombatContextMenu::ContextMenuChoice::Defend:
+				assert(false);
 				break;
 			case CombatContextMenu::ContextMenuChoice::Ambush:
 				assert(false);
@@ -558,9 +562,15 @@ World::LeftMouseUp(int x, int y)
 		}
 		_currentState = Normal;
 	} else if(_currentState == Ambushing) {
+		// Show the cursor
+		g_Globals->Application.Cursor->ShowCursor(true, CursorInterface::CursorType::Regular);
 		_currentState = Normal;
+		IssueOrder(new AmbushOrder(_currentHeadingArc));
 	} else if(_currentState == Defending) {
+		// Show the cursor
+		g_Globals->Application.Cursor->ShowCursor(true, CursorInterface::CursorType::Regular);
 		_currentState = Normal;
+		IssueOrder(new DefendOrder(_currentHeadingArc));
 	}
 }
 
@@ -709,6 +719,14 @@ World::KeyUp(int key)
 	if(key == 'k' || key == 'K') {
 		for(int i = 0; i < _selectedObjects.Count; ++i) {
 			_selectedObjects.Items[i]->Kill();
+		}
+	}
+	else if(key == 'f' || key == 'F')
+	{
+		// Change the formation of the currently selected object
+		for(int i = 0; i < _selectedObjects.Count; ++i) {
+			Formation::Type f = _selectedObjects.Items[i]->GetFormation();
+			_selectedObjects.Items[i]->SetFormation((Formation::Type)((f+1)%Formation::NumFormations));
 		}
 	}
 }

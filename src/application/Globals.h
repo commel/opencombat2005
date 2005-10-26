@@ -34,7 +34,7 @@
  */
 struct WorldConstants
 {
-	const static int PixelsPerMeter = 6;
+	const static int PixelsPerMeter = 5;
 };
 
 struct ObjectStatesContainer

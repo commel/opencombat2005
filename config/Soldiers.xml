@@ -67,12 +67,12 @@
 			</State>
 		</States>
 		<Attributes>
-			<WalkingSpeed>1.34</WalkingSpeed>
+			<WalkingSpeed>2.5</WalkingSpeed>
 			<WalkingAcceleration>1.0</WalkingAcceleration>
-			<SneakingSpeed>0.67</SneakingSpeed>
+			<SneakingSpeed>1.0</SneakingSpeed>
 			<SneakingAcceleration>0.5</SneakingAcceleration>
-			<RunningSpeed>2.68</RunningSpeed>
-			<RunningAcceleration>2.0</RunningAcceleration>
+			<RunningSpeed>5.36</RunningSpeed>
+			<RunningAcceleration>3.0</RunningAcceleration>
 			<CanMove />
 			<CanMoveFast />
 			<CanDefend />
@@ -149,12 +149,12 @@
 			</State>
 		</States>
 		<Attributes>
-			<WalkingSpeed>1.34</WalkingSpeed>
+			<WalkingSpeed>2.5</WalkingSpeed>
 			<WalkingAcceleration>1.0</WalkingAcceleration>
-			<SneakingSpeed>0.67</SneakingSpeed>
+			<SneakingSpeed>1.0</SneakingSpeed>
 			<SneakingAcceleration>0.5</SneakingAcceleration>
-			<RunningSpeed>2.68</RunningSpeed>
-			<RunningAcceleration>2.0</RunningAcceleration>
+			<RunningSpeed>5.36</RunningSpeed>
+			<RunningAcceleration>3.0</RunningAcceleration>
 			<CanMove />
 			<CanMoveFast />
 			<CanDefend />
@@ -231,12 +231,12 @@
 			</State>
 		</States>
 		<Attributes>
-			<WalkingSpeed>1.34</WalkingSpeed>
+			<WalkingSpeed>2.5</WalkingSpeed>
 			<WalkingAcceleration>1.0</WalkingAcceleration>
-			<SneakingSpeed>0.67</SneakingSpeed>
+			<SneakingSpeed>1.0</SneakingSpeed>
 			<SneakingAcceleration>0.5</SneakingAcceleration>
-			<RunningSpeed>2.68</RunningSpeed>
-			<RunningAcceleration>2.0</RunningAcceleration>
+			<RunningSpeed>5.36</RunningSpeed>
+			<RunningAcceleration>3.0</RunningAcceleration>
 			<CanMove />
 			<CanMoveFast />
 			<CanDefend />
@@ -313,12 +313,12 @@
 			</State>
 		</States>
 		<Attributes>
-			<WalkingSpeed>1.34</WalkingSpeed>
+			<WalkingSpeed>2.5</WalkingSpeed>
 			<WalkingAcceleration>1.0</WalkingAcceleration>
-			<SneakingSpeed>0.67</SneakingSpeed>
+			<SneakingSpeed>1.0</SneakingSpeed>
 			<SneakingAcceleration>0.5</SneakingAcceleration>
-			<RunningSpeed>2.68</RunningSpeed>
-			<RunningAcceleration>2.0</RunningAcceleration>
+			<RunningSpeed>5.36</RunningSpeed>
+			<RunningAcceleration>3.0</RunningAcceleration>
 			<CanMove />
 			<CanMoveFast />
 			<CanDefend />
@@ -395,12 +395,12 @@
 			</State>
 		</States>
 		<Attributes>
-			<WalkingSpeed>1.34</WalkingSpeed>
+			<WalkingSpeed>2.5</WalkingSpeed>
 			<WalkingAcceleration>1.0</WalkingAcceleration>
-			<SneakingSpeed>0.67</SneakingSpeed>
+			<SneakingSpeed>1.0</SneakingSpeed>
 			<SneakingAcceleration>0.5</SneakingAcceleration>
-			<RunningSpeed>2.68</RunningSpeed>
-			<RunningAcceleration>2.0</RunningAcceleration>
+			<RunningSpeed>5.36</RunningSpeed>
+			<RunningAcceleration>3.0</RunningAcceleration>
 			<CanMove />
 			<CanMoveFast />
 			<CanDefend />
@@ -477,12 +477,12 @@
 			</State>
 		</States>
 		<Attributes>
-			<WalkingSpeed>1.34</WalkingSpeed>
+			<WalkingSpeed>2.5</WalkingSpeed>
 			<WalkingAcceleration>1.0</WalkingAcceleration>
-			<SneakingSpeed>0.67</SneakingSpeed>
+			<SneakingSpeed>1.0</SneakingSpeed>
 			<SneakingAcceleration>0.5</SneakingAcceleration>
-			<RunningSpeed>2.68</RunningSpeed>
-			<RunningAcceleration>2.0</RunningAcceleration>
+			<RunningSpeed>5.36</RunningSpeed>
+			<RunningAcceleration>3.0</RunningAcceleration>
 			<CanMove />
 			<CanMoveFast />
 			<CanDefend />

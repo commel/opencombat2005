@@ -6,10 +6,23 @@
 
 AStar::AStar(void)
 {
-	_openNodes = new AStar::MinHeap(300*300);
-	_closedNodes = new Hash(60013);
+	_openNodes = new AStar::MinHeap(300*300, this);
+	_closedNodes = new Hash(60013,this);
 	_destX = -1;
 	_destY = -1;
+
+	// Let's allocate a bunch of free nodes that we
+	// can use for our path calculations
+	_freeNodes = NULL;
+	assert(sizeof(Node) == 40);
+	for(int i = 0; i < 60000; ++i)
+	{
+		Node *n = (Node *)calloc(1, sizeof(Node));
+		n->MemNext = _freeNodes;
+		_freeNodes = n;
+	}
+	_nAllocatedNodes = 60000;
+	_nFreeNodes = 60000;
 }
 
 AStar::~AStar(void)
@@ -22,21 +35,38 @@ AStar::~AStar(void)
 AStar::Node *
 AStar::AllocateNode()
 {
-	return (Node *)calloc(1, sizeof(Node));
+	Node *n = _freeNodes;
+	if(_freeNodes != NULL)
+	{
+		_freeNodes = _freeNodes->MemNext;
+		--_nFreeNodes;
+	}
+	else
+	{
+		// We are out of free nodes, so it looks like we need
+		// to allocate some more
+		n = (Node *)calloc(1, sizeof(Node));
+		++_nAllocatedNodes;
+	}
+	assert(_nFreeNodes >= 0);
+	return n;
 }
 
 void
 AStar::FreeNode(Node *node)
 {
-	free(node);
+	memset(node, 0, sizeof(Node));
+	node->MemNext = _freeNodes;
+	_freeNodes = node;
+	++_nFreeNodes;
 }
 
 float
 AStar::Heuristic(int x, int y)
 {
 	// Weight diagonals slightly more
-	float diag = __min(abs(x-_destX), abs(y-_destY));
-	float straight = (abs(x-_destX) + abs(y-_destY));
+	float diag = (float)(__min(abs(x-_destX), abs(y-_destY)));
+	float straight = (float)((abs(x-_destX) + abs(y-_destY)));
 	return sqrt(2.0f)*diag + (straight - 2.0f*diag);
 }
 
@@ -49,7 +79,7 @@ AStar::FindPath(int x0, int y0, int x1, int y1)
 	_destX = x1;
 	_destY = y1;
 
-	_closedNodes->Clear();
+	_closedNodes->DeepClear();
 	_openNodes->Clear();
 
 	// We need to create our initial node and add it to the open
@@ -228,66 +258,3 @@ AStar::GetTerrainCost(int x, int y)
 	UNREFERENCED_PARAMETER(y);
 	return 1.0f;
 }
-
-AStar::Node *
-AStar::Find(Node *list, int x, int y)
-{
-	while(list != NULL) {
-		if(list->X == x && list->Y == y) {
-			return list;
-		}
-		list = list->Next;
-	}
-	return NULL;
-}
-
-AStar::Node *
-AStar::Remove(Node **list, int x, int y)
-{
-	Node *cur = *list;
-	Node *prev = NULL;
-
-	if(NULL == cur) {
-		return NULL;
-	}
-	
-	while(cur != NULL) {
-		if(cur->X == x && cur->Y == y) {
-			if(prev != NULL) {
-				prev->Next = cur->Next;
-			} else {
-				*list = cur->Next;
-			}
-			return cur;
-		}
-		prev = cur;
-		cur=cur->Next;
-	}
-	return NULL;
-}
-
-void
-AStar::Add(Node **list, Node *node)
-{
-	Node *src = *list;
-	Node *prev = NULL;
-
-	if(NULL == src) {
-		*list = node;
-		return;
-	}
-
-	// Adding to a sorted list, with F increasing
-	while(src != NULL && src->F < node->F) {
-		prev = src;
-		src = src->Next;
-	}
-	if(prev != NULL) {
-		prev->Next = node;
-		node->Next = src;
-	} else {
-		node->Next = *list;
-		*list = node;
-	}
-}
-

@@ -5,6 +5,7 @@
 #include <objects\vehicle.h>
 #include <ai\AStar.h>
 #include <graphics\Mark.h>
+#include <objects\Formation.h>
 
 class Screen;
 class Order;
@@ -45,6 +46,9 @@ public:
 	// Gets the squad leader for this squad
 	Object *GetSquadLeader();
 
+	// Gets the point man for this squad
+	Object *GetPointMan();
+
 	// Gets the soldiers in this squad
 	inline Array<Soldier> *GetSoldiers() { return &_soldiers; }
 
@@ -63,7 +67,15 @@ public:
 	// Clears and set marks
 	void ClearMarks() { _bShowMark = false; }
 
+	// Gets or sets the formation of this object
+	virtual Formation::Type GetFormation() { return _currentFormation; }
+	virtual void SetFormation(Formation::Type formation) { _currentFormation = formation; }
+
 protected:
+	void HandleMoveOrder(MoveOrder *o, SoldierAction::Action movementStyle, Mark::Color markColor);
+	void HandleAmbushOrder(AmbushOrder *order);
+	void HandleDefendOrder(DefendOrder *order);
+
 	// This is the array of soldiers in this squad
 	Array<Soldier> _soldiers;
 
@@ -90,6 +102,15 @@ protected:
 
 	// The current statuc of this guy
 	Team::Status _currentStatus;
+
+	// The current point man for this squad
+	int _currentPointManIdx;
+
+	// The spread of the formation
+	float _currentFormationSpread;
+
+	// The current formation we are in
+	Formation::Type _currentFormation;
 
 	friend class SquadManager;
 };

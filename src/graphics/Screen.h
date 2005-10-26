@@ -23,6 +23,9 @@ public:
 	// Set's this device's capabilities
 	virtual void SetCapabilities(unsigned char *bits, int width, int height, int format, int pitch);
 
+	// Set's a clipping rectangle for this screen
+	virtual void SetClippingRectangle(int x, int y, int w, int h) {_clip.x=x;_clip.y=y;_clip.w=w;_clip.h=h;}
+
 	// Clears the screen to the given color
 	virtual void Clear(Color *c);
 
@@ -75,4 +78,5 @@ protected:
 	int _cursorX, _cursorY;
 	int _originX, _originY;
 	unsigned char *_bits;
+	Rect _clip;
 };

@@ -163,7 +163,9 @@ CombatModule::Render(Screen *screen)
 	clip.y = 0;
 	clip.w = screen->GetWidth();
 	clip.h = screen->GetHeight() - _longBottomBackground->GetHeight() - (_showTeamPanel ? _unitBackground->GetHeight()-squadPanelDY : 0);
+	screen->SetClippingRectangle(clip.x, clip.y, clip.w, clip.h);
 	_currentWorld->Render(screen, &clip);
+	screen->SetClippingRectangle(0, 0, screen->GetWidth(), screen->GetHeight());
 
 	// Render the mini map
 	if(_showMiniMap) {

@@ -11,7 +11,8 @@ namespace Orders {
 		Smoke,
 		Destination,
 		Stop,
-		Pause
+		Pause,
+		Defend
 	};
 }
 

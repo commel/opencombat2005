@@ -21,6 +21,7 @@ Squad::Squad() : Object()
 	_currentTarget = NULL;
 	_selectedSoldierIdx = -1;
 	_selectedVehicleIdx = -1;
+	_currentPointManIdx = 0;
 	_canMove = true;
 	_canMoveFast = true;
 	_canDefend = true;
@@ -31,6 +32,8 @@ Squad::Squad() : Object()
 	_currentPath = NULL;
 	_bShowMark = false;
 	_bMarkTargetPosition = false;
+	_currentFormationSpread = 2.0f;
+	_currentFormation = Formation::Column;
 }
 
 Squad::~Squad(void)
@@ -185,13 +188,14 @@ Squad::Select(bool s)
 void
 Squad::AddOrder(Order *o)
 {
-	int i=0,j=0,di=0,dj=0;
-
 	_bShowMark = false;
 	switch(o->GetType()) {
 		case Orders::Ambush:
-			_currentAction = Team::Ambushing;
-			break;
+			HandleAmbushOrder((AmbushOrder *)o);
+			return;
+		case Orders::Defend:
+			HandleDefendOrder((DefendOrder *)o);
+			return;
 		case Orders::Fire:
 			{
 				FireOrder *f = (FireOrder *)o;
@@ -213,64 +217,86 @@ Squad::AddOrder(Order *o)
 			_currentAction = Team::Hiding;
 			break;
 		case Orders::Move:
-			_currentAction = Team::Moving;
-			_currentTargetX = ((MoveOrder*)o)->X;
-			_currentTargetY = ((MoveOrder*)o)->Y;
-			// Find a path
-			FreePath(_currentPath, true);
-			g_Globals->World.CurrentWorld->ConvertPositionToTile(Position.x, Position.y, &i, &j);
-			g_Globals->World.CurrentWorld->ConvertPositionToTile(_currentTargetX, _currentTargetY, &di, &dj);
-			_currentPath = g_Globals->World.Pathing.FindPath(i, j, di, dj);
-			if(NULL == _currentPath) {
-				g_Globals->World.Voices->GetSound("no clear path")->Play();
-				return;
-			}
-			_markColor = Mark::Blue;
-			_bShowMark = true;
-			_bMarkTargetPosition = false;
-			break;
+			HandleMoveOrder((MoveOrder *)o, SoldierAction::WalkTo, Mark::Blue);
+			return;
 		case Orders::MoveFast:
-			_currentAction = Team::MovingFast;
-			_currentTargetX = ((MoveOrder*)o)->X;
-			_currentTargetY = ((MoveOrder*)o)->Y;
-			// Find a path
-			FreePath(_currentPath, true);
-			g_Globals->World.CurrentWorld->ConvertPositionToTile(Position.x, Position.y, &i, &j);
-			g_Globals->World.CurrentWorld->ConvertPositionToTile(_currentTargetX, _currentTargetY, &di, &dj);
-			_currentPath = g_Globals->World.Pathing.FindPath(i, j, di, dj);
-			if(NULL == _currentPath) {
-				g_Globals->World.Voices->GetSound("no clear path")->Play();
-				return;
-			}
-			_markColor = Mark::Purple;
-			_bShowMark = true;
-			_bMarkTargetPosition = false;
-			break;
+			HandleMoveOrder((MoveOrder *)o, SoldierAction::RunTo, Mark::Purple);
+			return;
 		case Orders::Sneak:
-			_currentAction = Team::Sneaking;
-			_currentTargetX = ((MoveOrder*)o)->X;
-			_currentTargetY = ((MoveOrder*)o)->Y;
-			// Find a path
-			FreePath(_currentPath, true);
-			g_Globals->World.CurrentWorld->ConvertPositionToTile(Position.x, Position.y, &i, &j);
-			g_Globals->World.CurrentWorld->ConvertPositionToTile(_currentTargetX, _currentTargetY, &di, &dj);
-			_currentPath = g_Globals->World.Pathing.FindPath(i, j, di, dj);
-			if(NULL == _currentPath) {
-				g_Globals->World.Voices->GetSound("no clear path")->Play();
-				return;
-			}
-			_markColor = Mark::Yellow;
-			_bShowMark = true;
-			_bMarkTargetPosition = false;
-			break;
+			HandleMoveOrder((MoveOrder *)o, SoldierAction::CrawlTo, Mark::Yellow);
+			return;
 	}
 
-	for(i = 0; i < _vehicles.Count; ++i) {
+	for(int i = 0; i < _vehicles.Count; ++i) {
 		_vehicles.Items[i]->AddOrder(o);
 	}
 
-	for(i = 0; i < _soldiers.Count; ++i) {
+	for(int i = 0; i < _soldiers.Count; ++i) {
 		_soldiers.Items[i]->AddOrder(o);
+	}
+}
+
+void
+Squad::HandleMoveOrder(MoveOrder *order, SoldierAction::Action movementStyle, Mark::Color color)
+{
+	int i=0,j=0,di=0,dj=0;
+
+	_currentAction = Team::Moving;
+	_currentTargetX = order->X;
+	_currentTargetY = order->Y;
+
+	// Find a path
+	FreePath(_currentPath, true);
+	g_Globals->World.CurrentWorld->ConvertPositionToTile(Position.x, Position.y, &i, &j);
+	g_Globals->World.CurrentWorld->ConvertPositionToTile(_currentTargetX, _currentTargetY, &di, &dj);
+	_currentPath = g_Globals->World.Pathing.FindPath(i, j, di, dj);
+	if(NULL == _currentPath) {
+		g_Globals->World.Voices->GetSound("no clear path")->Play();
+		return;
+	}
+
+	// Set our mark colors
+	_markColor = color;
+	_bShowMark = true;
+	_bMarkTargetPosition = false;
+
+	// Now we need to get our soldiers moving. We order the point man
+	// to walk/run/crawl to the location, and we order everyone else
+	// to follow him in formation.
+	//
+	// XXX/GWS: What happens if our point man is dead?
+	j = 1;
+	for(i = 0; i < _soldiers.Count; ++i) {
+		if(i == _currentPointManIdx)
+		{
+			// Order this soldier to walk/run/crawl to the destination
+			_soldiers.Items[i]->FollowPath(_currentPath, movementStyle);
+		}
+		else if(!_soldiers.Items[i]->IsDead())
+		{
+			// Order this soldier to follow our point man
+			_soldiers.Items[i]->Follow(_soldiers.Items[_currentPointManIdx], _currentFormation, _currentFormationSpread, j++, movementStyle);
+		}
+	}
+}
+
+void
+Squad::HandleAmbushOrder(AmbushOrder *order)
+{
+	_currentAction = Team::Ambushing;
+	for(int i = 0; i < _soldiers.Count; ++i)
+	{
+		_soldiers.Items[i]->Ambush(order->Heading);
+	}
+}
+
+void
+Squad::HandleDefendOrder(DefendOrder *order)
+{
+	_currentAction = Team::Defending;
+		for(int i = 0; i < _soldiers.Count; ++i)
+	{
+		_soldiers.Items[i]->Defend(order->Heading);
 	}
 }
 
@@ -301,6 +327,12 @@ Squad::GetSquadLeader()
 	}
 	assert(false);
 	return NULL;
+}
+
+Object *
+Squad::GetPointMan()
+{
+	return _soldiers.Items[_currentPointManIdx];
 }
 
 char *
@@ -397,4 +429,3 @@ Squad::UnHighlight()
 		_vehicles.Items[i]->UnHighlight();
 	}
 }
-
