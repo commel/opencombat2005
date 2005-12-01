@@ -33,6 +33,9 @@ public:
 	// Does this mini map contain this point?
 	virtual bool Contains(int x, int y);
 
+	// Updates the mini map based on a new world origin
+	virtual void Update();
+
 protected:
 	// The graphic for this minimap
 	TGA *_tga;

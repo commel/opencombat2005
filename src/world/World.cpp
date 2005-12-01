@@ -20,6 +20,7 @@
 #include <misc\Utilities.h>
 #include <objects\Vehicle.h>
 #include <application\Globals.h>
+#include <world\MiniMap.h>
 
 World::World(void)
 {
@@ -31,6 +32,8 @@ World::World(void)
 	_numMarks = 0;
 	_markPoints = (Point*)calloc(_maxMarks, sizeof(Point));
 	_markColors = (Mark::Color*) calloc(_maxMarks, sizeof(Mark::Color));
+	_screenWidth = 0;
+	_screenHeight = 0;
 }
 
 World::~World(void)
@@ -42,6 +45,28 @@ World::Render(Screen *screen, Rect *clip)
 {
 	Color white(255,255,255);
 	Color black(0,0,0);
+	
+	// Copy some parameters
+	_screenWidth = clip->w;
+	_screenHeight = clip->h;
+
+	if(_originX < 0)
+	{
+		_originX = 0;
+	}
+	else if((_originX+_screenWidth) > _currentMap->GetWidth())
+	{
+		_originX = _currentMap->GetWidth()-_screenWidth;
+	}
+
+	if(_originY < 0)
+	{
+		_originY = 0;
+	}
+	else if((_originY+_screenHeight) > _currentMap->GetHeight())
+	{
+		_originY = _currentMap->GetHeight()-_screenHeight;
+	}
 
 	screen->SetOrigin(_originX, _originY);
 
@@ -364,7 +389,6 @@ World::Load(char *fileName, SoldierManager *soldierManager, AnimationManager *an
 	// Create the line of sight calculator
 	_lineOfSight = new LineOfSight();
 
-	// Create two squads and add them
 	// XXX/GWS: The following is temporary, just to populate this world
 	//			with some stuff
 	Array<Soldier> *soldiers;
@@ -376,10 +400,13 @@ World::Load(char *fileName, SoldierManager *soldierManager, AnimationManager *an
 		{
 			// Let's place this object on the map
 			_currentMap->PlaceObject(soldiers->Items[j], &soldiers->Items[j]->Position);
+			soldiers->Items[j]->SetTeam(g_Globals->World.CurrentPlayer);
 		}
 
 		s->SetPosition((i+1)*200, 100);
 		AddObject(s);
+		s->SetTeam(g_Globals->World.CurrentPlayer);
+		g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.Add(s);
 	}
 
 	Squad *squad = _squadManager->CreateSquad("Bazooka", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
@@ -388,19 +415,60 @@ World::Load(char *fileName, SoldierManager *soldierManager, AnimationManager *an
 	{
 		// Let's place this object on the map
 		_currentMap->PlaceObject(soldiers->Items[i], &soldiers->Items[i]->Position);
+		soldiers->Items[i]->SetTeam(g_Globals->World.CurrentPlayer);
 	}
 	squad->SetPosition(748, 604);
 	AddObject(squad);
-	
+	g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.Add(squad);
+	squad->SetTeam(g_Globals->World.CurrentPlayer);
+
 	squad = _squadManager->CreateSquad(".30 Cal MG", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
 	soldiers = squad->GetSoldiers();
 	for(int i = 0; i < soldiers->Count; ++i)
 	{
 		// Let's place this object on the map
 		_currentMap->PlaceObject(soldiers->Items[i], &soldiers->Items[i]->Position);
+		soldiers->Items[i]->SetTeam(g_Globals->World.CurrentPlayer);
 	}
 	squad->SetPosition(200, 200);
 	AddObject(squad);
+	g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.Add(squad);
+	squad->SetTeam(g_Globals->World.CurrentPlayer);
+
+	// Create a couple of enemy teams
+	for(int i = 0; i < 1; ++i) {
+		Squad *s = _squadManager->CreateSquad("BAR Rifle", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
+		soldiers = s->GetSoldiers();
+		for(int j = 0; j < soldiers->Count; ++j)
+		{
+			// Let's place this object on the map
+			_currentMap->PlaceObject(soldiers->Items[j], &soldiers->Items[j]->Position);
+			soldiers->Items[j]->SetTeam(1);
+		}
+
+		s->SetPosition((i)*100+1700, 1800);
+		AddObject(s);
+		s->SetTeam(1);
+		g_Globals->World.Teams[1].Objects.Add(s);
+	}
+
+	// And now an allied team
+	for(int i = 0; i < 1; ++i) {
+		Squad *s = _squadManager->CreateSquad("BAR Rifle", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
+		soldiers = s->GetSoldiers();
+		for(int j = 0; j < soldiers->Count; ++j)
+		{
+			// Let's place this object on the map
+			_currentMap->PlaceObject(soldiers->Items[j], &soldiers->Items[j]->Position);
+			soldiers->Items[j]->SetTeam(2);
+		}
+
+		s->SetPosition((i)*100+1800, 200);
+		AddObject(s);
+		s->SetTeam(2);
+		g_Globals->World.Teams[2].Objects.Add(s);
+	}
+
 #if 0
 	squad = _squadManager->CreateSquad("Panzer IVG", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
 	squad->SetPosition(300, 200);
@@ -411,9 +479,9 @@ World::Load(char *fileName, SoldierManager *soldierManager, AnimationManager *an
 void
 World::UpdateState()
 {
-	State.NumSquads = _mobileObjects.Count;
-	for(int i = 0; i < _mobileObjects.Count; ++i) {
-		Object *o = _mobileObjects.Items[i];
+	State.NumSquads = g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.Count;
+	for(int i = 0; i < g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.Count; ++i) {
+		Object *o = g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.Items[i];
 		o->UpdateInterfaceState(&State, i, 0);
 	}
 
@@ -479,11 +547,13 @@ World::LeftMouseUp(int x, int y)
 		_contextMenu->Hide();
 
 		// If nothing was selected, go BOOM!
+#if 0
 		if(_selectedObjects.Count <= 0) {
 			Effect *e = _effectManager->GetEffect("Explosion 60m");
 			e->SetPosition(x+_originX, y+_originY);
 			_effects.Add(e);
 		}
+#endif
 	} else if(_currentState == ContextSelecting) {
 		_currentState = ContextSelected;
 
@@ -712,6 +782,11 @@ World::IssueOrder(Order *order)
 	}
 }
 
+#define KEY_LEFT		0x25
+#define KEY_RIGHT		0x27
+#define KEY_UP			0x26
+#define KEY_DOWN		0x28
+#define KEY_MULTIPLIER	4
 void
 World::KeyUp(int key)
 {
@@ -728,6 +803,52 @@ World::KeyUp(int key)
 			Formation::Type f = _selectedObjects.Items[i]->GetFormation();
 			_selectedObjects.Items[i]->SetFormation((Formation::Type)((f+1)%Formation::NumFormations));
 		}
+	}
+	else if(key == KEY_LEFT)
+	{
+		// Update the origin of the world
+		SetOrigin(_originX-KEY_MULTIPLIER*TileSize.w, _originY);
+		_currentMiniMap->Update();
+	}
+	else if(key == KEY_RIGHT)
+	{
+		SetOrigin(_originX+KEY_MULTIPLIER*TileSize.w, _originY);
+		_currentMiniMap->Update();
+	}
+	else if(key == KEY_UP)
+	{
+		SetOrigin(_originX, _originY-KEY_MULTIPLIER*TileSize.h);
+		_currentMiniMap->Update();
+	}
+	else if(key == KEY_DOWN)
+	{
+		SetOrigin(_originX, _originY+KEY_MULTIPLIER*TileSize.h);
+		_currentMiniMap->Update();
+	}
+}
+
+void
+World::SetOrigin(int x, int y)
+{
+	_originX = x;
+	_originY = y;
+	
+	if(_originX < 0)
+	{
+		_originX = 0;
+	}
+	else if((_originX+_screenWidth) > _currentMap->GetWidth())
+	{
+		_originX = _currentMap->GetWidth()-_screenWidth;
+	}
+
+	if(_originY < 0)
+	{
+		_originY = 0;
+	}
+	else if((_originY+_screenHeight) > _currentMap->GetHeight())
+	{
+		_originY = _currentMap->GetHeight()-_screenHeight;
 	}
 }
 

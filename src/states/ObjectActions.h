@@ -61,6 +61,7 @@ namespace SoldierAction
 		Turn,
 		Defend,
 		Ambush,
+		Wait,
 		NumActions // Must be last
 	};
 };

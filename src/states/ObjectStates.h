@@ -36,5 +36,6 @@ namespace SoldierState
 		FollowingInFormation,
 		Defending,
 		Ambushing,
+		Waiting,
 	};
 };

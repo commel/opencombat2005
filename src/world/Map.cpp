@@ -33,12 +33,12 @@ Map::~Map(void)
 void 
 Map::Render(Screen *screen, Rect *clip)
 {
-	assert((_originX+clip->w) < _mapImage->GetWidth());
-	assert((_originY+clip->y) < _mapImage->GetHeight());
+	assert((_originX+clip->w) <= _mapImage->GetWidth());
+	assert((_originY+clip->h) <= _mapImage->GetHeight());
 
 	if(g_Globals->World.bRenderBuildingOutlines)
 	{
-				int startX = _originX / _nPixelsPerBlockX;
+		int startX = _originX / _nPixelsPerBlockX;
 		int startY = _originY / _nPixelsPerBlockY;
 		int nx = clip->w / _nPixelsPerBlockX;
 		int ny = clip->h / _nPixelsPerBlockY;
@@ -68,7 +68,7 @@ Map::Render(Screen *screen, Rect *clip)
 		Color c(255,255,255);
 		for(int j = startY; j < (startY+ny); ++j) {
 			for(int i = startX; i < (startX+nx); ++i) {
-				c.red = (unsigned char)((_elevations[j*_nBlocksX + i] + g_Globals->World.Elements->GetElement(_elements[j*_nBlocksX+i])->GetHeight()) << 2);
+				c.red = (unsigned char)((_elevations[j*_nBlocksX + i] + g_Globals->World.Elements->GetElement(_elements[j*_nBlocksX+i])->Height) << 2);
 				c.green = c.red;
 				c.blue = c.red;
 				screen->FillRect((i-startX)*_nPixelsPerBlockX, (j-startY)*_nPixelsPerBlockY, _nPixelsPerBlockX, _nPixelsPerBlockY, &c);
@@ -95,7 +95,7 @@ Map::Render(Screen *screen, Rect *clip)
 					Building *b = _buildings.Items[_buildingIndices[j*_nBlocksX+i]-1];
 					for(int k = 0; k < b->NumTiles; ++k)
 					{
-						if(_objects[b->Tiles[k]] != NULL)
+						if(_objects[b->Tiles[k]] != NULL || g_Globals->World.bRenderBuildingInteriors)
 						{
 							// We have to draw this building. Make sure it is
 							// not already in our list
@@ -123,12 +123,33 @@ Map::Render(Screen *screen, Rect *clip)
 		{
 			// Draw this building
 			Color white(255,255,255);
-			TGA *tga = _buildings.Items[i]->GetInterior();
+			TGA *tga = buildingsToDraw.Items[i]->GetInterior();
 			screen->Blit(tga->GetData(), 
 					buildingsToDraw.Items[i]->Position.x-_originX,
 					buildingsToDraw.Items[i]->Position.y-_originY,
 					tga->GetWidth(), tga->GetHeight(), tga->GetWidth(), tga->GetHeight(),
 					tga->GetDepth(), &white);
+		}
+
+		// Render victory locations if they are here
+		for(int i = 0; i < _victoryLocations.Count; ++i)
+		{
+			int x=0,y=0;
+			ConvertMegaTileToPosition(_victoryLocations.Items[i]->X, _victoryLocations.Items[i]->Y, &x, &y);
+			if(x > _originX && (x < (_originX+clip->w))
+				&& (y > _originY) && (y < (_originY+clip->h)))
+			{
+				if(_victoryLocations.Items[i]->ControllingTeam >= 0)
+				{
+					TGA *tga = g_Globals->World.Nationalities.Items[g_Globals->World.Teams[_victoryLocations.Items[i]->ControllingTeam].Nationality]->VictoryLocation;
+					screen->Blit(tga->GetData(), x-_originX-tga->GetWidth()/2, y-_originY-tga->GetHeight()/2, tga->GetWidth(), tga->GetHeight(), 0, 0, tga->GetWidth(), tga->GetHeight(), tga->GetDepth(), true, true);
+					g_Globals->World.StaticFonts.Items[0]->Render(screen, _victoryLocations.Items[i]->Name, x-_originX, y-_originY+15);
+				}
+				else
+				{
+					assert(0);
+				}
+			}
 		}
 	}
 }
@@ -136,8 +157,8 @@ Map::Render(Screen *screen, Rect *clip)
 void 
 Map::RenderElements(Screen *screen, Rect *clip)
 {
-	assert((_originX+clip->w) < _mapImage->GetWidth());
-	assert((_originY+clip->y) < _mapImage->GetHeight());
+	assert((_originX+clip->w) <= _mapImage->GetWidth());
+	assert((_originY+clip->y) <= _mapImage->GetHeight());
 
 	int startX = _originX / _nPixelsPerBlockX;
 	int startY = _originY / _nPixelsPerBlockY;
@@ -181,6 +202,17 @@ Map::Create(char *fileName)
 	// Populate the building indices array
 	m->PopulateBuildingsIndices();
 	
+	// Copy the victory locations
+	// XXX/GWS: I am doing some temporary controlling team setting here
+	int j = 0;
+	for(int i = 0; i < attr->VictoryLocations.Count; ++i)
+	{
+		attr->VictoryLocations.Items[i]->ControllingTeam = j;
+		j = (j+1) % 2;
+		m->_victoryLocations.Add(attr->VictoryLocations.Items[i]);
+	}
+
+	delete attr;
 	return m;
 }
 
@@ -188,13 +220,19 @@ Map::Create(char *fileName)
 int
 Map::GetTileElevation(int i, int j)
 {
-	return (_elevations[j*_nBlocksX + i] + g_Globals->World.Elements->GetElement(_elements[j*_nBlocksX+i])->GetHeight());
+	return (_elevations[j*_nBlocksX + i] + g_Globals->World.Elements->GetElement(_elements[j*_nBlocksX+i])->Height);
 }
 
 bool 
 Map::IsTileBlockHeight(int i, int j)
 {
-		return (g_Globals->World.Elements->GetElement(_elements[j*_nBlocksX+i])->GetBlocksHeight());
+		return (g_Globals->World.Elements->GetElement(_elements[j*_nBlocksX+i])->BlocksHeight);
+}
+
+Element *
+Map::GetTileElement(int i, int j)
+{
+	return g_Globals->World.Elements->GetElement(_elements[j*_nBlocksX+i]);
 }
 
 void
@@ -233,6 +271,7 @@ Map::MoveObject(Object *object, Point *from, Point *to)
 			object->NextObject->PrevObject = object;
 		}
 		_objects[nj*_nBlocksX+ni] = object;
+		object->SetTileElement(g_Globals->World.Elements->GetElement(_elements[nj*_nBlocksX+ni]));
 	}
 }
 
@@ -251,7 +290,7 @@ Map::PlaceObject(Object *object, Point *to)
 		object->NextObject->PrevObject = object;
 	}
 	_objects[nj*_nBlocksX+ni] = object;
-
+	object->SetTileElement(g_Globals->World.Elements->GetElement(_elements[nj*_nBlocksX+ni]));
 }
 
 void
@@ -278,7 +317,10 @@ Map::SelectObjects(int x, int y, Array<Object> *dest)
 				//			to know which individual soldier was selected,
 				//			so we need to add a new squad->Select() call to
 				//			take that into account.
-				if(object->Contains(x,y)) {
+				//
+				// Remember, we only want to select objects that are part of
+				// our team!
+				if(object->GetTeam() == g_Globals->World.CurrentPlayer && object->Contains(x,y)) {
 					// Get the squad that this guy belongs to
 					Squad *s = object->GetSquad();
 					
@@ -344,4 +386,16 @@ Map::PopulateBuildingsIndices()
 			}
 		}
 	}
+}
+
+void
+Map::GetVictoryLocation(int idx, int *x, int *y, Nationality **nationality)
+{
+	assert(idx >= 0);
+	assert(idx < _victoryLocations.Count);
+
+	ConvertMegaTileToPosition(_victoryLocations.Items[idx]->X, _victoryLocations.Items[idx]->Y, x, y);
+	assert(_victoryLocations.Items[idx]->ControllingTeam >= 0);
+	assert(_victoryLocations.Items[idx]->ControllingTeam < g_Globals->World.NumTeams);
+	*nationality = g_Globals->World.Nationalities.Items[g_Globals->World.Teams[_victoryLocations.Items[idx]->ControllingTeam].Nationality];
 }

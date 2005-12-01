@@ -10,14 +10,6 @@ using namespace MSXML2;
 #include <misc\TGA.h>
 #include <world\Element.h>
 
-struct ElementAttributes 
-{
-	char Name[32];
-	int Index;
-	int Height;
-	bool BlocksHeight;
-};
-
 #define PSF_ELEMENTS	0x01
 
 enum ParserState
@@ -28,7 +20,24 @@ enum ParserState
 	PS_ELEMENT,
 	PS_HEIGHT,
 	PS_BLOCK_HEIGHT,
-	PS_INDEX
+	PS_INDEX,
+	PS_PASSABLE,
+	PS_COVER_PRONE,
+	PS_COVER_LOW,
+	PS_COVER_MEDIUM,
+	PS_COVER_HIGH,
+	PS_PROTECTION_PRONE,
+	PS_PROTECTION_LOW,
+	PS_PROTECTION_MEDIUM,
+	PS_PROTECTION_HIGH,
+	PS_PROTECTION_TOP,
+	PS_HINDRANCE_PRONE,
+	PS_HINDRANCE_LOW,
+	PS_HINDRANCE_MEDIUM,
+	PS_HINDRANCE_HIGH,
+	PS_SOLDIER_MOVE_PRONE,
+	PS_SOLDIER_MOVE_CROUCH,
+	PS_SOLDIER_MOVE_STANDING
 };
 
 struct AttrState
@@ -52,13 +61,30 @@ static AttrState _states[] = {
 	{ L"Height",		PS_HEIGHT},
 	{ L"Index",			PS_INDEX},
 	{ L"Block_Height",	PS_BLOCK_HEIGHT},
+	{ L"Passable",		PS_PASSABLE},
+	{ L"Cover_Prone",	PS_COVER_PRONE},
+	{ L"Cover_Low",		PS_COVER_LOW},
+	{ L"Cover_Medium",	PS_COVER_MEDIUM},
+	{ L"Cover_High",	PS_COVER_HIGH},
+	{ L"Protection_Prone",	PS_PROTECTION_PRONE},
+	{ L"Protection_Low",	PS_PROTECTION_LOW},
+	{ L"Protection_Medium",	PS_PROTECTION_MEDIUM},
+	{ L"Protection_High",	PS_PROTECTION_HIGH},
+	{ L"Protection_Top",	PS_PROTECTION_TOP},
+	{ L"Hindrance_Prone",	PS_HINDRANCE_PRONE},
+	{ L"Hindrance_Low",		PS_HINDRANCE_LOW},
+	{ L"Hindrance_Mediun",	PS_HINDRANCE_MEDIUM},
+	{ L"Hindrance_High",	PS_HINDRANCE_HIGH},
+	{ L"Soldier_Move_Prone",PS_SOLDIER_MOVE_PRONE},
+	{ L"Soldier_Move_Crouch",	PS_SOLDIER_MOVE_CROUCH},
+	{ L"Soldier_Move_Standing",	PS_SOLDIER_MOVE_STANDING},
 	{ NULL,				PS_UNKNOWN } /* Must be last */
 };
 
 class ElementsContentHandler : public SAXContentHandlerImpl  
 {
 public:
-	ElementsContentHandler(Array<ElementAttributes> *attrs) : SAXContentHandlerImpl()
+	ElementsContentHandler(Array<Element> *attrs) : SAXContentHandlerImpl()
 	{
 		idnt = 0;
 		_attrs = attrs;
@@ -91,7 +117,7 @@ public:
 					_parserFlags ^= PSF_ELEMENTS;
 					break;
 				case PS_ELEMENT:
-					_currentElementAttr = new ElementAttributes();
+					_currentElementAttr = new Element();
 					_currentElementAttr->Index = -1;
 					break;
 				}
@@ -141,6 +167,7 @@ public:
 	{
 		// Get the current parser state
 		StackState *s = (StackState *) _stack.Peek();
+		int level = 0;
 		switch(s->parserState)
 		{
 
@@ -185,6 +212,81 @@ public:
 				_currentElementAttr->Index = atoi(fileName);
 			}
 			break;
+
+		case PS_PASSABLE:
+			{
+				char fileName[256];
+				wcstombs(fileName, (wchar_t*)pwchChars, cchChars);
+				fileName[cchChars] = '\0';
+				assert(strlen(fileName) < 32);
+				if(stricmp(fileName, "false") == 0) {
+					_currentElementAttr->Passable = false;
+				} else {
+					_currentElementAttr->Passable = true;
+				}
+			}
+			break;
+
+			case PS_COVER_HIGH:
+				++level;
+			case PS_COVER_MEDIUM:
+				++level;
+			case PS_COVER_LOW:
+				++level;
+			case PS_COVER_PRONE:
+			{
+				char fileName[256];
+				wcstombs(fileName, (wchar_t*)pwchChars, cchChars);
+				fileName[cchChars] = '\0';
+				_currentElementAttr->Cover[level] = (unsigned char) atoi(fileName);
+			}
+			break;
+
+			case PS_HINDRANCE_HIGH:
+				++level;
+			case PS_HINDRANCE_MEDIUM:
+				++level;
+			case PS_HINDRANCE_LOW:
+				++level;
+			case PS_HINDRANCE_PRONE:
+			{
+				char fileName[256];
+				wcstombs(fileName, (wchar_t*)pwchChars, cchChars);
+				fileName[cchChars] = '\0';
+				_currentElementAttr->Hindrance[level] = (unsigned char) atoi(fileName);
+			}
+			break;
+
+			case PS_PROTECTION_TOP:
+				++level;
+			case PS_PROTECTION_HIGH:
+				++level;
+			case PS_PROTECTION_MEDIUM:
+				++level;
+			case PS_PROTECTION_LOW:
+				++level;
+			case PS_PROTECTION_PRONE:
+			{
+				char fileName[256];
+				wcstombs(fileName, (wchar_t*)pwchChars, cchChars);
+				fileName[cchChars] = '\0';
+				_currentElementAttr->Protection[level] = (unsigned short) atoi(fileName);
+			}
+			break;
+
+			case PS_SOLDIER_MOVE_STANDING:
+				++level;
+			case PS_SOLDIER_MOVE_CROUCH:
+				++level;
+			case PS_SOLDIER_MOVE_PRONE:
+			{
+				char fileName[256];
+				wcstombs(fileName, (wchar_t*)pwchChars, cchChars);
+				fileName[cchChars] = '\0';
+				_currentElementAttr->Movement[level] = (float) atof(fileName);
+			}
+			break;
+
 		}
 
 		return S_OK;
@@ -197,8 +299,8 @@ public:
 
 private:
       int idnt;
-  	  ElementAttributes *_currentElementAttr;
-	  Array<ElementAttributes> *_attrs;
+  	  Element *_currentElementAttr;
+	  Array<Element> *_attrs;
 	  Stack<StackState> _stack;
 	  unsigned int _parserFlags;
 };
@@ -216,15 +318,13 @@ ElementManager::LoadElements(char *fileName)
 {
 	// Create the reader
 	ISAXXMLReader* pRdr = NULL;
-	// Create a destination for the parsed output
-	Array<ElementAttributes> dest;
-
+	
 	HRESULT hr = CoCreateInstance(__uuidof(SAXXMLReader), NULL, CLSCTX_ALL, 
 		__uuidof(ISAXXMLReader), (void **)&pRdr);
 
 	if(!FAILED(hr)) 
 	{
-		ElementsContentHandler *pMc = new ElementsContentHandler(&dest);
+		ElementsContentHandler *pMc = new ElementsContentHandler(&_elements);
 		hr = pRdr->putContentHandler(pMc);
 
 	    static wchar_t URL[1000];
@@ -243,20 +343,14 @@ ElementManager::LoadElements(char *fileName)
 
    // Okay, now iterate through all of the widget attributes and create
    // our widgets	
-   for(int i = 0; i < dest.Count; ++i) {
-		// Create the source TGA file
-		Element *e= new Element();
-		e->_index = i;
-		e->_height = dest.Items[i]->Height;
-		e->_blocksHeight = dest.Items[i]->BlocksHeight;
-		strcpy(e->_name, dest.Items[i]->Name);
-		_elements.Add(e);
+   for(int i = 0; i < _elements.Count; ++i) {
+		_elements.Items[i]->Index = i;
    }
 }
 
 Element *
 ElementManager::GetElement(int index)
 {
-	assert(_elements.Items[index]->GetIndex() == index);
+	assert(_elements.Items[index]->Index == index);
 	return _elements.Items[index];
 }

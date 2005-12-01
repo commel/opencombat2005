@@ -9,6 +9,7 @@ using namespace MSXML2;
 #include <application\Globals.h>
 
 #define PSF_MAP 0x01
+#define PSF_VL	0x02
 
 enum ParserState
 {
@@ -19,7 +20,15 @@ enum ParserState
 	PS_MINI,
 	PS_OVERLAND,
 	PS_ELEMENTS,
-	PS_BUILDINGS
+	PS_BUILDINGS,
+	PS_VICTORY_LOCATIONS,
+	PS_VL,
+	PS_X,
+	PS_Y,
+	PS_VALUE,
+	PS_LINKS_TO,
+	PS_MAP_NAME,
+	PS_VL_NAME,
 };
 
 struct AttrState
@@ -36,8 +45,6 @@ public:
 	ParserState parserState;
 };
 
-MapAttributes _mapAttributes;
-
 static AttrState _states[] = {
 	{ L"Name",			PS_NAME },
 	{ L"Map",			PS_MAP},
@@ -46,6 +53,14 @@ static AttrState _states[] = {
 	{ L"Background",	PS_BACKGROUND},
 	{ L"Elements",		PS_ELEMENTS},
 	{ L"Mini",			PS_MINI},
+	{ L"VictoryLocations",	PS_VICTORY_LOCATIONS},
+	{ L"VL",			PS_VL},
+	{ L"X",				PS_X},
+	{ L"Y",				PS_Y},
+	{ L"Value",			PS_VALUE},
+	{ L"LinksTo",		PS_LINKS_TO},
+	{ L"MapName",		PS_MAP_NAME},
+	{ L"VLName",		PS_VL_NAME},
 	{ NULL,				PS_UNKNOWN } /* Must be last */
 };
 
@@ -82,8 +97,13 @@ public:
 				{
 				case PS_MAP:
 					_parserFlags ^= PSF_MAP;
-					_currentAttr = &_mapAttributes;
+					_currentAttr = new MapAttributes();
 					break;
+				case PS_VL:
+					_parserFlags ^= PSF_VL;
+					_currentVictoryLocation = new VictoryLocation();
+					break;
+
 				}
 
 				return S_OK;
@@ -112,7 +132,11 @@ public:
 				{
 				case PS_MAP:
 					_parserFlags ^= PSF_MAP;
-					_currentAttr = NULL;
+					break;
+				case PS_VL:
+					_parserFlags ^= PSF_VL;
+					_currentAttr->VictoryLocations.Add(_currentVictoryLocation);
+					_currentVictoryLocation = NULL;
 					break;
 				}
 			}
@@ -135,7 +159,14 @@ public:
 				char fileName[256];
 				wcstombs(fileName, (wchar_t*)pwchChars, cchChars);
 				fileName[cchChars] = '\0';
-				strcpy(_currentAttr->Name, fileName);
+				if(_parserFlags & PSF_VL)
+				{
+					strcpy(_currentVictoryLocation->Name, fileName);
+				}
+				else if(_parserFlags & PSF_MAP)
+				{
+					strcpy(_currentAttr->Name, fileName);
+				}
 			}
 			break;
 
@@ -183,6 +214,49 @@ public:
 				sprintf(_currentAttr->Overland, "%s\\%s", g_Globals->Application.MapsDirectory, fileName);
 			}
 			break;
+
+		case PS_X:
+			{
+				char fileName[256];
+				wcstombs(fileName, (wchar_t*)pwchChars, cchChars);
+				fileName[cchChars] = '\0';
+				_currentVictoryLocation->X = atoi(fileName);
+			}
+			break;
+		case PS_Y:
+			{
+				char fileName[256];
+				wcstombs(fileName, (wchar_t*)pwchChars, cchChars);
+				fileName[cchChars] = '\0';
+				_currentVictoryLocation->Y = atoi(fileName);
+			}
+			break;
+		case PS_VALUE:
+			{
+				char fileName[256];
+				wcstombs(fileName, (wchar_t*)pwchChars, cchChars);
+				fileName[cchChars] = '\0';
+				_currentVictoryLocation->Value = atoi(fileName);
+			}
+			break;
+		case PS_MAP_NAME:
+			{
+				char fileName[256];
+				wcstombs(fileName, (wchar_t*)pwchChars, cchChars);
+				fileName[cchChars] = '\0';
+				assert(strlen(fileName) < sizeof(_currentVictoryLocation->LinksToMapName));
+				strcpy(_currentVictoryLocation->LinksToMapName, fileName);
+			}
+			break;
+		case PS_VL_NAME:
+			{
+				char fileName[256];
+				wcstombs(fileName, (wchar_t*)pwchChars, cchChars);
+				fileName[cchChars] = '\0';
+				assert(strlen(fileName) < sizeof(_currentVictoryLocation->LinksToVictoryLocationName));
+				strcpy(_currentVictoryLocation->LinksToVictoryLocationName, fileName);
+			}
+			break;
 		}
 
 		return S_OK;
@@ -193,9 +267,12 @@ public:
 		return S_OK;
 	}
 
+	MapAttributes *GetMapAttributes() { return _currentAttr; }
+
 private:
       int idnt;
   	  MapAttributes *_currentAttr;
+	  VictoryLocation *_currentVictoryLocation;
 	  Stack<StackState> _stack;
 	  unsigned int _parserFlags;
 };
@@ -216,6 +293,7 @@ MapManager::Parse(char *fileName)
 
 	HRESULT hr = CoCreateInstance(__uuidof(SAXXMLReader), NULL, CLSCTX_ALL, 
 		__uuidof(ISAXXMLReader), (void **)&pRdr);
+	MapAttributes *rv = NULL;
 
 	if(!FAILED(hr)) 
 	{
@@ -229,12 +307,15 @@ MapManager::Parse(char *fileName)
 	    hr = pRdr->parseURL((unsigned short *)URL);
 		printf("\nParse result code: %08x\n\n",hr);
    
+		rv = pMc->GetMapAttributes();
 		pRdr->Release();
+		delete pMc;
    }
    else 
    {
       printf("\nError %08X\n\n", hr);
+	  rv = NULL;
    }
 
-   return &_mapAttributes;
+   return rv;
 }

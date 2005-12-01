@@ -27,15 +27,67 @@ MiniMap::Render(Screen *screen)
 	screen->DrawRect(Position.x+1, Position.y+1, _tga->GetWidth()+2, _tga->GetHeight()+2, 1, &white);
 	screen->Blit(_tga->GetData(), Position.x+2, Position.y+2, _tga->GetWidth(), _tga->GetHeight(), _tga->GetWidth(), _tga->GetHeight(), _tga->GetDepth());
 
+	// We need to draw all of the victory locations
+	int x=0,y=0;
+	Nationality *nationality;
+	for(int i = 0; i < g_Globals->World.CurrentWorld->GetNumVictoryLocations(); ++i)
+	{
+		g_Globals->World.CurrentWorld->GetVictoryLocation(i, &x, &y, &nationality);
+		float xpct = ((float) x / (float) _parentWorld->GetWidth());
+		float ypct = ((float) y / (float) _parentWorld->GetHeight());
+		if(nationality >= 0)
+		{
+			Color white(255,255,255);
+			TGA *tga = nationality->MiniMap;
+			x = Position.x + 2 + (int)(xpct*(float)_tga->GetWidth()) - (tga->GetWidth()>>1);
+			y = Position.y + 2 + (int)(ypct*(float)_tga->GetHeight()) - (tga->GetHeight()>>1);
+			screen->Blit(tga->GetData(), x, y, tga->GetWidth(), tga->GetHeight(), tga->GetWidth(), tga->GetHeight(), tga->GetDepth(), &white);
+		}
+		else
+		{
+			assert(0);
+		}
+	}
+
 	// We need to mark off the position of all the moving objects
-	// in the world on the mini map
+	// in the world on the mini map. We are going to mark objects
+	// of the current player as blue, allied objects in green,
+	// and enemy objects in red.
 	Color blue(0,0,255);
-	Array<Object> *objs = _parentWorld->GetObjects();
+	Array<Object> *objs = &g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects;
 	for(int i = 0; i < objs->Count; ++i) {
 		// Draw a small circle
 		float xpct = ((float) objs->Items[i]->Position.x / (float) _parentWorld->GetWidth());
 		float ypct = ((float) objs->Items[i]->Position.y / (float) _parentWorld->GetHeight());
 		screen->FillRect(Position.x + 2 + (int)(xpct*(float)_tga->GetWidth()), Position.y + 2 + (int)(ypct*(float)_tga->GetHeight()), 5, 5, &blue);
+	}
+
+	// Now allied objects
+	Color green(0,255,0);
+	for(int j = 0; j < g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Allies.Count; ++j)
+	{
+		PlayerID id = g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Allies.Items[j];
+		objs = &g_Globals->World.Teams[id].Objects;
+		for(int i = 0; i < objs->Count; ++i) {
+			// Draw a small circle
+			float xpct = ((float) objs->Items[i]->Position.x / (float) _parentWorld->GetWidth());
+			float ypct = ((float) objs->Items[i]->Position.y / (float) _parentWorld->GetHeight());
+			screen->FillRect(Position.x + 2 + (int)(xpct*(float)_tga->GetWidth()), Position.y + 2 + (int)(ypct*(float)_tga->GetHeight()), 5, 5, &green);
+		}
+	}
+
+	// Now enemy objects
+	Color red(255,0,0);
+	for(int j = 0; j < g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Enemies.Count; ++j)
+	{
+		PlayerID id = g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Enemies.Items[j];
+		objs = &g_Globals->World.Teams[id].Objects;
+		for(int i = 0; i < objs->Count; ++i) {
+			// Draw a small circle
+			float xpct = ((float) objs->Items[i]->Position.x / (float) _parentWorld->GetWidth());
+			float ypct = ((float) objs->Items[i]->Position.y / (float) _parentWorld->GetHeight());
+			screen->FillRect(Position.x + 2 + (int)(xpct*(float)_tga->GetWidth()), Position.y + 2 + (int)(ypct*(float)_tga->GetHeight()), 5, 5, &red);
+		}
 	}
 
 	// Now we need to draw the yellow line. If we have not determined our extents yet,
@@ -117,4 +169,19 @@ MiniMap::LeftMouseDrag(int x, int y)
 	}
 
 	_parentWorld->SetOrigin(ox, oy);
+}
+
+void
+MiniMap::Update()
+{
+	// Get our new origin
+	int x=0,y=0;
+	_parentWorld->GetOrigin(&x, &y);
+
+	// Now, where is our rectangle going to go? It is based on a percentage
+	// of our extents and our origin
+	float xp = ((float)x) / ((float)_parentWorld->GetWidth());
+	float yp = ((float)y) / ((float)_parentWorld->GetHeight());
+	_x = (int)(xp*_tga->GetWidth());
+	_y = (int)(yp*_tga->GetHeight());
 }

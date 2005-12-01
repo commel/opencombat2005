@@ -1,9 +1,13 @@
 #pragma once
 
-#include <Misc\Array.h>
-#include <Misc\Structs.h>
-#include <Misc\TGA.h>
+#include <misc\Array.h>
+#include <misc\StrictArray.h>
+#include <misc\Structs.h>
+#include <misc\TGA.h>
 #include <World\Building.h>
+#include <world\Element.h>
+#include <world\VictoryLocation.h>
+#include <world\Nationality.h>
 
 class Object;
 class Screen;
@@ -34,10 +38,14 @@ public:
 	// Gets the tile sizes
 	inline void GetNumTiles(int *nx, int *ny) { *nx = _nBlocksX; *ny = _nBlocksY; }
 	inline void GetTileSize(int *w, int *h) { *w = _nPixelsPerBlockX; *h = _nPixelsPerBlockY; }
-
+	void ConvertMegaTileToPosition(int mi, int mj, int *x, int *y) { *x = mi*_nPixelsPerBlockX*12+((_nPixelsPerBlockX*12)>>1), *y=mj*_nPixelsPerBlockY*12+((_nPixelsPerBlockY*12)>>1);}
+	
 	// Get's the elevation for a tile
 	int GetTileElevation(int i, int j);
 	bool IsTileBlockHeight(int i, int j);
+
+	// Retrieves the tile element
+	Element *GetTileElement(int i, int j);
 
 	// Gets the mini map name
 	char *GetMiniName() { return _miniName; }
@@ -53,6 +61,10 @@ public:
 
 	// Tries to select objects at (x,y) and place them in the array argument
 	void SelectObjects(int x, int y, Array<Object> *dest);
+
+	// Gets the number of victory locations
+	int GetNumVictoryLocations() { return _victoryLocations.Count; }
+	void GetVictoryLocation(int idx, int *x, int *y, Nationality **nationality);
 
 protected:
 	// Populates the buildings index array
@@ -94,6 +106,9 @@ protected:
 
 	// The number of pixels per block
 	int _nPixelsPerBlockX, _nPixelsPerBlockY;
+
+	// Victory locations on this map
+	StrictArray<VictoryLocation *> _victoryLocations;
 
 	char _miniName[MAX_NAME];
 	char _overlandName[MAX_NAME];

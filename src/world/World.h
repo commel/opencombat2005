@@ -14,6 +14,7 @@ class SoldierManager;
 class SquadManager;
 class VehicleManager;
 class WeaponManager;
+class MiniMap;
 
 #include <misc\Array.h>
 #include <misc\Color.h>
@@ -118,7 +119,8 @@ public:
 	inline int GetHeight() { return _currentMap->GetHeight(); }
 
 	// Set's the origin of this world
-	inline void SetOrigin(int x, int y) { _originX = x; _originY = y; }
+	void SetOrigin(int x, int y);
+	void GetOrigin(int *x, int *y) { *x = _originX; *y = _originY; }
 
 	// Gets the list of mobile objects in this world
 	inline Array<Object> *GetObjects() { return &_mobileObjects; }
@@ -133,7 +135,8 @@ public:
 	char *GetOverlandName() { return _currentMap->GetOverlandName(); }
 
 	// Checks whether or not the tile (i,j) is passable
-	bool IsPassable(int i, int j) { return !_currentMap->IsTileBlockHeight(i,j); }
+	bool IsPassable(int i, int j) { return _currentMap->GetTileElement(i,j)->Passable; }
+	Element *GetTileElement(int i, int j) { return _currentMap->GetTileElement(i,j); }
 	Point NumTiles;
 	Size TileSize;
 
@@ -145,6 +148,13 @@ public:
 	void AddMark(Mark::Color markColor, int x, int y);
 	// Clear all our marks
 	void ClearMarks();
+
+	// Set's the mini map for this world
+	void SetMiniMap(MiniMap *miniMap) { _currentMiniMap = miniMap; }
+
+	// Gets the number of victory locations
+	int GetNumVictoryLocations() { return _currentMap->GetNumVictoryLocations(); }
+	void GetVictoryLocation(int index, int *x, int *y, Nationality **nationality) { return _currentMap->GetVictoryLocation(index, x, y, nationality); }
 
 protected:
 
@@ -205,6 +215,9 @@ protected:
 	// The origin of the world
 	int _originX, _originY;
 
+	// The width and height of our screen bounds
+	int _screenWidth, _screenHeight;
+
 	// Lists of marks that we have to render
 	Point *_markPoints;
 	Mark::Color *_markColors;
@@ -216,4 +229,7 @@ protected:
 
 	// The direction of the heading arc (used for Ambushing and Defending)
 	Direction _currentHeadingArc;
+
+	// The current mini map for this world
+	MiniMap *_currentMiniMap;
 };

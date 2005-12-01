@@ -1,6 +1,8 @@
 #pragma once
 
 #include <misc\Structs.h>
+#include <world\VictoryLocation.h>
+#include <misc\StrictArray.h>
 
 struct MapAttributes
 {
@@ -10,6 +12,7 @@ struct MapAttributes
 	char Mini[MAX_NAME];
 	char Elements[MAX_NAME];
 	char Buildings[MAX_NAME];
+	StrictArray<VictoryLocation *> VictoryLocations;
 };
 
 class MapManager
