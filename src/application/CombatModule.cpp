@@ -45,6 +45,38 @@ CombatModule::Initialize(void *app)
 	
 	_app = app;
 
+	// Setup our team information for the game.
+	// XXX/GWS: This is just temporay. Setup two teams, one user controlled,
+	//			and one computer controlled
+	g_Globals->World.NumTeams = 3;
+	g_Globals->World.Teams[0].Controller = PlayerControlled;
+	g_Globals->World.Teams[0].Player = 0;
+	g_Globals->World.Teams[0].Enemies.Add(1);
+	g_Globals->World.Teams[0].Allies.Add(2);
+	g_Globals->World.Teams[0].Nationality = 0;
+	g_Globals->World.Teams[1].Controller = ComputerControlled;
+	g_Globals->World.Teams[1].Player = 1;
+	g_Globals->World.Teams[1].Enemies.Add(0);
+	g_Globals->World.Teams[1].Enemies.Add(2);
+	g_Globals->World.Teams[1].Nationality = 1;
+	g_Globals->World.Teams[2].Controller = ComputerControlled;
+	g_Globals->World.Teams[2].Player = 2;
+	g_Globals->World.Teams[2].Enemies.Add(1);
+	g_Globals->World.Teams[2].Allies.Add(0);
+	g_Globals->World.Teams[2].Nationality = 2;
+
+	g_Globals->World.CurrentPlayer = 0;
+
+	// Load the nationalities
+	g_Globals->Application.Status->Status("Loading Nationalities...");
+	sprintf(fileName, "%s\\Nationalities.xml", g_Globals->Application.ConfigDirectory);
+	Nationality::Load(fileName, &(g_Globals->World.Nationalities));
+
+	// Load some fonts
+	sprintf(fileName, "%s\\UI\\ui_game_vl_font.tga", g_Globals->Application.GraphicsDirectory);
+	StaticFont *f = StaticFont::Load(fileName, "LargeVLFont", 18, 13, -3);
+	g_Globals->World.StaticFonts.Add(f);
+
 	// Load the UI graphical elements
 	g_Globals->Application.Status->Status("Loading Combat UI widgets...");
 	_uiManager = new WidgetManager();
@@ -125,6 +157,7 @@ CombatModule::Initialize(void *app)
 	// Create the mini map
 	g_Globals->Application.Status->Status("Creating mini map...");
 	_currentMiniMap = MiniMap::Create(_currentWorld->GetMiniMapName(), _currentWorld);
+	_currentWorld->SetMiniMap(_currentMiniMap);
 
 	// Create the sound manager
 	g_Globals->Application.Status->Status("Loading soldier voices...");
@@ -425,13 +458,12 @@ CombatModule::Render(Screen *screen)
 		w->Render(screen, x+171, y+21);
 		delete w;
 	}
-
 }
 
 void 
 CombatModule::LeftMouseDown(int x, int y)
 {
-	if(_currentMiniMap->Contains(x,y)) {
+	if(_showMiniMap && _currentMiniMap->Contains(x,y)) {
 		_currentMiniMap->LeftMouseDown(x,y);
 	} else {
 		_currentWorld->LeftMouseDown(x,y);
@@ -441,7 +473,7 @@ CombatModule::LeftMouseDown(int x, int y)
 void 
 CombatModule::LeftMouseUp(int x, int y)
 {
-	if(_currentMiniMap->Contains(x, y)) {
+	if(_showMiniMap && _currentMiniMap->Contains(x, y)) {
 		_currentMiniMap->LeftMouseUp(x, y);
 	} else {
 		_currentWorld->LeftMouseUp(x,y);
@@ -451,7 +483,7 @@ CombatModule::LeftMouseUp(int x, int y)
 void 
 CombatModule::LeftMouseDrag(int x, int y)
 {
-	if(_currentMiniMap->Contains(x,y)) {
+	if(_showMiniMap && _currentMiniMap->Contains(x,y)) {
 		_currentMiniMap->LeftMouseDrag(x, y);
 	}
 }
@@ -509,14 +541,23 @@ CombatModule::KeyUp(int key)
 			_showUnitPanel = !_showUnitPanel;
 			break;
 		case 119: /* F8 */
-			// The order is Outlines->Elevation->NULL and back
-			if(g_Globals->World.bRenderBuildingOutlines) {
+			// The order is Interiors->Outlines->Elevation->NULL and back
+			if(g_Globals->World.bRenderBuildingInteriors)
+			{
+				g_Globals->World.bRenderBuildingOutlines = true;
+				g_Globals->World.bRenderElevation = false;
+				g_Globals->World.bRenderBuildingInteriors = false;
+			}
+			else if(g_Globals->World.bRenderBuildingOutlines) {
 				g_Globals->World.bRenderBuildingOutlines = false;
 				g_Globals->World.bRenderElevation = true;
+				g_Globals->World.bRenderBuildingInteriors = false;
 			} else if(g_Globals->World.bRenderElevation) {
 				g_Globals->World.bRenderElevation = false;
+				g_Globals->World.bRenderBuildingInteriors = false;
+				g_Globals->World.bRenderBuildingOutlines = false;
 			} else {
-				g_Globals->World.bRenderBuildingOutlines = true;
+				g_Globals->World.bRenderBuildingInteriors = true;
 			}
 			break;
 		case 120: /* F9 */

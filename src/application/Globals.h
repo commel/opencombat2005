@@ -25,7 +25,9 @@
 #include <ai\AStar.h>
 #include <states\ObjectStates.h>
 #include <states\ObjectActions.h>
-#include <states\SoldierStateTransitions.h>
+#include <misc\StrictArray.h>
+#include <world\Nationality.h>
+#include <graphics\Font.h>
 
 /**
  * This file describes a wrapper for all of our global variables.
@@ -53,12 +55,51 @@ struct ObjectActionsContainer
 	// Actions for our vehicles
 };
 
-struct ObjectStateTransitionsContainer
+/**
+ * This enum let's us know how a team is controlled.
+ */
+enum TeamController
 {
-	// State transitions for our soldiers
-	SoldierStateTransitions Soldiers;
+	PlayerControlled,
+	ComputerControlled,
+	NumControllers
+};
 
-	// State transitions for our vehicles
+/**
+ * The following defines an ID for each player and how many players
+ * we are allowing in the game.
+ */
+#define MAX_PLAYERS	32
+typedef int PlayerID;
+
+/**
+ * This structure keeps track of the attributes for each team in the game.
+ */
+struct TeamAttributes
+{
+	// The objects that belong to this team
+	Array<Object> Objects;
+
+	// Is this team computer or player controlled?
+	TeamController Controller;
+
+	// The nationality of this team. Nationalities are defined in the
+	// Nationalites.xml file, and the order in which they appear
+	// is this index below
+	NationalityID Nationality;
+
+	// Which player is controlling this team? This ID also corresponds
+	// to the index in the Teams array that this structure belongs to.
+	PlayerID Player;
+
+	// Which teams are allies of this team?
+	StrictArray<PlayerID> Allies;
+
+	// Which teams are enemies of this team?
+	// We keep track of enemies and allies separately because
+	// we want to allow neutral teams as well. A neutral team is
+	// someone who is neither an enemy or an ally
+	StrictArray<PlayerID> Enemies;
 };
 
 struct WorldGlobals
@@ -115,6 +156,7 @@ struct WorldGlobals
 	bool bRenderPaths;
 	bool bRenderHelpText;
 	bool bRenderBuildingOutlines;
+	bool bRenderBuildingInteriors;
 
 	/**
 	 * A structure which contains all of our constants.
@@ -122,14 +164,36 @@ struct WorldGlobals
 	WorldConstants Constants;
 
 	/**
+	 * This keeps track of all of the information about each
+	 * team in the game, which objects he controls, whether
+	 * or not it's a computer or player controlled team, etc.
+	 */
+	TeamAttributes Teams[MAX_PLAYERS];
+	int NumTeams;
+
+	/**
+	 * This is the current user of this game.
+	 */
+	PlayerID CurrentPlayer;
+
+	/**
+	 * The nationalities that are possible in this world.
+	 */
+	StrictArray<Nationality *> Nationalities;
+
+	/**
+	 * An array of static font's used in this world.
+	 */
+	StrictArray<StaticFont *> StaticFonts;
+
+	/**
 	 * A structure to hold all of our action and state and state transition
 	 * information.
 	 */
 	ObjectStatesContainer States;
 	ObjectActionsContainer Actions;
-	ObjectStateTransitionsContainer StateTransitions;
 
-	WorldGlobals() { bRenderElevation=false; bRenderElements=true;bWeaponFan=false;bRenderStats=false;bRenderPaths=false;bRenderHelpText=true;bRenderBuildingOutlines=false; }
+	WorldGlobals() { bRenderElevation=false; bRenderElements=true;bWeaponFan=false;bRenderStats=false;bRenderPaths=false;bRenderHelpText=true;bRenderBuildingOutlines=false;bRenderBuildingInteriors=false; }
 };
 
 /**

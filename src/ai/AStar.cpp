@@ -71,9 +71,10 @@ AStar::Heuristic(int x, int y)
 }
 
 Path *
-AStar::FindPath(int x0, int y0, int x1, int y1)
+AStar::FindPath(int x0, int y0, int x1, int y1, Element::Level level)
 {
 	Node *bestNode = NULL;
+	_level = level;
 
 	// Let's remember our destination
 	_destX = x1;
@@ -193,8 +194,6 @@ AStar::CanMove(int x, int y)
 	if(x < 0 || y < 0 || x >= g_Globals->World.CurrentWorld->NumTiles.x || y >= g_Globals->World.CurrentWorld->NumTiles.y) {
 		return false;
 	}
-
-	// XXX/GWS: Make sure we don't go off the edge of the map!!!
 	return g_Globals->World.CurrentWorld->IsPassable(x,y);
 }
 
@@ -253,8 +252,6 @@ AStar::DoMove(Node *node, int x, int y)
 float
 AStar::GetTerrainCost(int x, int y)
 {
-	// XXX/GWS: Fix this later. Right now all paths are equal terrain cost
-	UNREFERENCED_PARAMETER(x);
-	UNREFERENCED_PARAMETER(y);
-	return 1.0f;
+	Element *e = g_Globals->World.CurrentWorld->GetTileElement(x,y);
+	return (float) e->Hindrance[_level] / 100.0f;
 }

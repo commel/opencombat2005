@@ -3,7 +3,7 @@
 	path weighting in terms of fields of fire, strength of position, etc.
 2.) Targeting cursor
 3.) More Units
-4.) Notion of teams, me against you, multinational forces
+XXX 10/29/2005 4.) Notion of teams, me against you, multinational forces
 5.) User controlled vs computer controlled enemies/allies
 6.) Need a model for unit state changes and decision making
 7.) team formations (spread, fan, cover, etc)
@@ -12,7 +12,7 @@ XXX 10/19/2005 8.) Add units to elements/tiles
     dirty rectangle rendering, etc
 10.) Moving the marks/defense/ambush circles
 11.) Implement defend, ambush, smoke, etc
-12.) Houses and roofs
+XXX 10/25/2005 12.) Houses and roofs
 13.) Non-shimmering texture transformations
 14.) Fix entity character references in character parsing in XML parsers
 15.) Optimize A*. It is really slow right now on long paths/unreachable paths.

@@ -562,7 +562,12 @@ CMyD3DApplication::Status(char *msg)
 	strcpy(_statusText, msg);
 
 	// Drawing loading status message until app finishes loading
-    SendMessage( m_hWnd, WM_PAINT, 0, 0 );
+	HDC hDC = GetDC( m_hWnd );
+    RECT rct;
+    GetClientRect( m_hWnd, &rct );
+    DrawText( hDC, _statusText, -1, &rct, DT_CENTER|DT_VCENTER|DT_SINGLELINE );
+    ReleaseDC( m_hWnd, hDC );
+	//SendMessage( m_hWnd, WM_PAINT, 0, 0 );
 }
 
 void 

@@ -39,7 +39,6 @@ Soldier::Soldier(void) : Object()
 	_formationPosition = 0;
 
 	// Initialize the speeds and accelerations
-	_maxRunningSpeed = _maxWalkingSpeed = _maxWalkingSlowSpeed = _maxCrawlingSpeed = 0.0f;
 	_runningAccel = _walkingAccel = _walkingSlowAccel = _crawlingAccel = 0.0f;
 }
 
@@ -277,6 +276,10 @@ Soldier::FollowPath(Path *path, SoldierAction::Action movementStyle)
 	// Let's first stop
 	HandleStopOrder(NULL);
 
+	// Wait for a little bit
+	Wait();
+
+	// Follow our path
 	while(path != NULL)
 	{
 		Action *action = new Action();
@@ -305,6 +308,9 @@ Soldier::Follow(Object *object, Formation::Type formationType, float formationSp
 	// Let's first stop
 	HandleStopOrder(NULL);
 
+	// Wait for a little bit
+	Wait();
+
 	// Add our follow in formation action
 	Action *action = new Action(SoldierAction::FollowInFormation, NULL);
 	SoldierActionHandlers::FollowFormationData *data = new SoldierActionHandlers::FollowFormationData();
@@ -317,11 +323,66 @@ Soldier::Follow(Object *object, Formation::Type formationType, float formationSp
 	_actionQueue.Insert(action, _actionQueue.Count());
 
 	// Add an action for our destination reached
+	_pathComplete = false;
 	action = new Action(SoldierAction::DestinationReached, NULL);
 	_actionQueue.Insert(action, _actionQueue.Count());
 	action = new Action(SoldierAction::Stop, NULL);
 	_actionQueue.Insert(action, _actionQueue.Count());
 
+}
+
+void
+Soldier::Ambush(Direction heading)
+{
+	// Let's first stop whatever we were doing
+	HandleStopOrder(NULL);
+
+	// Now setup the action to perform. First turn in the direction
+	// we need. Then start ambushing. We add a little bit of a wait time
+	// to allow for soldier reactions times
+	// XXX/GWS: Let's have better modeling of soldier reaction times.
+	//			Perhaps the farther away from the squad leader the
+	//			slower their ability to enact orders?
+	Wait();
+	Action *action = new Action(SoldierAction::Turn, (void *)heading);
+	_actionQueue.Enqueue(action);
+	action = new Action(SoldierAction::Ambush, (void *)heading);
+	_actionQueue.Enqueue(action);
+}
+
+void
+Soldier::Defend(Direction heading)
+{
+	// Let's first stop whatever we were doing
+	HandleStopOrder(NULL);
+
+	// Now setup the action to perform
+	// XXX/GWS: Let's have better modeling of soldier reaction times.
+	//			Perhaps the farther away from the squad leader the
+	//			slower their ability to enact orders?
+	Wait();
+	Action *action = new Action(SoldierAction::Turn, (void *)heading);
+	_actionQueue.Enqueue(action);
+	action = new Action(SoldierAction::Defend, (void *)heading);
+	_actionQueue.Enqueue(action);
+}
+
+// Wait for an amount of time determined by the soldier reaction time
+void
+Soldier::Wait()
+{
+	Wait(rand() % 500);
+}
+
+void
+Soldier::Wait(long time)
+{
+	Action * action = new Action(SoldierAction::Wait, NULL);
+	SoldierActionHandlers::WaitData *data = new SoldierActionHandlers::WaitData();
+	data->ElapsedTime = 0;
+	data->WaitTime = time;
+	action->Data = data;
+	_actionQueue.Enqueue(action);
 }
 
 bool
@@ -626,31 +687,4 @@ bool
 Soldier::IsStopped()
 {
 	return _currentState.IsSet(SoldierState::Stopped);
-}
-
-void
-Soldier::Ambush(Direction heading)
-{
-	// Let's first stop whatever we were doing
-	HandleStopOrder(NULL);
-
-	// Now setup the action to perform. First turn in the direction
-	// we need. Then start ambushing.
-	Action *action = new Action(SoldierAction::Turn, (void *)heading);
-	_actionQueue.Enqueue(action);
-	action = new Action(SoldierAction::Ambush, (void *)heading);
-	_actionQueue.Enqueue(action);
-}
-
-void
-Soldier::Defend(Direction heading)
-{
-	// Let's first stop whatever we were doing
-	HandleStopOrder(NULL);
-
-	// Now setup the action to perform
-	Action *action = new Action(SoldierAction::Turn, (void *)heading);
-	_actionQueue.Enqueue(action);
-	action = new Action(SoldierAction::Defend, (void *)heading);
-	_actionQueue.Enqueue(action);
 }

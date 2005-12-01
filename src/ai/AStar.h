@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <memory.h>
+#include <world\Element.h>
 
 /**
  * In our implementation of the A* algorithm, we use a hash table for the
@@ -17,8 +18,11 @@ public:
 	AStar(void);
 	virtual ~AStar(void);
 
-	// Finds a path from (x0,y0) to (x1,y1)
-	Path *FindPath(int x0, int y0, int x1, int y1);
+	// Finds a path from (x0,y0) to (x1,y1), using the method
+	// (prone, med, etc) found in level
+	//
+	// XXX/SGW: Add a flag to optimize for speed/cover/danger etc
+	Path *FindPath(int x0, int y0, int x1, int y1, Element::Level level);
 
 protected:
 	// This is the node structure that determines our path
@@ -416,4 +420,7 @@ protected:
 	// Keep track of free Nodes
 	Node *_freeNodes;
 	long _nFreeNodes, _nAllocatedNodes;
+
+	// The current level we are using
+	Element::Level _level;
 };

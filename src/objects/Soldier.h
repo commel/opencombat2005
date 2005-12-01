@@ -17,6 +17,19 @@ class Weapon;
 
 #define MAX_WEAPONS_PER_SOLDIER	8
 
+/**
+ * Attribute rating for a soldier. Attributes are rated on a 0-100
+ * scale, with 50 being an average rating for an attribute.
+ */
+class Rating
+{
+public:
+	Rating() { _value = 50; }
+
+private:
+	unsigned char _value;
+};
+
 class Soldier :
 	public Object
 {
@@ -85,8 +98,87 @@ public:
 	// Tells this soldier to defend a direction
 	void Defend(Direction heading);
 
+	// Waiting actions
+	void Wait();
+	void Wait(long time);
+
 	// Is this soldier stopped?
 	virtual bool IsStopped();
+
+	// The physical attributes of this soldier
+	struct
+	{
+		/**
+		 * Aggressiveness determines how hard this soldier presses an attack.
+		 * An aggressive commander will assault the enemy at the expense of
+		 * losing men, or will defend by taking the attack to the enemy. An
+		 * aggressive soldier does not like sitting in will place, and
+		 * will grow unhappy if forced to defend or stay in one place. Conversely,
+		 * an unaggressive soldier prefers defending and ambushing when left alone
+		 * and an unaggressive commander prefers holding his ground.
+		 */
+		Rating Aggressiveness;
+
+		/**
+		 * Leadership is a measure of a commander's sphere of influence. A high
+		 * leadership mean he can command unit's farther away, and that his
+		 * orders will be followed an obeyed. Leadership is a rating that
+		 * increases with experience.
+		 */
+		Rating Leadership;
+		
+		/**
+		 * Charisma is a measure of how well liked this soldier/commander is. A
+		 * commander with a high charisma can get his soldiers to give that little 
+		 * extra effort, to fight just that much harder. Likewise, a soldier with
+		 * a low charisma can affect unit morale, or a commander with a low
+		 * charisma is at risk of having his soldiers mutiny, or worse, frag him.
+		 */
+		Rating Charisma;
+		
+		/**
+		 * Knowledge is a measure of the tactical skill of a commander. A commander
+		 * with a high knowledge rating will use a variety of different elements
+		 * in planning an attack (terrain, cover, force disposition, etc). Often
+		 * this shows up as more finesse in an attack and a desire to minimize
+		 * casualties while still achieving the objectives. A less knowledgeable
+		 * commander has a tendency to use simplistic tactics and brute force,
+		 * prefering direct assaults irregardless of the casualties sustained.
+		 * Knowledge is an attribute that can increase with experience.
+		 */
+		Rating Knowledge;
+
+		/**
+		 * Experience is a measure of how much battle time this soldier
+		 * has seen. Experienced commanders have the benefit of past precedent
+		 * when determining strategies and executing orders. They know what works
+		 * and what to avoid. Experienced soldiers are less prone to the stress
+		 * of battle. They fire more accurately, follow orders more closely, and
+		 * are less likely to break or cower. Experienced soldiers, however, are
+		 * less likely to follow incompetent commanders.
+		 */
+		Rating Experience;
+		
+		/**
+		 * Intelligence is a measure of how well this soldier learns, and the
+		 * rate at which this soldier increases his other stats. Intelligence
+		 * is a good measure of the potential of a soldier.
+		 */
+		Rating Intelligence;
+
+		/**
+		 * Morale is a measure of the overall mental health of a soldier.
+		 * Soldiers with low morale are less likely to follow orders, more likely
+		 * to break or cower, and are less effective as a fighting force.
+		 */
+		Rating Morale;
+
+		/**
+		 * Stamina is a measure of the endurance of a soldier. Soldiers with a
+		 * high stamina can run farther with higher loads and still fight effectively.
+		 */
+		Rating Stamina;
+	} Attributes;
 
 protected:
 
@@ -108,12 +200,6 @@ protected:
 
 	// Finds a target within a squad
 	Soldier *FindTarget(Squad *squad);
-
-	// Keeps track of the maximum speeds for each state
-	float _maxRunningSpeed;
-	float _maxWalkingSpeed;
-	float _maxWalkingSlowSpeed;
-	float _maxCrawlingSpeed;
 
 	// Keeps track of the maximum accelerations for each state
 	float _runningAccel;

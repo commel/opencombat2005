@@ -59,6 +59,13 @@ public:
 		SoldierAction::Action MovementStyle;
 	};
 
+	// This structure is used for keeping track of a wait action
+	struct WaitData
+	{
+		long ElapsedTime;
+		long WaitTime;
+	};
+
 	static bool Handle(Soldier *soldier, Action *action, long dt);
 
 private:
@@ -95,6 +102,7 @@ private:
 	static bool TurnActionHandler(Soldier *soldier, Action *action, long dt);
 	static bool DefendActionHandler(Soldier *soldier, Action *action, long dt);
 	static bool AmbushActionHandler(Soldier *soldier, Action *action, long dt);
-
+	static bool WaitActionHandler(Soldier *soldier, Action *action, long dt);
+	
 	static SoldierActionHandler _handlers[];
 };

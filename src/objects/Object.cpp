@@ -19,6 +19,7 @@ Object::Object()
 	_health = HEALTH_MAX;
 	_bSquadLeader = false;
 	_moving = false;
+	_pathComplete = false;
 }
 
 Object::~Object(void)

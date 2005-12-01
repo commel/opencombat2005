@@ -509,15 +509,12 @@ SoldierManager::CreateSoldier(char *soldierType, AnimationManager *animationMana
 			s->_animations[Soldier::AnimationState::LyingDown] = GetAnimation(animationManager, "Standing Up", t);
 			s->_animations[Soldier::AnimationState::LyingDown]->SetReverse(true);
 
-			s->_maxWalkingSpeed = t->WalkingSpeed;
 			s->_walkingAccel = t->WalkingAcceleration;
 			s->_animations[Soldier::AnimationState::Walking] = GetAnimation(animationManager, "Walking", t);
 
-			s->_maxCrawlingSpeed = t->SneakingSpeed;
 			s->_crawlingAccel = t->SneakingAcceleration;
 			s->_animations[Soldier::AnimationState::Sneaking] = GetAnimation(animationManager, "Sneaking", t);
 			
-			s->_maxRunningSpeed = t->RunningSpeed;
 			s->_runningAccel = t->RunningAcceleration;
 			s->_animations[Soldier::AnimationState::Running] = GetAnimation(animationManager, "Running", t);
 

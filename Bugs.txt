@@ -1,3 +1,5 @@
-1.) Increasing the screen size near one of the far edges can result in an assertion failure
+XXX 10/16/2005 1.) Increasing the screen size near one of the far edges can result in an assertion failure
 2.) Pathfinding on long paths blows
-3.) Pathfinding doesnt work sometimes, generics wacky paths
+XXX 10/26/2005 3.) Pathfinding doesnt work sometimes, generics wacky paths
+4.) The yellow box in the mini map can be off by one pixel when switching
+	between the arrow keys and the mouse dragging.

@@ -110,6 +110,11 @@ Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sw, int sh,
 	{
 		return;
 	}
+	
+	if((dx+dw) > (_clip.x+_clip.w))
+	{
+		dw = (_clip.x+_clip.w) - dx;
+	}
 
 	if(dy < _clip.y)
 	{
@@ -120,6 +125,11 @@ Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sw, int sh,
 	else if(dy >= (_clip.y+_clip.h))
 	{
 		return;
+	}
+
+	if((dy+dh) > (_clip.y+_clip.h))
+	{
+		dh = (_clip.y+_clip.h) - dy;
 	}
 
 	for(int j = 0; j < dh; ++j) {
@@ -259,6 +269,86 @@ Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh,
 						}
 					}
 				}
+			}
+		}
+	}
+}
+
+/**
+ * This performs a blit with transparency and shadowing.
+ */
+void 
+Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh, 
+			 int sx, int sy, int sw, int sh, int sbytes_per_pixel, bool bUseShadow, bool bUseTransparency)
+{
+	unsigned int *isrc = (unsigned int *)src;
+	unsigned int pixel, msk;
+	int r,g,b;
+	UNREFERENCED_PARAMETER(sh);
+	UNREFERENCED_PARAMETER(bUseShadow);
+	UNREFERENCED_PARAMETER(bUseTransparency);
+
+	assert(sbytes_per_pixel == 4);
+	assert(_bytes_per_pixel == 4);
+
+	// Perform some clipping
+	if(dx < _clip.x) 
+	{ 
+		sx += (_clip.x-dx);
+		dw -= (_clip.x-dx);
+		dx = _clip.x;
+	}
+	else if(dx >= (_clip.x+_clip.w))
+	{
+		return;
+	}
+	
+	if((dx+dw) > (_clip.x+_clip.w))
+	{
+		dw = (_clip.x+_clip.w) - dx;
+	}
+
+	if(dy < _clip.y)
+	{
+		sy += (_clip.y-dy);
+		dh -= (_clip.y-dy);
+		dy = _clip.y;
+	}
+	else if(dy >= (_clip.y+_clip.h))
+	{
+		return;
+	}
+
+	if((dy+dh) > (_clip.y+_clip.h))
+	{
+		dh = (_clip.y+_clip.h) - dy;
+	}
+
+	for(int j = 0; j < dh; ++j) {
+		for(int i = 0; i < dw; ++i) {
+			// Look at all the masks
+			pixel = isrc[(sy+j)*sw + sx+i];
+			msk  = (isrc[(sy+j)*sw + sx+i]) & 0xFFFFFF;
+
+			r = src[(sy+j)*sw*sbytes_per_pixel + (sx+i)*sbytes_per_pixel + 2];
+			g =	src[(sy+j)*sw*sbytes_per_pixel + (sx+i)*sbytes_per_pixel + 1];
+			b = src[(sy+j)*sw*sbytes_per_pixel + (sx+i)*sbytes_per_pixel + 0];
+			
+			if(MASK_TRANSPARENT == msk)
+			{
+				continue;
+			}
+			else if(MASK_SHADOW == msk) 
+			{
+				(_bits[(dy+j)*_pitch+(dx+i)*_bytes_per_pixel + 2] >>= 2) *= 3;
+				(_bits[(dy+j)*_pitch+(dx+i)*_bytes_per_pixel + 1] >>= 2) *= 3;
+				(_bits[(dy+j)*_pitch+(dx+i)*_bytes_per_pixel + 0] >>= 2) *= 3;
+			} 
+			else
+			{
+				_bits[(dy+j)*_pitch+(dx+i)*_bytes_per_pixel + 2] = (unsigned char)r;
+				_bits[(dy+j)*_pitch+(dx+i)*_bytes_per_pixel + 1] = (unsigned char)g;
+				_bits[(dy+j)*_pitch+(dx+i)*_bytes_per_pixel + 0] = (unsigned char)b;
 			}
 		}
 	}

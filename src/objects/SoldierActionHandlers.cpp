@@ -5,22 +5,18 @@
 #include <sound\Sound.h>
 #include <objects\Weapon.h>
 #include <misc\Utilities.h>
+#include <world\Element.h>
 
 static float _currentHeadingAngles[8] = { 0.0f, 1.0f*2.0f*(float)M_PI/8.0f, 2.0f*2.0f*(float)M_PI/8.0f, 3.0f*2.0f*(float)M_PI/8.0f, 4.0f*2.0f*(float)M_PI/8.0f, 5.0f*2.0f*(float)M_PI/8.0f, 6.0f*2.0f*(float)M_PI/8.0f, 7.0f*2.0f*(float)M_PI/8.0f};
-
-// The following are used for figuring out formations and aligmnent
-const static float _formations[][9][2] = 
-{
-	/* Wedge */  { {0.0f,0.0f}, {-7.0f,7.0f}, {-7.0f,-7.0f}, {-12.0f,0.0f}, {-10.0f,-12.0f}, {-16.0f,0.0f}, {-20.0f,7.0f}, {-20.0f,-7.0f}, {-25.0f,0.0f} },
-	/* Column */ { {0.0f,0.0f}, {-5.0f,0.0f}, {-10.0f,0.0f},{-15.0f,0.0f}, {-20.0f,0.0f}, {-25.0f,0.0f}, {-30.0f,0.0f}, {-35.0f,0.0f} , {-40.0f,0.0f} },
-    /* Line */   { {0.0f,0.0f},{3.0f,7.0f},{3.0f,-7.0f},{6.0f,10.0f},{6.0f,-10.0f},{10.0f,15.0f},{10.0f,-15.0f},{15.0f,10.0f},{15.0f,-10.0f} }
-};
 
 // Weights used for our various formation calculations
 const static float _cohesionWeight = 1.5f;
 const static float _separationWeight = 1.0f;
 const static float _alignmentWeight = 1.0f;
 const static float _formationWeight = 3.0f;
+
+// Our velocity modifier for running
+#define RUNNING_VELOCITY_MODIFIER	3.0f
 
 SoldierActionHandlers::SoldierActionHandler SoldierActionHandlers::_handlers[SoldierAction::NumActions] =
 {
@@ -45,6 +41,7 @@ SoldierActionHandlers::SoldierActionHandler SoldierActionHandlers::_handlers[Sol
 	SoldierActionHandlers::TurnActionHandler,
 	SoldierActionHandlers::DefendActionHandler,
 	SoldierActionHandlers::AmbushActionHandler,
+	SoldierActionHandlers::WaitActionHandler,
 
 };
 
@@ -402,6 +399,7 @@ SoldierActionHandlers::DestinationReachedActionHandler(Soldier *soldier, Action 
 		g_Globals->World.Voices->GetSound("move completed")->Play();	
 	}
 
+	soldier->_pathComplete = true;
 	return true;
 }
 
@@ -670,8 +668,7 @@ SoldierActionHandlers::FollowInFormationActionHandler(Soldier *soldier, Action *
 	
 	// Rotate the formation thing
 	Point point, formation;
-	point.x = _formations[data->TargetFormation][data->FormationIndex][0]*data->FormationSpread;
-	point.y = _formations[data->TargetFormation][data->FormationIndex][1]*data->FormationSpread;
+	Formation::GetFormationPosition(data->TargetFormation, data->FormationIndex, data->FormationSpread, &point.x, &point.y);
 
 	// Now if our alignment force is zero, then we
 	// need to line up based on our point man's heading
@@ -692,7 +689,7 @@ SoldierActionHandlers::FollowInFormationActionHandler(Soldier *soldier, Action *
 	// If we are already in position and our point man is at the end
 	// of his path, then we can stop. Eventually, we are going to want 
 	// to find cover here
-	if(data->TargetObject->IsStopped())
+	if(data->TargetObject->IsStopped() && data->TargetObject->IsPathComplete())
 	{
 		// Let's make sure we get to the position we need to get to
 		Action *newAction = new Action(data->MovementStyle, NULL);
@@ -761,6 +758,26 @@ SoldierActionHandlers::AmbushActionHandler(Soldier *soldier, Action *action, lon
 	return false;
 }
 
+bool 
+SoldierActionHandlers::WaitActionHandler(Soldier *soldier, Action *action, long dt)
+{
+	// Update our state
+	soldier->_currentState.Set(SoldierState::Waiting);
+
+	// Update the elapsed time
+	WaitData *data = (WaitData *) action->Data;
+	data->ElapsedTime += dt;
+
+	if(data->ElapsedTime > data->WaitTime)
+	{
+		// Done
+		soldier->_currentState.UnSet(SoldierState::Waiting);
+		delete data;
+		return true;
+	}
+	return false;
+}
+
 // Calculates the heading we need to take to get to a new tile
 Direction 
 SoldierActionHandlers::CalculateNewHeading(Soldier *soldier, int i, int j)
@@ -807,26 +824,35 @@ SoldierActionHandlers::MoveSoldier(Soldier *soldier, long dt)
 	float accel = 0.0f;
 	float maxSpeed = 0.0f;
 
+	// Get the element that this soldier is on
+
 	if(soldier->_currentState.IsSet(SoldierState::Running))
 	{
 		accel = soldier->_runningAccel;
-		maxSpeed = soldier->_maxRunningSpeed;
+		maxSpeed = soldier->_currentTileElement->Movement[Element::Medium]*RUNNING_VELOCITY_MODIFIER;
 	}
 	else if(soldier->_currentState.IsSet(SoldierState::Walking))
 	{
 		accel = soldier->_walkingAccel;
-		maxSpeed = soldier->_maxWalkingSpeed;
+		maxSpeed = soldier->_currentTileElement->Movement[Element::Medium];
 	}
 	else if(soldier->_currentState.IsSet(SoldierState::WalkingSlow))
 	{
 		accel = soldier->_walkingSlowAccel;
-		maxSpeed = soldier->_maxWalkingSlowSpeed;
+		maxSpeed = soldier->_currentTileElement->Movement[Element::Low];
 	}
 	else if(soldier->_currentState.IsSet(SoldierState::Crawling))
 	{
 		accel = soldier->_crawlingAccel;
-		maxSpeed = soldier->_maxCrawlingSpeed;
+		maxSpeed = soldier->_currentTileElement->Movement[Element::Prone];
 	}
+
+	// XXX/GWS: This is a lame hack in case our soldiers accidently
+	//			move onto an element they shouldnt be on. This definitely
+	//			needs to fixed. Make sure they don't go on elements they shouldnt
+	//			be on.
+	float oldSpeed = soldier->_velocity.Magnitude();
+	maxSpeed = (maxSpeed == 0.0f) ? oldSpeed : maxSpeed;
 
 	soldier->_velocity.x -= accel*dt*sin(_currentHeadingAngles[soldier->_currentHeading])/1000.0f;
 	soldier->_velocity.y += accel*dt*cos(_currentHeadingAngles[soldier->_currentHeading])/1000.0f;

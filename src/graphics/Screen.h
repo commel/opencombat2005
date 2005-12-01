@@ -41,6 +41,7 @@ public:
 	virtual void Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sx, int sy, int sw, int sh, int sbytes_per_pixel, bool useAlpha);
 	virtual void Blit(unsigned char *src, unsigned char *mask, int dx, int dy, int dw, int dh, int sx, int sy, int sw, int sh, bool bHilit, Color *hilitColor, int sbytes_per_pixel, int colorModifierIdx);
 	virtual void Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sw, int sh, int sbytes_per_pixel, Color *transparentColor, int rotx, int roty, double angle);
+	virtual void Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sx, int sy, int sw, int sh, int sbytes_per_pixel, bool bUseShadow, bool bUseTransparency);
 
 	// Draws a line
 	virtual void DrawLine(int sx, int sy, int dx, int dy, int width, Color *c);

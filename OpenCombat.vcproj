@@ -246,6 +246,12 @@
 					RelativePath=".\src\graphics\EffectManager.h">
 				</File>
 				<File
+					RelativePath=".\src\graphics\Font.cpp">
+				</File>
+				<File
+					RelativePath=".\src\graphics\Font.h">
+				</File>
+				<File
 					RelativePath=".\src\graphics\FontManager.cpp">
 				</File>
 				<File
@@ -334,6 +340,9 @@
 					RelativePath=".\src\misc\StatusCallback.h">
 				</File>
 				<File
+					RelativePath=".\src\misc\StrictArray.h">
+				</File>
+				<File
 					RelativePath=".\src\misc\Structs.h">
 				</File>
 				<File
@@ -413,6 +422,15 @@
 					RelativePath=".\src\world\MiniMap.h">
 				</File>
 				<File
+					RelativePath=".\src\world\Nationality.cpp">
+				</File>
+				<File
+					RelativePath=".\src\world\Nationality.h">
+				</File>
+				<File
+					RelativePath=".\src\world\VictoryLocation.h">
+				</File>
+				<File
 					RelativePath=".\src\world\World.cpp">
 				</File>
 				<File
@@ -422,6 +440,9 @@
 			<Filter
 				Name="Objects"
 				Filter="">
+				<File
+					RelativePath=".\src\objects\Formation.cpp">
+				</File>
 				<File
 					RelativePath=".\src\objects\Formation.h">
 				</File>
@@ -591,6 +612,9 @@
 					RelativePath=".\Config\MachineGunAnimations.xml">
 				</File>
 				<File
+					RelativePath=".\config\Nationalities.xml">
+				</File>
+				<File
 					RelativePath=".\config\SoldierActions.txt">
 				</File>
 				<File
@@ -725,6 +749,9 @@
 				RelativePath=".\Graphics\Ui\Cursors\Mark Yellow.cur">
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\Bugs.txt">
+		</File>
 		<File
 			RelativePath=".\src\Open Combat.rc">
 		</File>

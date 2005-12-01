@@ -4,6 +4,16 @@
 #include <string.h>
 #include <assert.h>
 
+/**
+ * See the definition of the StrictArray class for a similar utility.
+ * This class hides one level of pointer indirection from the user,
+ * which makes it useful for arrays of pointers to structures and classes.
+ * In reality there should only be one of these things. However,
+ * because of legacy code, there are two.
+ *
+ * XXX/GWS: Array and StrictArray need to be merged into one class. Involves
+ *			going through and changing a bunch of old code.
+ */
 template <class T> class Array
 {
 public:

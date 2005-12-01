@@ -8,6 +8,7 @@
 #include <misc\Color.h>
 #include <states\Action.h>
 #include <objects\Formation.h>
+#include <world\Element.h>
 
 class Screen;
 class Order;
@@ -112,7 +113,7 @@ public:
 	virtual void GetGeneralHeading(Vector2 *heading) { heading->x = 0.0f; heading->y = 0.0f; }
 
 	// Gets or sets the formation of this object
-	virtual Formation::Type GetFormation() { return Formation::Wedge; }
+	virtual Formation::Type GetFormation() { return Formation::Column; }
 	virtual void SetFormation(Formation::Type formation) { formation; }
 
 	// Gets the current heading of this object
@@ -120,6 +121,16 @@ public:
 
 	// Is this object stopped?
 	virtual bool IsStopped();
+
+	// Set's the team that this object belongs to
+	void SetTeam(int teamID) { _currentTeamID = teamID; }
+	int GetTeam() { return _currentTeamID; }
+
+	// Set's the element that this object resides on
+	void SetTileElement(Element *element) { _currentTileElement = element; }
+
+	// Is our path complete?
+	bool IsPathComplete() { return _pathComplete; }
 
 protected:
 	 // A flag which determines whether or not this guy is selected
@@ -185,4 +196,14 @@ protected:
 
 	// The current heading of this object
 	Direction _currentHeading;
+
+	// The current team that this object belongs to
+	int _currentTeamID;
+
+	// The current tile element that we reside on
+	Element *_currentTileElement;
+
+	// Have we completed our path that we are following?
+	bool _pathComplete;
+
 };

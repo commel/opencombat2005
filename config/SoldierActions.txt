@@ -20,3 +20,4 @@ CrawlTo							Move					0					Prone													+Crawling,-Running,-Walking,-Walk
 Turn							Move					0					nil														nil
 Defend							Fire					0					Prone													+Defending
 Ambush							Fire					0					Prone													+Ambushing
+Wait							Move					0					nil														nil

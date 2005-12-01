@@ -79,7 +79,7 @@ Squad::Render(Screen *screen, Rect *clip)
 
 	for(int i = 0; i < _soldiers.Count; ++i) {
 		_soldiers.Items[i]->Render(screen, clip);
-		if(_selectedSoldierIdx == i) {
+		if(_selectedSoldierIdx == i && IsSelected()) {
 			Color white(255,255,255);
 			Widget *w = g_Globals->World.Icons->GetWidget("Unit Selected Bracket");
 			w->Render(screen, _soldiers.Items[i]->Position.x - screen->Origin.x, _soldiers.Items[i]->Position.y-screen->Origin.y, &white);
@@ -162,12 +162,27 @@ Squad::IsSelected()
 void 
 Squad::SetPosition(int x, int y)
 {
+	int sx=0,sy=0;
 	Object::SetPosition(x,y);
 
+	// Let's set our soldier positions based on the current formation
 	// XXX/GWS: Need smarter formation setting here....cover, etc
+	int j = 1;
 	for(int i = 0; i < _soldiers.Count; ++i) {
-		_soldiers.Items[i]->SetPosition(x+i*20, y);
+		if(i != _currentPointManIdx)
+		{
+			Formation::GetFormationPosition(_currentFormation, j++, _currentFormationSpread, &Position, 
+				_soldiers.Items[_currentPointManIdx]->GetHeading(), &sx, &sy);
+			_soldiers.Items[i]->SetPosition(sx, sy);
+		}
+		else
+		{
+			Formation::GetFormationPosition(_currentFormation, 0, _currentFormationSpread, &Position, 
+				_soldiers.Items[_currentPointManIdx]->GetHeading(), &sx, &sy);
+			_soldiers.Items[i]->SetPosition(sx, sy);
+		}
 	}
+
 	for(int i = 0; i < _vehicles.Count; ++i) {
 		_vehicles.Items[i]->SetPosition(x+i*20, y);
 	}
@@ -249,7 +264,32 @@ Squad::HandleMoveOrder(MoveOrder *order, SoldierAction::Action movementStyle, Ma
 	FreePath(_currentPath, true);
 	g_Globals->World.CurrentWorld->ConvertPositionToTile(Position.x, Position.y, &i, &j);
 	g_Globals->World.CurrentWorld->ConvertPositionToTile(_currentTargetX, _currentTargetY, &di, &dj);
-	_currentPath = g_Globals->World.Pathing.FindPath(i, j, di, dj);
+	Element::Level level = Element::Medium;
+	switch(movementStyle)
+	{
+	case SoldierAction::Crawl:
+	case SoldierAction::CrawlTo:
+		level = Element::Prone;
+		break;
+
+	case SoldierAction::Run:
+	case SoldierAction::RunTo:
+		level = Element::High;
+		break;
+
+	case SoldierAction::WalkSlow:
+	case SoldierAction::WalkSlowTo:
+		level = Element::Low;
+		break;
+
+	case SoldierAction::Walk:
+	case SoldierAction::WalkTo:
+	default:
+		level = Element::Medium;
+		break;
+	}
+
+	_currentPath = g_Globals->World.Pathing.FindPath(i, j, di, dj, level);
 	if(NULL == _currentPath) {
 		g_Globals->World.Voices->GetSound("no clear path")->Play();
 		return;
